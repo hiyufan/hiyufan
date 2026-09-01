@@ -22,6 +22,8 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 
+<img src="https://komarev.com/ghpvc/?username=hiyufan&label=Profile%20views&color=4FC08D&style=flat-square" alt="profile views" />
+
 </div>
 
 ---
@@ -58,7 +60,7 @@
 | [**mimo-tui**](https://github.com/hiyufan/mimo-tui) | AI 编码代理，5.7 MB 单二进制、零依赖<br><sub>支持 DeepSeek / MiMo / OpenAI / Claude</sub> | `Rust` |
 | [**MIRAX-API**](https://github.com/hiyufan/MIRAX-API) | AI API 网关 / 代理 | `Go` |
 | [**ssgl**](https://github.com/hiyufan/ssgl) | AI 驱动的竞赛管理平台 | `Go` `React` `Python` |
-| **yf-quant** 🔒 | 量化交易研究工具链 *(私有仓库)* | `Python` |
+| **yf-quant** 🔒 | 基于 Qlib 的美股量化研究平台<br><sub>日频研究工作流：元数据存储、确定性校验、实验报告、Qlib 适配层</sub> | `Python` `Qlib` |
 | [**frbook**](https://github.com/hiyufan/frbook) | 高校二手图书共享流转平台 | `Go` |
 | [**jww.p**](https://github.com/hiyufan/jww.p) | 高校教务系统中间件 | `Vue` |
 
@@ -70,6 +72,12 @@
 <tr>
 <td width="33%" valign="top">
 
+**RAG · 检索增强生成**
+<br><sub>分块与召回策略、重排序、评测方法</sub>
+
+</td>
+<td width="33%" valign="top">
+
 **LLM 推理引擎**
 <br><sub>vLLM / SGLang 的调度与显存管理</sub>
 
@@ -78,12 +86,6 @@
 
 **深度学习编译器**
 <br><sub>TVM Relax、算子融合与代码生成</sub>
-
-</td>
-<td width="33%" valign="top">
-
-**模型量化**
-<br><sub>低比特量化与 Triton kernel</sub>
 
 </td>
 </tr>
@@ -103,6 +105,19 @@
 <img height="170" src="https://streak-stats.demolab.com?user=hiyufan&hide_border=true&background=00000000&ring=4FC08D&fire=EE4C2C&currStreakLabel=4FC08D" />
 
 </div>
+
+### 🐍 贡献图 · Contribution Graph
+
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hiyufan/hiyufan/output/github-snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/hiyufan/hiyufan/output/github-snake.svg" />
+  <img alt="contribution snake animation" src="https://raw.githubusercontent.com/hiyufan/hiyufan/output/github-snake.svg" />
+</picture>
+
+</div>
+
 
 ---
 
