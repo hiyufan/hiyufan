@@ -59,10 +59,10 @@
 |:--|:--|:--|
 | [**mimo-tui**](https://github.com/hiyufan/mimo-tui) | AI 编码代理，5.7 MB 单二进制、零依赖<br><sub>支持 DeepSeek / MiMo / OpenAI / Claude</sub> | `Rust` |
 | [**MIRAX-API**](https://github.com/hiyufan/MIRAX-API) | AI API 网关 / 代理 | `Go` |
-| [**ssgl**](https://github.com/hiyufan/ssgl) | AI 驱动的竞赛管理平台 | `Go` `React` `Python` |
+| [**contest-ops**](https://github.com/hiyufan/contest-ops) | AI 驱动的竞赛管理平台 | `Go` `React` `Python` |
 | **yf-quant** 🔒 | 基于 Qlib 的美股量化研究平台<br><sub>日频研究工作流：元数据存储、确定性校验、实验报告、Qlib 适配层</sub> | `Python` `Qlib` |
-| [**frbook**](https://github.com/hiyufan/frbook) | 高校二手图书共享流转平台 | `Go` |
-| [**jww.p**](https://github.com/hiyufan/jww.p) | 高校教务系统中间件 | `Vue` |
+| [**bookloop**](https://github.com/hiyufan/bookloop) | 高校二手图书共享流转平台 | `Go` |
+| [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件 | `Vue` |
 
 ---
 
