@@ -39,17 +39,33 @@
 
 > <sub>Validate `flatten` dims in the Relax PyTorch frontend. An out-of-range negative `start_dim` silently computed a wrong shape that only failed further downstream in `reshape`. Added range and ordering checks, 0-d input support, and regression tests.</sub>
 
+[**#20254**](https://github.com/apache/tvm/pull/20254) &nbsp;`✅ 已批准 approved`&nbsp; — `torch.sort` / `torch.argsort` 返回 int64 索引，前端却发 int32。同文件的 `_topk` 已经显式覆盖了同一个 int32 默认值，说明这是遗漏而非约定；前端支持的其他索引类算子（`argmax`、`argmin`、`max(dim)`、`median(dim)`、`bucketize`）也都是 int64。一张导入图会因此对同一种值带上两种索引 dtype。
+
+> <sub>`torch.sort` / `torch.argsort` return int64 indices; the frontend emitted int32. `_topk` in the same file already overrides the identical default, and every other index-producing op comes out int64 — so one imported graph could carry two index dtypes for the same kind of value.</sub>
+
+[**#20255**](https://github.com/apache/tvm/pull/20255) — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。经与 torch 逐例对照 2132 组静态形状 + 63 组符号形状验证。
+
+> <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified against torch across 2132 static and 63 symbolic shape cases.</sub>
+
 ### [Feast](https://github.com/feast-dev/feast) &nbsp;`7.2k ★`&nbsp; Linux Foundation AI & Data
 
 [**#6801**](https://github.com/feast-dev/feast/pull/6801) — 修复 RBAC 完全绕过漏洞（公告 `GHSA-h543-6vgr-fm36`，[issue #6785](https://github.com/feast-dev/feast/issues/6785)）。两个 token 解析器都从**未验签**的 JWT 解码中授予完全信任的内部身份，而对比值硬编码在 Feast 官方 Helm chart 里 —— 任何能访问到服务的人都能伪造它，跳过该服务上**所有项目的所有权限检查**。改为对内部 token 签名、密钥移入 Kubernetes Secret 且不提供默认值、未配置时 fail closed。
 
 > <sub>Fix an RBAC bypass. Both token parsers granted a fully trusted internal identity from an <i>unverified</i> JWT decode, compared against a value hardcoded in Feast's own Helm chart. Signed the internal token, moved the secret to a Kubernetes Secret with no default, and made an unset secret fail closed.</sub>
 
+[**#6803**](https://github.com/feast-dev/feast/pull/6803) — 修复离线服务器的项目上下文泄漏。`set_current_project` 设置的 `ContextVar` 从不重置，一个请求的项目会残留到同一 worker 上后续未指定项目的请求里。改为 `try` / `finally` 配对重置，覆盖 `_call_api` 与 `do_get` 两条路径。
+
+> <sub>Fix a project-context leak in the offline server. The `ContextVar` set per request was never reset, so one request's project persisted into later requests on the same worker. Paired it with a `finally` reset on both entry points.</sub>
+
 ### [kornia](https://github.com/kornia/kornia) &nbsp;`11.3k ★`&nbsp; 可微分计算机视觉
 
 [**#4140**](https://github.com/kornia/kornia/pull/4140) — 统一 `resize` / `rescale` 的零尺寸语义。它们对零尺寸输出抛裸 `ZeroDivisionError`，而 `warp_affine`、`warp_perspective`、`center_crop` 对**同样的参数**返回空图像。经 512 组形状 / 精度 / 插值模式组合验证，对合法输入数值零影响。
 
 > <sub>Align zero-size semantics in <code>resize</code> / <code>rescale</code> with the warping ops. Verified numerically inert across 512 shape / dtype / interpolation combinations.</sub>
+
+[**#4143**](https://github.com/kornia/kornia/pull/4143) — `kornia.core.__all__` 与 `kornia.color.__all__` 列出了模块里并未绑定的名字，`from kornia.core import *` 直接抛 `AttributeError`。既有的 API 面守卫看不到这类问题 —— 它比对的就是 `__all__` 本身，绑定丢失的名字仍然"在列"。恢复绑定、清理遗留条目，并加了一条覆盖全仓库 132 个声明 `__all__` 模块的解析守卫。
+
+> <sub>`kornia.core.__all__` and `kornia.color.__all__` listed names that were not bound, so `import *` raised `AttributeError`. The existing surface guard could not see it — it compares `__all__` against itself. Restored the bindings, dropped the leftover entry, and added a resolve check across all 132 modules that declare `__all__`.</sub>
 
 ---
 
