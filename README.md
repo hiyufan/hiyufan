@@ -30,12 +30,12 @@
 
 ## 🔧 开源贡献 · Open Source
 
-> 给自己在用的项目提交的修复。链接指向 PR —— 部分仍在 review 中。
-> <sub><i>Fixes sent to projects I use. Links go to the pull requests; some are still under review.</i></sub>
+> 给自己在用的项目提交的修复。链接指向 PR —— 7 个已提交，其中 4 个已获维护者批准。
+> <sub><i>Fixes sent to projects I use. Seven pull requests, four approved by maintainers.</i></sub>
 
 ### [Apache TVM](https://github.com/apache/tvm) &nbsp;`13.7k ★`&nbsp; 深度学习编译器
 
-[**#20245**](https://github.com/apache/tvm/pull/20245) — 修复 Relax PyTorch 前端 `flatten` 的参数校验缺陷。越界的负 `start_dim` **不在使用处报错**：它被归一化成 `-1`，把多余的一维折进乘积，发出形状错误的 `reshape`，直到下游才失败。补上范围与顺序校验、0 维张量支持和回归测试。
+[**#20245**](https://github.com/apache/tvm/pull/20245) &nbsp;`✅ 已批准 approved`&nbsp; — 修复 Relax PyTorch 前端 `flatten` 的参数校验缺陷。越界的负 `start_dim` **不在使用处报错**：它被归一化成 `-1`，把多余的一维折进乘积，发出形状错误的 `reshape`，直到下游才失败。补上范围与顺序校验、0 维张量支持和回归测试。
 
 > <sub>Validate `flatten` dims in the Relax PyTorch frontend. An out-of-range negative `start_dim` silently computed a wrong shape that only failed further downstream in `reshape`. Added range and ordering checks, 0-d input support, and regression tests.</sub>
 
@@ -43,7 +43,7 @@
 
 > <sub>`torch.sort` / `torch.argsort` return int64 indices; the frontend emitted int32. `_topk` in the same file already overrides the identical default, and every other index-producing op comes out int64 — so one imported graph could carry two index dtypes for the same kind of value.</sub>
 
-[**#20255**](https://github.com/apache/tvm/pull/20255) — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。经与 torch 逐例对照 2132 组静态形状 + 63 组符号形状验证。
+[**#20255**](https://github.com/apache/tvm/pull/20255) &nbsp;`✅ 已批准 approved`&nbsp; — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。经与 torch 逐例对照 2132 组静态形状 + 63 组符号形状验证。
 
 > <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified against torch across 2132 static and 63 symbolic shape cases.</sub>
 
@@ -59,13 +59,13 @@
 
 ### [kornia](https://github.com/kornia/kornia) &nbsp;`11.3k ★`&nbsp; 可微分计算机视觉
 
-[**#4140**](https://github.com/kornia/kornia/pull/4140) — 统一 `resize` / `rescale` 的零尺寸语义。它们对零尺寸输出抛裸 `ZeroDivisionError`，而 `warp_affine`、`warp_perspective`、`center_crop` 对**同样的参数**返回空图像。经 512 组形状 / 精度 / 插值模式组合验证，对合法输入数值零影响。
+[**#4140**](https://github.com/kornia/kornia/pull/4140) &nbsp;`✅ 已批准 approved`&nbsp; — 统一 `resize` / `rescale` 的零尺寸语义。它们对零尺寸输出抛裸 `ZeroDivisionError`，而 `warp_affine`、`warp_perspective`、`center_crop` 对**同样的参数**返回空图像。空结果还需保持在自动微分图上 —— 否则一个退化成零尺寸的 batch 元素会静默断开梯度，这是 review 中提出、复现并修掉的。经 512 组形状 / 精度 / 插值模式组合验证，对合法输入数值零影响。
 
-> <sub>Align zero-size semantics in <code>resize</code> / <code>rescale</code> with the warping ops. Verified numerically inert across 512 shape / dtype / interpolation combinations.</sub>
+> <sub>Align zero-size semantics in <code>resize</code> / <code>rescale</code> with the warping ops, and keep the empty result attached to the autograd graph so a batch element that degenerates to a zero-sized output still contributes a zero gradient. Verified numerically inert across 512 shape / dtype / interpolation combinations.</sub>
 
-[**#4143**](https://github.com/kornia/kornia/pull/4143) — `kornia.core.__all__` 与 `kornia.color.__all__` 列出了模块里并未绑定的名字，`from kornia.core import *` 直接抛 `AttributeError`。既有的 API 面守卫看不到这类问题 —— 它比对的就是 `__all__` 本身，绑定丢失的名字仍然"在列"。恢复绑定、清理遗留条目，并加了一条覆盖全仓库 132 个声明 `__all__` 模块的解析守卫。
+[**#4143**](https://github.com/kornia/kornia/pull/4143) — `kornia.core.__all__` 与 `kornia.color.__all__` 列出了模块里并未绑定的名字，`from kornia.core import *` 直接抛 `AttributeError`。既有的 API 面守卫看不到这类问题 —— 它比对的就是 `__all__` 本身，绑定丢失的名字仍然"在列"。恢复绑定、清理遗留条目，并加了一条覆盖全仓库每一个声明 `__all__` 模块的解析守卫。
 
-> <sub>`kornia.core.__all__` and `kornia.color.__all__` listed names that were not bound, so `import *` raised `AttributeError`. The existing surface guard could not see it — it compares `__all__` against itself. Restored the bindings, dropped the leftover entry, and added a resolve check across all 132 modules that declare `__all__`.</sub>
+> <sub>`kornia.core.__all__` and `kornia.color.__all__` listed names that were not bound, so `import *` raised `AttributeError`. The existing surface guard could not see it — it compares `__all__` against itself. Restored the bindings, dropped the leftover entry, and added a resolve check across every module that declares `__all__`.</sub>
 
 ---
 
