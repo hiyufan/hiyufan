@@ -30,8 +30,8 @@
 
 ## 🔧 开源贡献 · Open Source
 
-> 给自己在用的项目提交的修复。链接指向 PR —— 7 个已提交，**3 个已合并**，1 个已批准待合并。
-> <sub><i>Fixes sent to projects I use. Seven pull requests: three merged, one approved and awaiting merge.</i></sub>
+> 给自己在用的项目提交的修复。链接指向 PR —— 7 个已提交，**4 个已合并**。
+> <sub><i>Fixes sent to projects I use. Seven pull requests, four of them merged.</i></sub>
 
 ### [Apache TVM](https://github.com/apache/tvm) &nbsp;`13.7k ★`&nbsp; 深度学习编译器
 
@@ -39,13 +39,13 @@
 
 > <sub>Validate `flatten` dims in the Relax PyTorch frontend. An out-of-range negative `start_dim` silently computed a wrong shape that only failed further downstream in `reshape`. Added range and ordering checks, 0-d input support, and regression tests.</sub>
 
-[**#20254**](https://github.com/apache/tvm/pull/20254) &nbsp;`✅ 已批准 approved`&nbsp; — `torch.sort` / `torch.argsort` 返回 int64 索引，前端却发 int32。同文件的 `_topk` 已经显式覆盖了同一个 int32 默认值，说明这是遗漏而非约定；前端支持的其他索引类算子（`argmax`、`argmin`、`max(dim)`、`median(dim)`、`bucketize`）也都是 int64。一张导入图会因此对同一种值带上两种索引 dtype。
+[**#20254**](https://github.com/apache/tvm/pull/20254) &nbsp;`🎉 已合并 merged`&nbsp; — `torch.sort` / `torch.argsort` 返回 int64 索引，前端却发 int32。同文件的 `_topk` 已经显式覆盖了同一个 int32 默认值，说明这是遗漏而非约定；前端支持的其他索引类算子（`argmax`、`argmin`、`max(dim)`、`median(dim)`、`bucketize`）也都是 int64。一张导入图会因此对同一种值带上两种索引 dtype。
 
 > <sub>`torch.sort` / `torch.argsort` return int64 indices; the frontend emitted int32. `_topk` in the same file already overrides the identical default, and every other index-producing op comes out int64 — so one imported graph could carry two index dtypes for the same kind of value.</sub>
 
-[**#20255**](https://github.com/apache/tvm/pull/20255) &nbsp;`🔄 review 中`&nbsp; — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。与 torch 逐例对照验证：2132 组静态形状，以及 938 组目标可含符号维的动态形状 —— 后者由维护者 review 中指出的两个残留缺口驱动补上，修复后其中 314 组由错转对。
+[**#20255**](https://github.com/apache/tvm/pull/20255) &nbsp;`🔄 review 中`&nbsp; — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。与 torch 逐例对照验证：2132 组静态形状，以及 938 组目标可含符号维的动态形状 —— 后者由维护者 review 中指出的两个残留缺口驱动补上，修复后其中 314 组由错转对。顺带修掉 `RemoveRedundantReshape` 的一个同源缺陷：它合并相邻 reshape 时把已解析的字面 `0` 挪到新输入上，零被重新当成"拷贝维度"，**整段改写连同 reshape 一起被删掉**（938 组里有 24 组因此出错）。
 
-> <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified case by case against torch: 2132 static shapes, plus 938 dynamic ones whose target can reach a symbolic dimension — a sweep added after review found two remaining gaps, and which 314 cases now pass.</sub>
+> <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified case by case against torch: 2132 static shapes, plus 938 dynamic ones whose target can reach a symbolic dimension, which found two further gaps under review. Also fixes the same confusion in <code>RemoveRedundantReshape</code>, which re-parented a resolved target onto a different input and so read its literal zeros as dimension copies, dropping the rewrite entirely in 24 of those cases.</sub>
 
 ### [Feast](https://github.com/feast-dev/feast) &nbsp;`7.2k ★`&nbsp; Linux Foundation AI & Data
 
