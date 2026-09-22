@@ -30,8 +30,8 @@
 
 ## 🔧 开源贡献 · Open Source
 
-> 给自己在用的项目提交的修复。链接指向 PR —— 7 个已提交，**5 个已合并**（Apache TVM 3 个全部合并）。
-> <sub><i>Fixes sent to projects I use. Seven pull requests, five of them merged — all three in Apache TVM.</i></sub>
+> 给自己在用的项目提交的修复。链接指向 PR —— 11 个已提交，**5 个已合并**，1 个已批准；Apache TVM 占 9 个。
+> <sub><i>Fixes sent to projects I use. Eleven pull requests: five merged, one approved; nine of them in Apache TVM.</i></sub>
 
 ### [Apache TVM](https://github.com/apache/tvm) &nbsp;`13.7k ★`&nbsp; 深度学习编译器
 
@@ -47,15 +47,26 @@
 
 > <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified case by case against torch: 2132 static shapes, plus 938 dynamic ones whose target can reach a symbolic dimension, which found two further gaps under review. Also fixes the same confusion in <code>RemoveRedundantReshape</code>, which re-parented a resolved target onto a different input and so read its literal zeros as dimension copies, dropping the rewrite entirely in 24 of those cases.</sub>
 
-### [Feast](https://github.com/feast-dev/feast) &nbsp;`7.2k ★`&nbsp; Linux Foundation AI & Data
+**2026-09 差分扫描批次** · 用 88 个算子 × 7 种输入形状对照 `torch.export`，一次找出六处；每个 PR 都带修前/修后逐例对照、回归测试在旧 head 上确认失败。
+<sub><i>A differential-sweep batch: 88 ops × 7 input shapes against `torch.export`, six findings; each PR carries a per-case before/after diff and a regression test shown failing on the previous head.</i></sub>
 
-[**#6801**](https://github.com/feast-dev/feast/pull/6801) — 修复 RBAC 完全绕过漏洞（公告 `GHSA-h543-6vgr-fm36`，[issue #6785](https://github.com/feast-dev/feast/issues/6785)）。两个 token 解析器都从**未验签**的 JWT 解码中授予完全信任的内部身份，而对比值硬编码在 Feast 官方 Helm chart 里 —— 任何能访问到服务的人都能伪造它，跳过该服务上**所有项目的所有权限检查**。改为对内部 token 签名、密钥移入 Kubernetes Secret 且不提供默认值、未配置时 fail closed。
+[**#20377**](https://github.com/apache/tvm/pull/20377) &nbsp;`✅ 已批准 approved`&nbsp; — `reshape` 的恒等跳过用 `list ==` 比较形状，符号维上 `==` 返回的是 `PrimExpr` 而不是布尔值，同秩目标直接抛 `ValueError`。改为逐维比较，938 组动态形状中 40 组由抛错转为正确。
+> <sub>The identity-reshape shortcut compared shapes with `list ==`; on a symbolic dim `==` yields a `PrimExpr`, so any same-rank target raised. Dimension-wise comparison instead; 40 of 938 dynamic cases go from raising to correct.</sub>
 
-> <sub>Fix an RBAC bypass. Both token parsers granted a fully trusted internal identity from an <i>unverified</i> JWT decode, compared against a value hardcoded in Feast's own Helm chart. Signed the internal token, moved the secret to a Kubernetes Secret with no default, and made an unset secret fail closed.</sub>
+[**#20372**](https://github.com/apache/tvm/pull/20372) &nbsp;`🔄 review 中`&nbsp; — Python 标量参与二元运算时被**向下转成张量的 dtype**：`int_tensor * 0.5` 静默算成 `x * 0`，`x < 1.5` 变成 `x < 1`。改用 `torch.result_type` 决定提升方向。864 组（18 算子 × 8 dtype × 6 标量，LLVM 真跑比值）中 168 组由错转对，0 回归。
+> <sub>A Python scalar was truncated to the tensor's dtype, so `int_tensor * 0.5` silently became `x * 0`. Promotion now follows `torch.result_type`; 168 of 864 numerically-checked cases repaired, none regressed.</sub>
 
-[**#6803**](https://github.com/feast-dev/feast/pull/6803) — 修复离线服务器的项目上下文泄漏。`set_current_project` 设置的 `ContextVar` 从不重置，一个请求的项目会残留到同一 worker 上后续未指定项目的请求里。改为 `try` / `finally` 配对重置，覆盖 `_call_api` 与 `do_get` 两条路径。
+[**#20373**](https://github.com/apache/tvm/pull/20373) &nbsp;`🔄 review 中`&nbsp; — 除法家族：`int / int` 应为 float32 却整除；`x // 2` 对任何 float 张量抛 `TypeError`（标量常量不带 dtype）；`2 / x` 经 `reciprocal` 同样整除且两个 translator 各抄一份。统一到真除法规则；上一批剩余的 52 处数值错误清零。
+> <sub>Division family: `int / int` was an integer quotient, `x // 2` raised on every float tensor, `2 / x` via `reciprocal` was duplicated and wrong. One true-division rule; the remaining 52 wrong-value cases drop to zero.</sub>
 
-> <sub>Fix a project-context leak in the offline server. The `ContextVar` set per request was never reset, so one request's project persisted into later requests on the same worker. Paired it with a `finally` reset on both entry points.</sub>
+[**#20374**](https://github.com/apache/tvm/pull/20374) &nbsp;`🔄 review 中`&nbsp; — `cumsum` / `cumprod` 对整型和 bool 输入保持输入 dtype，torch 用 int64 累加：`uint8 [200, 100, 50]` 的前缀和变成 `[200, 44, 94]`。45 组溢出输入全部对齐。
+> <sub>`cumsum` / `cumprod` kept the input dtype where torch accumulates in int64, so a uint8 running sum wrapped. All 45 overflow-prone cases now match.</sub>
+
+[**#20375**](https://github.com/apache/tvm/pull/20375) &nbsp;`🔄 review 中`&nbsp; — 补上 `amax` / `amin` / `min.dim` 三个缺失的转换器（`logsumexp` 的分解也经过 `amax`），`_max_dim` 泛化为一个 `largest` 参数服务两端。
+> <sub>Adds the missing `amax` / `amin` / `min.dim` converters (`logsumexp` decomposes through `amax`); `_max_dim` generalised to serve both ends.</sub>
+
+[**#20376**](https://github.com/apache/tvm/pull/20376) &nbsp;`🔄 review 中`&nbsp; — `any` 对非 bool 输入返回的是**最大值**而不是真值（`[0, 0, 5].any(1)` 给 `5`），`any.default` 与 `prod.dim_int` 缺转换器，`prod` 对整型不做 int64 累加。四处一并修正。
+> <sub>`any` on a non-bool input returned the maximum instead of a truth value; `any.default` and `prod.dim_int` had no converter; `prod` skipped int64 accumulation. All four fixed together.</sub>
 
 ### [kornia](https://github.com/kornia/kornia) &nbsp;`11.3k ★`&nbsp; 可微分计算机视觉
 
