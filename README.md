@@ -30,8 +30,8 @@
 
 ## 🔧 开源贡献 · Open Source
 
-> 给自己在用的项目提交的修复。链接指向 PR —— 11 个已提交，**5 个已合并**，1 个已批准；Apache TVM 占 9 个。
-> <sub><i>Fixes sent to projects I use. Eleven pull requests: five merged, one approved; nine of them in Apache TVM.</i></sub>
+> 给自己在用的项目提交的修复。链接指向 PR —— 5 个已提交，**5 个已合并**；Apache TVM 占 3 个。
+> <sub><i>Fixes sent to projects I use. Five pull requests, all merged; three of them in Apache TVM.</i></sub>
 
 ### [Apache TVM](https://github.com/apache/tvm) &nbsp;`13.7k ★`&nbsp; 深度学习编译器
 
@@ -46,27 +46,6 @@
 [**#20255**](https://github.com/apache/tvm/pull/20255) &nbsp;`🎉 已合并 merged`&nbsp; — Relax 的 `reshape` 把目标形状里的字面 `0` 读作"沿用输入对应维度"（ONNX `allowzero=0` 语义），PyTorch 读作真实的零维。空张量上的 `reshape` / `view` / `flatten` / `unflatten` 因此报错或**静默给出错误形状**；`flatten` 在 `(0,3)` 上恰好正确，正是这个巧合掩盖了其余情形。与 torch 逐例对照验证：2132 组静态形状，以及 938 组目标可含符号维的动态形状 —— 后者由维护者 review 中指出的两个残留缺口驱动补上，修复后其中 314 组由错转对。顺带修掉 `RemoveRedundantReshape` 的一个同源缺陷：它合并相邻 reshape 时把已解析的字面 `0` 挪到新输入上，零被重新当成"拷贝维度"，**整段改写连同 reshape 一起被删掉**（938 组里有 24 组因此出错）。
 
 > <sub>Relax's `reshape` reads a literal `0` as "copy the input dimension" (ONNX `allowzero=0`) where PyTorch reads a real zero-sized one, so `reshape` / `view` / `flatten` / `unflatten` on empty tensors raised or silently produced a wrong shape. Verified case by case against torch: 2132 static shapes, plus 938 dynamic ones whose target can reach a symbolic dimension, which found two further gaps under review. Also fixes the same confusion in <code>RemoveRedundantReshape</code>, which re-parented a resolved target onto a different input and so read its literal zeros as dimension copies, dropping the rewrite entirely in 24 of those cases.</sub>
-
-**2026-09 差分扫描批次** · 用 88 个算子 × 7 种输入形状对照 `torch.export`，一次找出六处；每个 PR 都带修前/修后逐例对照、回归测试在旧 head 上确认失败。
-<sub><i>A differential-sweep batch: 88 ops × 7 input shapes against `torch.export`, six findings; each PR carries a per-case before/after diff and a regression test shown failing on the previous head.</i></sub>
-
-[**#20377**](https://github.com/apache/tvm/pull/20377) &nbsp;`✅ 已批准 approved`&nbsp; — `reshape` 的恒等跳过用 `list ==` 比较形状，符号维上 `==` 返回的是 `PrimExpr` 而不是布尔值，同秩目标直接抛 `ValueError`。改为逐维比较，938 组动态形状中 40 组由抛错转为正确。
-> <sub>The identity-reshape shortcut compared shapes with `list ==`; on a symbolic dim `==` yields a `PrimExpr`, so any same-rank target raised. Dimension-wise comparison instead; 40 of 938 dynamic cases go from raising to correct.</sub>
-
-[**#20372**](https://github.com/apache/tvm/pull/20372) &nbsp;`🔄 review 中`&nbsp; — Python 标量参与二元运算时被**向下转成张量的 dtype**：`int_tensor * 0.5` 静默算成 `x * 0`，`x < 1.5` 变成 `x < 1`。改用 `torch.result_type` 决定提升方向。864 组（18 算子 × 8 dtype × 6 标量，LLVM 真跑比值）中 168 组由错转对，0 回归。
-> <sub>A Python scalar was truncated to the tensor's dtype, so `int_tensor * 0.5` silently became `x * 0`. Promotion now follows `torch.result_type`; 168 of 864 numerically-checked cases repaired, none regressed.</sub>
-
-[**#20373**](https://github.com/apache/tvm/pull/20373) &nbsp;`🔄 review 中`&nbsp; — 除法家族：`int / int` 应为 float32 却整除；`x // 2` 对任何 float 张量抛 `TypeError`（标量常量不带 dtype）；`2 / x` 经 `reciprocal` 同样整除且两个 translator 各抄一份。统一到真除法规则；上一批剩余的 52 处数值错误清零。
-> <sub>Division family: `int / int` was an integer quotient, `x // 2` raised on every float tensor, `2 / x` via `reciprocal` was duplicated and wrong. One true-division rule; the remaining 52 wrong-value cases drop to zero.</sub>
-
-[**#20374**](https://github.com/apache/tvm/pull/20374) &nbsp;`🔄 review 中`&nbsp; — `cumsum` / `cumprod` 对整型和 bool 输入保持输入 dtype，torch 用 int64 累加：`uint8 [200, 100, 50]` 的前缀和变成 `[200, 44, 94]`。45 组溢出输入全部对齐。
-> <sub>`cumsum` / `cumprod` kept the input dtype where torch accumulates in int64, so a uint8 running sum wrapped. All 45 overflow-prone cases now match.</sub>
-
-[**#20375**](https://github.com/apache/tvm/pull/20375) &nbsp;`🔄 review 中`&nbsp; — 补上 `amax` / `amin` / `min.dim` 三个缺失的转换器（`logsumexp` 的分解也经过 `amax`），`_max_dim` 泛化为一个 `largest` 参数服务两端。
-> <sub>Adds the missing `amax` / `amin` / `min.dim` converters (`logsumexp` decomposes through `amax`); `_max_dim` generalised to serve both ends.</sub>
-
-[**#20376**](https://github.com/apache/tvm/pull/20376) &nbsp;`🔄 review 中`&nbsp; — `any` 对非 bool 输入返回的是**最大值**而不是真值（`[0, 0, 5].any(1)` 给 `5`），`any.default` 与 `prod.dim_int` 缺转换器，`prod` 对整型不做 int64 累加。四处一并修正。
-> <sub>`any` on a non-bool input returned the maximum instead of a truth value; `any.default` and `prod.dim_int` had no converter; `prod` skipped int64 accumulation. All four fixed together.</sub>
 
 ### [kornia](https://github.com/kornia/kornia) &nbsp;`11.3k ★`&nbsp; 可微分计算机视觉
 
@@ -84,7 +63,7 @@
 
 | 项目 | 说明 | 技术栈 |
 |:--|:--|:--|
-| [**mimo-tui**](https://github.com/hiyufan/mimo-tui) | AI 编码代理，5.7 MB 单二进制、零依赖<br><sub>支持 DeepSeek / MiMo / OpenAI / Claude</sub> | `Rust` |
+| [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub>抖音 / 小红书 / B站 / 快手 / YouTube / TikTok 等</sub> | `Rust` |
 | [**contest-ops**](https://github.com/hiyufan/contest-ops) | AI 驱动的竞赛管理平台 | `Go` `React` `Python` |
 | [**拾帧**](https://ynvan.com) | 抖音 / 小红书 / X 等平台视频图片在线提取，一键转 GIF 和实况照片<br><sub>线上服务 · parse-video-py 驱动</sub> | `Python` `FastAPI` `Docker` |
 | [**aether-guide**](https://github.com/hiyufan/aether-guide) | 景区 AI 数字人智慧导览系统<br><sub>RAG 知识检索 · 多模态定位 (VPS / QR / 对话) · Live2D 数字人流式对话</sub> | `Python` `FastAPI` `Next.js` |
