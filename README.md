@@ -133,7 +133,7 @@
 
 ### 📮 联系 · Contact
 
-[![Email](https://img.shields.io/badge/admin@ynvan.com-0078D4?style=flat-square&logo=gmail&logoColor=white)](mailto:admin@ynvan.com)
+[![Email](https://img.shields.io/badge/hi@oiya.net-0078D4?style=flat-square&logo=gmail&logoColor=white)](mailto:hi@oiya.net)
 [![GitHub](https://img.shields.io/badge/@hiyufan-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hiyufan)
 
 <sub>欢迎交流 AI 基础设施、编译器与开源协作</sub><br>
