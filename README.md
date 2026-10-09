@@ -64,12 +64,8 @@
 | 项目 | 说明 | 技术栈 |
 |:--|:--|:--|
 | [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub>抖音 / 小红书 / B站 / 快手 / YouTube / TikTok 等</sub> | `Rust` |
-| [**contest-ops**](https://github.com/hiyufan/contest-ops) | AI 驱动的竞赛管理平台 | `Go` `React` `Python` |
 | [**拾帧**](https://ynvan.com) | 抖音 / 小红书 / X 等平台视频图片在线提取，一键转 GIF 和实况照片<br><sub>线上服务 · parse-video-py 驱动</sub> | `Python` `FastAPI` `Docker` |
-| [**aether-guide**](https://github.com/hiyufan/aether-guide) | 景区 AI 数字人智慧导览系统<br><sub>RAG 知识检索 · 多模态定位 (VPS / QR / 对话) · Live2D 数字人流式对话</sub> | `Python` `FastAPI` `Next.js` |
-| [**campus-muse**](https://github.com/hiyufan/campus-muse) | 校园数字人导览系统<br><sub>GPS 地理围栏状态机 · STT→LLM→TTS 管线 · 语音问答闯关</sub> | `Python` `Vue` `Live2D` |
 | **yf-quant** 🔒 | 基于 Qlib 的美股量化研究平台<br><sub>日频研究工作流：元数据存储、确定性校验、实验报告、Qlib 适配层</sub> | `Python` `Qlib` |
-| [**bookloop**](https://github.com/hiyufan/bookloop) | 高校二手图书共享流转平台 | `Go` |
 | [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件 | `Go` `Vue` |
 
 ---
