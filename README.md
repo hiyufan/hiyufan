@@ -1,8 +1,6 @@
 <div align="center">
 
-# 你好，我是陈雨钒 👋
-
-<sub><i>Hi there, I'm Yufan Chen.</i></sub>
+# Hi there, I'm Yufan 👋
 
 <a href="https://github.com/hiyufan">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=4FC08D&center=true&vCenter=true&width=560&lines=Systems+%26+AI+Infrastructure;Patching+deep+learning+compiler+frontends;Building+fast+tools+in+Rust;Contributor+to+Apache+TVM+%26+kornia" alt="Typing SVG" />
