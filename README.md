@@ -1,6 +1,8 @@
 <div align="center">
 
-# Hi there, I'm Yufan 👋
+# 你好，我是陈雨钒 👋
+
+<sub><i>Hi there, I'm Yufan Chen.</i></sub>
 
 <a href="https://github.com/hiyufan">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=4FC08D&center=true&vCenter=true&width=560&lines=Systems+%26+AI+Infrastructure;Patching+deep+learning+compiler+frontends;Building+fast+tools+in+Rust;Contributor+to+Apache+TVM+%26+kornia" alt="Typing SVG" />
@@ -25,70 +27,81 @@
 
 ---
 
-## 🙋 About Me
+## 🙋 关于我 · About Me
 
-I work on systems and ML infrastructure — compilers, runtimes, and the tooling around them. I like bugs that don't crash: the ones that quietly hand you the wrong shape three ops later.
+做系统与 AI 基础设施 —— 编译器、运行时，以及围绕它们的工具链。最喜欢不崩溃的 bug：那种悄悄给你一个错误形状、三个算子之后才露馅的。
 
-- 🔭 Currently sending correctness fixes to **[Apache TVM](https://github.com/apache/tvm)** and **[kornia](https://github.com/kornia/kornia)**
-- 🦀 Building **[alcedo](https://github.com/hiyufan/alcedo)**, a pure-Rust video parsing core for 35 platforms
-- 🌱 Learning LLM inference engines, RAG, and deep learning compilers (more below)
-- 💬 Ask me about PyTorch → TVM Relax import, shape semantics, or why your `reshape` is lying to you
-- 📫 Reach me at **[hi@oiya.net](mailto:hi@oiya.net)**
+<sub><i>I work on systems and ML infrastructure — compilers, runtimes, and the tooling around them. I like bugs that don't crash: the ones that quietly hand you the wrong shape three ops later.</i></sub>
 
----
-
-## 🔧 Open Source Contributions
-
-> Fixes I sent upstream to projects I actually use — **5 PRs, all merged**.
-
-### <img src="https://github.com/apache.png" width="20" align="center" /> [Apache TVM](https://github.com/apache/tvm) &nbsp;![stars](https://img.shields.io/github/stars/apache/tvm?style=flat-square&label=%E2%98%85&color=425066)
-
-| PR | Status | What it fixes |
-|:--|:--|:--|
-| [**#20255**](https://github.com/apache/tvm/pull/20255) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | Relax `reshape` read a literal `0` as "copy this dim" (ONNX semantics) where PyTorch means a real zero-sized dim, so empty-tensor `reshape` / `view` / `flatten` / `unflatten` raised or **silently returned the wrong shape**. Verified against torch on 2,132 static + 938 dynamic shapes, and fixed the same bug hiding in `RemoveRedundantReshape`. |
-| [**#20254**](https://github.com/apache/tvm/pull/20254) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `torch.sort` / `argsort` emitted int32 indices while every other index op was int64 — one graph, two index dtypes. |
-| [**#20245**](https://github.com/apache/tvm/pull/20245) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `flatten` didn't validate dims, so a bad negative `start_dim` produced a broken `reshape` downstream instead of failing at the call site. |
-
-### <img src="https://github.com/kornia.png" width="20" align="center" /> [kornia](https://github.com/kornia/kornia) &nbsp;![stars](https://img.shields.io/github/stars/kornia/kornia?style=flat-square&label=%E2%98%85&color=5C3EE8)
-
-| PR | Status | What it fixes |
-|:--|:--|:--|
-| [**#4140**](https://github.com/kornia/kornia/pull/4140) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | Zero-size `resize` / `rescale` threw `ZeroDivisionError` where the warping ops return an empty image. Now matches them, and keeps the result on the autograd graph. Verified inert on 512 shape / dtype / mode combos. |
-| [**#4143**](https://github.com/kornia/kornia/pull/4143) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `__all__` listed unbound names, so `from kornia.core import *` crashed. Restored them and added a repo-wide check that every exported name resolves. |
+- 🔭 正在给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提交正确性修复
+  <br><sub><i>Sending correctness fixes to Apache TVM and kornia.</i></sub>
+- 🦀 在写 **[alcedo](https://github.com/hiyufan/alcedo)**：纯 Rust 的视频解析核心，支持 35 个平台
+  <br><sub><i>Building alcedo, a pure-Rust video parsing core for 35 platforms.</i></sub>
+- 🌱 在学 LLM 推理引擎、RAG 和深度学习编译器（见下文）
+  <br><sub><i>Learning LLM inference engines, RAG, and deep learning compilers (more below).</i></sub>
+- 💬 可以找我聊：PyTorch → TVM Relax 的导入、形状语义，或者你的 `reshape` 为什么在骗你
+  <br><sub><i>Ask me about PyTorch → TVM Relax import, shape semantics, or why your <code>reshape</code> is lying to you.</i></sub>
+- 📫 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
+  <br><sub><i>Reach me at hi@oiya.net.</i></sub>
 
 ---
 
-## 🚀 Featured Projects
+## 🔧 开源贡献 · Open Source Contributions
 
-| Project | Description | Stack |
+> 给自己在用的项目提交的上游修复 —— **5 个 PR，全部合并**。
+> <br><sub><i>Fixes sent upstream to projects I actually use — 5 PRs, all merged.</i></sub>
+
+### <img src="https://github.com/apache.png" width="20" align="center" /> [Apache TVM](https://github.com/apache/tvm) &nbsp;![stars](https://img.shields.io/github/stars/apache/tvm?style=flat-square&label=%E2%98%85&color=425066)&nbsp; 深度学习编译器 <sub><i>· deep learning compiler</i></sub>
+
+| PR | 状态 | 修复内容 · What it fixes |
 |:--|:--|:--|
-| 🦀 [**alcedo**](https://github.com/hiyufan/alcedo) | High-performance video parsing core for 35 platforms — pure Rust, zero external processes<br><sub>YouTube · TikTok · Douyin · Bilibili · Xiaohongshu · Kuaishou · …</sub> | `Rust` |
-| 🎞️ [**ynvan.com**](https://ynvan.com) | Grab videos and images from Douyin, Xiaohongshu, X and more; one-click GIF and Live Photo export<br><sub>Live service, powered by parse-video-py</sub> | `Python` `FastAPI` `Docker` |
-| 📈 **yf-quant** 🔒 | US equities quant research platform built on Qlib<br><sub>Daily-frequency workflows, metadata store, deterministic checks, experiment reports</sub> | `Python` `Qlib` |
-| 🎓 [**edubridge**](https://github.com/hiyufan/edubridge) | Middleware for university academic systems | `Go` `Vue` |
+| [**#20255**](https://github.com/apache/tvm/pull/20255) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | Relax 的 `reshape` 把字面 `0` 读作"沿用输入维度"（ONNX 语义），PyTorch 却表示真实的零维，导致空张量上的 `reshape` / `view` / `flatten` / `unflatten` 报错或**静默给出错误形状**。与 torch 逐例对照验证 2132 组静态 + 938 组动态形状，并顺带修掉 `RemoveRedundantReshape` 里的同源缺陷。<br><sub><i>Relax read a literal <code>0</code> as "copy this dim" where PyTorch means a real zero-sized dim, so empty-tensor reshapes raised or silently returned the wrong shape. Verified against torch on 2,132 static + 938 dynamic shapes; also fixed the same bug in <code>RemoveRedundantReshape</code>.</i></sub> |
+| [**#20254**](https://github.com/apache/tvm/pull/20254) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `torch.sort` / `argsort` 发出 int32 索引，而其他所有索引类算子都是 int64 —— 一张图里出现两种索引 dtype。<br><sub><i><code>torch.sort</code> / <code>argsort</code> emitted int32 indices while every other index op was int64 — one graph, two index dtypes.</i></sub> |
+| [**#20245**](https://github.com/apache/tvm/pull/20245) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `flatten` 不校验维度，越界的负 `start_dim` 不在调用处报错，而是在下游生成错误的 `reshape`。<br><sub><i><code>flatten</code> didn't validate dims, so a bad negative <code>start_dim</code> produced a broken <code>reshape</code> downstream instead of failing at the call site.</i></sub> |
+
+### <img src="https://github.com/kornia.png" width="20" align="center" /> [kornia](https://github.com/kornia/kornia) &nbsp;![stars](https://img.shields.io/github/stars/kornia/kornia?style=flat-square&label=%E2%98%85&color=5C3EE8)&nbsp; 可微分计算机视觉 <sub><i>· differentiable computer vision</i></sub>
+
+| PR | 状态 | 修复内容 · What it fixes |
+|:--|:--|:--|
+| [**#4140**](https://github.com/kornia/kornia/pull/4140) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 零尺寸的 `resize` / `rescale` 抛 `ZeroDivisionError`，而 warp 类算子对同样参数返回空图像。现在与之对齐，并让空结果留在自动微分图上。经 512 组形状 / 精度 / 插值模式验证对合法输入零影响。<br><sub><i>Zero-size <code>resize</code> / <code>rescale</code> threw <code>ZeroDivisionError</code> where the warping ops return an empty image. Now aligned, with the result kept on the autograd graph. Verified inert across 512 combinations.</i></sub> |
+| [**#4143**](https://github.com/kornia/kornia/pull/4143) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `__all__` 列出了未绑定的名字，`from kornia.core import *` 直接崩溃。恢复绑定，并加了一条全仓库的导出名解析检查。<br><sub><i><code>__all__</code> listed unbound names, so <code>import *</code> crashed. Restored them and added a repo-wide check that every exported name resolves.</i></sub> |
 
 ---
 
-## 📚 Currently Learning
+## 🚀 项目 · Featured Projects
+
+| 项目 | 说明 · Description | 技术栈 |
+|:--|:--|:--|
+| 🦀 [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub><i>High-performance video parsing core for 35 platforms — pure Rust, zero external processes.</i></sub> | `Rust` |
+| 🎞️ [**拾帧**](https://ynvan.com) | 抖音 / 小红书 / X 等平台视频图片在线提取，一键转 GIF 和实况照片<br><sub><i>Grab videos and images from Douyin, Xiaohongshu, X and more; one-click GIF and Live Photo export.</i></sub> | `Python` `FastAPI` `Docker` |
+| 📈 **yf-quant** 🔒 | 基于 Qlib 的美股量化研究平台<br><sub><i>US equities quant research platform built on Qlib.</i></sub> | `Python` `Qlib` |
+| 🎓 [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件<br><sub><i>Middleware for university academic systems.</i></sub> | `Go` `Vue` |
+
+---
+
+## 📚 正在学 · Currently Learning
 
 <table>
 <tr>
 <td width="33%" valign="top">
 
-**🔍 RAG**
-<br><sub>Chunking & retrieval strategies, reranking, evaluation</sub>
+**🔍 RAG · 检索增强生成**
+<br><sub>分块与召回策略、重排序、评测方法</sub>
+<br><sub><i>Chunking & retrieval, reranking, evaluation</i></sub>
 
 </td>
 <td width="33%" valign="top">
 
-**⚡ LLM Inference Engines**
-<br><sub>Scheduling & KV-cache memory management in vLLM / SGLang</sub>
+**⚡ LLM 推理引擎**
+<br><sub>vLLM / SGLang 的调度与显存管理</sub>
+<br><sub><i>Scheduling & KV-cache management in vLLM / SGLang</i></sub>
 
 </td>
 <td width="33%" valign="top">
 
-**🧠 DL Compilers**
-<br><sub>TVM Relax, operator fusion, code generation</sub>
+**🧠 深度学习编译器**
+<br><sub>TVM Relax、算子融合与代码生成</sub>
+<br><sub><i>TVM Relax, operator fusion, code generation</i></sub>
 
 </td>
 </tr>
@@ -96,7 +109,7 @@ I work on systems and ML infrastructure — compilers, runtimes, and the tooling
 
 ---
 
-## 📊 GitHub Stats
+## 📊 数据 · GitHub Stats
 
 <div align="center">
 
@@ -109,7 +122,7 @@ I work on systems and ML infrastructure — compilers, runtimes, and the tooling
 
 </div>
 
-### 🐍 Contribution Graph
+### 🐍 贡献图 · Contribution Graph
 
 <div align="center">
 
@@ -125,11 +138,12 @@ I work on systems and ML infrastructure — compilers, runtimes, and the tooling
 
 <div align="center">
 
-### 🤝 Let's Connect
+### 🤝 联系 · Let's Connect
 
 [![Email](https://img.shields.io/badge/hi@oiya.net-0078D4?style=flat-square&logo=gmail&logoColor=white)](mailto:hi@oiya.net)
 [![GitHub](https://img.shields.io/badge/@hiyufan-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hiyufan)
 
-<sub>Always happy to chat about AI infra, compilers, and open source. ⭐ Thanks for stopping by!</sub>
+<sub>欢迎交流 AI 基础设施、编译器与开源协作。⭐ 感谢来访！</sub><br>
+<sub><i>Always happy to chat about AI infra, compilers, and open source. Thanks for stopping by!</i></sub>
 
 </div>
