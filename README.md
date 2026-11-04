@@ -25,8 +25,8 @@
   <br><sub><i>Go, Python and Rust on the back end; Vue and React on the front end.</i></sub>
 - 给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提过 5 个 PR，都已合并
   <br><sub><i>5 merged PRs to Apache TVM and kornia.</i></sub>
-- 自己的项目有 **[求原图](https://github.com/hiyufan/shizhen)**（在线原图 / 视频提取，已上线）、**[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库）、**[eposctl](https://github.com/hiyufan/eposctl)** 和 **[agent-sweep](https://github.com/hiyufan/agent-sweep)** 等
-  <br><sub><i>Side projects include shizhen (live at ynvan.com), alcedo, eposctl and agent-sweep.</i></sub>
+- 自己的项目有 **[求原图](https://github.com/hiyufan/shizhen)**（在线原图 / 视频提取，已上线）、**[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库） 和 **[eposctl](https://github.com/hiyufan/eposctl)**
+  <br><sub><i>Side projects: shizhen (live at ynvan.com), alcedo and eposctl.</i></sub>
 - 最近在学 LLM 推理和 RAG
   <br><sub><i>Currently learning LLM inference and RAG.</i></sub>
 - 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
@@ -63,8 +63,6 @@
 | [**求原图**](https://github.com/hiyufan/shizhen) | 粘贴分享链接下载原图和视频，可截一段转 GIF、实况照片。支持抖音、小红书、YouTube、B站等 30 多个平台，也能提取 Steam 动态头像、音乐封面、游戏壁纸。已上线 [ynvan.com](https://ynvan.com)，可自部署<br><sub><i>Paste a share link to save the original video or images, or turn a clip into a GIF / Live Photo. 30+ platforms, plus Steam avatars, album covers and game wallpapers. Live at ynvan.com, self-hostable.</i></sub> | `Python` `FastAPI` `Docker` |
 | [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub><i>High-performance video parsing core for 35 platforms — pure Rust, zero external processes.</i></sub> | `Rust` |
 | [**eposctl**](https://github.com/hiyufan/eposctl) | EPOS Gaming Suite 停更后的开源替代：EQ、预设、7.1 环绕、麦克风、电量，一个免安装的 exe<br><sub><i>Open-source replacement for the discontinued EPOS Gaming Suite: EQ, presets, surround, mic and battery in one portable exe.</i></sub> | `Rust` `Windows` |
-| [**agent-sweep**](https://github.com/hiyufan/agent-sweep) | 清理 Claude Code、Codex、Gemini CLI、Cursor 留下的旧会话、孤儿 worktree 和僵尸 MCP 进程。`npx agent-sweeper`<br><sub><i>npkill for AI coding agents: reclaim disk and RAM from stale sessions, orphaned worktrees and zombie MCP servers.</i></sub> | `TypeScript` `Node.js` |
-| [**dontreadme**](https://github.com/hiyufan/dontreadme) | 去掉 README 里的 AI 味：内置 linter 打分，让 agent 按仓库里的事实重写，中英文都支持<br><sub><i>Lint the AI voice out of your README, then have your agent rewrite it from facts in the repo. English and Chinese.</i></sub> | `JavaScript` |
 | **yf-quant** <sub>(private)</sub> | 基于 Qlib 的美股量化研究平台<br><sub><i>US equities quant research platform built on Qlib.</i></sub> | `Python` `Qlib` |
 | [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件<br><sub><i>Middleware for university academic systems.</i></sub> | `Go` `Vue` |
 
