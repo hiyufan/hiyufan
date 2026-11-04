@@ -25,7 +25,7 @@
   <br><sub><i>Go, Python and Rust on the back end; Vue and React on the front end.</i></sub>
 - 给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提过 5 个 PR，都已合并
   <br><sub><i>5 merged PRs to Apache TVM and kornia.</i></sub>
-- 自己的项目有 **[求原图](https://github.com/hiyufan/shizhen)**（在线原图 / 视频提取，已上线）、**[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库） 和 **[eposctl](https://github.com/hiyufan/eposctl)**
+- 自己的项目有 **[求原图](https://github.com/hiyufan/shizhen)**（在线原图 / 视频提取，已上线）、**[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库）和 **[eposctl](https://github.com/hiyufan/eposctl)**
   <br><sub><i>Side projects: shizhen (live at ynvan.com), alcedo and eposctl.</i></sub>
 - 最近在学 LLM 推理和 RAG
   <br><sub><i>Currently learning LLM inference and RAG.</i></sub>
