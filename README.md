@@ -81,25 +81,18 @@
 
 <table>
 <tr>
-<td width="33%" valign="top">
+<td width="50%" valign="top">
 
 **🔍 RAG · 检索增强生成**
 <br><sub>分块与召回策略、重排序、评测方法</sub>
 <br><sub><i>Chunking & retrieval, reranking, evaluation</i></sub>
 
 </td>
-<td width="33%" valign="top">
+<td width="50%" valign="top">
 
 **⚡ LLM 推理引擎**
 <br><sub>vLLM / SGLang 的调度与显存管理</sub>
 <br><sub><i>Scheduling & KV-cache management in vLLM / SGLang</i></sub>
-
-</td>
-<td width="33%" valign="top">
-
-**🧠 深度学习编译器**
-<br><sub>TVM Relax、算子融合与代码生成</sub>
-<br><sub><i>TVM Relax, operator fusion, code generation</i></sub>
 
 </td>
 </tr>
