@@ -3,7 +3,7 @@
 # Hi there, I'm Yufan 👋
 
 <a href="https://github.com/hiyufan">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=4FC08D&center=true&vCenter=true&width=560&lines=Systems+%26+AI+Infrastructure;Patching+deep+learning+compiler+frontends;Building+fast+tools+in+Rust;Contributor+to+Apache+TVM+%26+kornia" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=4FC08D&center=true&vCenter=true&width=560&lines=AI+student;Full-stack+developer;Rust+%C2%B7+Go+%C2%B7+Python+%C2%B7+TypeScript;Contributor+to+Apache+TVM+%26+kornia" alt="Typing SVG" />
 </a>
 
 ![Rust](https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white)
@@ -27,20 +27,20 @@
 
 ## 🙋 关于我 · About Me
 
-主要做系统和 AI 基础设施，平时 Rust、Go、Python 写得比较多。
+人工智能专业在读，平时主要做全栈开发，前端后端都写。
 
-<sub><i>Mostly systems and AI infrastructure. I write a lot of Rust, Go and Python.</i></sub>
+<sub><i>AI student. I mostly do full-stack development, front end and back end.</i></sub>
 
-- 🔭 正在给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提交正确性修复
-  <br><sub><i>Sending correctness fixes to Apache TVM and kornia.</i></sub>
-- 🦀 在写 **[alcedo](https://github.com/hiyufan/alcedo)**：纯 Rust 的视频解析核心，支持 35 个平台
-  <br><sub><i>Building alcedo, a pure-Rust video parsing core for 35 platforms.</i></sub>
-- 🌱 在学 LLM 推理引擎、RAG 和深度学习编译器（见下文）
-  <br><sub><i>Learning LLM inference engines, RAG, and deep learning compilers (more below).</i></sub>
-- 💬 可以找我聊 PyTorch 模型导入 TVM、深度学习编译器和 Rust
-  <br><sub><i>Happy to talk about importing PyTorch models into TVM, DL compilers, or Rust.</i></sub>
+- 💻 后端常用 Go、Python、Rust，前端用 Vue 和 React
+  <br><sub><i>Go, Python and Rust on the back end; Vue and React on the front end.</i></sub>
+- 🔧 给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提过 5 个 PR，都已合并
+  <br><sub><i>5 merged PRs to Apache TVM and kornia.</i></sub>
+- 🚀 自己的项目有 **[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库）和 **[拾帧](https://ynvan.com)**（在线视频提取，已上线）
+  <br><sub><i>Side projects: alcedo, a video parsing library in Rust, and ynvan.com, a live video download site.</i></sub>
+- 🌱 最近在学 LLM 推理和 RAG
+  <br><sub><i>Currently learning LLM inference and RAG.</i></sub>
 - 📫 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
-  <br><sub><i>Reach me at hi@oiya.net.</i></sub>
+  <br><sub><i>Email: hi@oiya.net</i></sub>
 
 ---
 
@@ -141,7 +141,7 @@
 [![Email](https://img.shields.io/badge/hi@oiya.net-0078D4?style=flat-square&logo=gmail&logoColor=white)](mailto:hi@oiya.net)
 [![GitHub](https://img.shields.io/badge/@hiyufan-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hiyufan)
 
-<sub>欢迎交流 AI 基础设施、编译器与开源协作。⭐ 感谢来访！</sub><br>
-<sub><i>Always happy to chat about AI infra, compilers, and open source. Thanks for stopping by!</i></sub>
+<sub>欢迎交流全栈开发、AI 和开源。</sub><br>
+<sub><i>Happy to chat about full-stack dev, AI, and open source.</i></sub>
 
 </div>
