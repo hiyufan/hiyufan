@@ -27,9 +27,9 @@
 
 ## 🙋 关于我 · About Me
 
-做系统与 AI 基础设施 —— 编译器、运行时，以及围绕它们的工具链。最喜欢不崩溃的 bug：那种悄悄给你一个错误形状、三个算子之后才露馅的。
+主要做系统和 AI 基础设施，平时 Rust、Go、Python 写得比较多。
 
-<sub><i>I work on systems and ML infrastructure — compilers, runtimes, and the tooling around them. I like bugs that don't crash: the ones that quietly hand you the wrong shape three ops later.</i></sub>
+<sub><i>Mostly systems and AI infrastructure. I write a lot of Rust, Go and Python.</i></sub>
 
 - 🔭 正在给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提交正确性修复
   <br><sub><i>Sending correctness fixes to Apache TVM and kornia.</i></sub>
@@ -37,8 +37,8 @@
   <br><sub><i>Building alcedo, a pure-Rust video parsing core for 35 platforms.</i></sub>
 - 🌱 在学 LLM 推理引擎、RAG 和深度学习编译器（见下文）
   <br><sub><i>Learning LLM inference engines, RAG, and deep learning compilers (more below).</i></sub>
-- 💬 可以找我聊：PyTorch → TVM Relax 的导入、形状语义，或者你的 `reshape` 为什么在骗你
-  <br><sub><i>Ask me about PyTorch → TVM Relax import, shape semantics, or why your <code>reshape</code> is lying to you.</i></sub>
+- 💬 可以找我聊 PyTorch 模型导入 TVM、深度学习编译器和 Rust
+  <br><sub><i>Happy to talk about importing PyTorch models into TVM, DL compilers, or Rust.</i></sub>
 - 📫 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
   <br><sub><i>Reach me at hi@oiya.net.</i></sub>
 
