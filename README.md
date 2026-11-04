@@ -1,6 +1,6 @@
 <div align="center">
 
-# Hi there, I'm Yufan 👋
+# Hi there, I'm Yufan
 
 <a href="https://github.com/hiyufan">
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&duration=3000&pause=1000&color=4FC08D&center=true&vCenter=true&width=560&lines=AI+student;Full-stack+developer;Rust+%C2%B7+Go+%C2%B7+Python+%C2%B7+TypeScript;Contributor+to+Apache+TVM+%26+kornia" alt="Typing SVG" />
@@ -25,26 +25,26 @@
 
 ---
 
-## 🙋 关于我 · About Me
+## <img src="assets/icons/tile/user.svg" height="28" align="center" /> 关于我 · About Me
 
 人工智能专业在读，平时主要做全栈开发，前端后端都写。
 
 <sub><i>AI student. I mostly do full-stack development, front end and back end.</i></sub>
 
-- 💻 后端常用 Go、Python、Rust，前端用 Vue 和 React
+- <img src="assets/icons/code-xml.svg" height="16" align="center" /> 后端常用 Go、Python、Rust，前端用 Vue 和 React
   <br><sub><i>Go, Python and Rust on the back end; Vue and React on the front end.</i></sub>
-- 🔧 给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提过 5 个 PR，都已合并
+- <img src="assets/icons/git-pull-request.svg" height="16" align="center" /> 给 **[Apache TVM](https://github.com/apache/tvm)** 和 **[kornia](https://github.com/kornia/kornia)** 提过 5 个 PR，都已合并
   <br><sub><i>5 merged PRs to Apache TVM and kornia.</i></sub>
-- 🚀 自己的项目有 **[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库）和 **[拾帧](https://ynvan.com)**（在线视频提取，已上线）
+- <img src="assets/icons/rocket.svg" height="16" align="center" /> 自己的项目有 **[alcedo](https://github.com/hiyufan/alcedo)**（Rust 视频解析库）和 **[拾帧](https://ynvan.com)**（在线视频提取，已上线）
   <br><sub><i>Side projects: alcedo, a video parsing library in Rust, and ynvan.com, a live video download site.</i></sub>
-- 🌱 最近在学 LLM 推理和 RAG
+- <img src="assets/icons/sprout.svg" height="16" align="center" /> 最近在学 LLM 推理和 RAG
   <br><sub><i>Currently learning LLM inference and RAG.</i></sub>
-- 📫 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
+- <img src="assets/icons/mail.svg" height="16" align="center" /> 邮箱 **[hi@oiya.net](mailto:hi@oiya.net)**
   <br><sub><i>Email: hi@oiya.net</i></sub>
 
 ---
 
-## 🔧 开源贡献 · Open Source Contributions
+## <img src="assets/icons/tile/git-merge.svg" height="28" align="center" /> 开源贡献 · Open Source Contributions
 
 > 给自己在用的项目提交的上游修复 —— **5 个 PR，全部合并**。
 > <br><sub><i>Fixes sent upstream to projects I actually use — 5 PRs, all merged.</i></sub>
@@ -66,31 +66,31 @@
 
 ---
 
-## 🚀 项目 · Featured Projects
+## <img src="assets/icons/tile/layers.svg" height="28" align="center" /> 项目 · Featured Projects
 
 | 项目 | 说明 · Description | 技术栈 |
 |:--|:--|:--|
-| 🦀 [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub><i>High-performance video parsing core for 35 platforms — pure Rust, zero external processes.</i></sub> | `Rust` |
-| 🎞️ [**拾帧**](https://ynvan.com) | 抖音 / 小红书 / X 等平台视频图片在线提取，一键转 GIF 和实况照片<br><sub><i>Grab videos and images from Douyin, Xiaohongshu, X and more; one-click GIF and Live Photo export.</i></sub> | `Python` `FastAPI` `Docker` |
-| 📈 **yf-quant** 🔒 | 基于 Qlib 的美股量化研究平台<br><sub><i>US equities quant research platform built on Qlib.</i></sub> | `Python` `Qlib` |
-| 🎓 [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件<br><sub><i>Middleware for university academic systems.</i></sub> | `Go` `Vue` |
+| <img src="assets/icons/box.svg" height="16" align="center" /> [**alcedo**](https://github.com/hiyufan/alcedo) | 高性能视频平台解析核心，35 个平台，纯 Rust 零外部进程依赖<br><sub><i>High-performance video parsing core for 35 platforms — pure Rust, zero external processes.</i></sub> | `Rust` |
+| <img src="assets/icons/clapperboard.svg" height="16" align="center" /> [**拾帧**](https://ynvan.com) | 抖音 / 小红书 / X 等平台视频图片在线提取，一键转 GIF 和实况照片<br><sub><i>Grab videos and images from Douyin, Xiaohongshu, X and more; one-click GIF and Live Photo export.</i></sub> | `Python` `FastAPI` `Docker` |
+| <img src="assets/icons/chart-candlestick.svg" height="16" align="center" /> **yf-quant** <img src="assets/icons/lock.svg" height="14" align="center" /> | 基于 Qlib 的美股量化研究平台<br><sub><i>US equities quant research platform built on Qlib.</i></sub> | `Python` `Qlib` |
+| <img src="assets/icons/graduation-cap.svg" height="16" align="center" /> [**edubridge**](https://github.com/hiyufan/edubridge) | 高校教务系统中间件<br><sub><i>Middleware for university academic systems.</i></sub> | `Go` `Vue` |
 
 ---
 
-## 📚 正在学 · Currently Learning
+## <img src="assets/icons/tile/book-open.svg" height="28" align="center" /> 正在学 · Currently Learning
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**🔍 RAG · 检索增强生成**
+<img src="assets/icons/search.svg" height="16" align="center" /> **RAG · 检索增强生成**
 <br><sub>分块与召回策略、重排序、评测方法</sub>
 <br><sub><i>Chunking & retrieval, reranking, evaluation</i></sub>
 
 </td>
 <td width="50%" valign="top">
 
-**⚡ LLM 推理引擎**
+<img src="assets/icons/zap.svg" height="16" align="center" /> **LLM 推理引擎**
 <br><sub>vLLM / SGLang 的调度与显存管理</sub>
 <br><sub><i>Scheduling & KV-cache management in vLLM / SGLang</i></sub>
 
@@ -100,7 +100,7 @@
 
 ---
 
-## 📊 数据 · GitHub Stats
+## <img src="assets/icons/tile/chart-column.svg" height="28" align="center" /> 数据 · GitHub Stats
 
 <div align="center">
 
@@ -113,7 +113,7 @@
 
 </div>
 
-### 🐍 贡献图 · Contribution Graph
+### <img src="assets/icons/tile/activity.svg" height="28" align="center" /> 贡献图 · Contribution Graph
 
 <div align="center">
 
@@ -129,7 +129,7 @@
 
 <div align="center">
 
-### 🤝 联系 · Let's Connect
+### <img src="assets/icons/tile/send.svg" height="28" align="center" /> 联系 · Let's Connect
 
 [![Email](https://img.shields.io/badge/hi@oiya.net-0078D4?style=flat-square&logo=gmail&logoColor=white)](mailto:hi@oiya.net)
 [![GitHub](https://img.shields.io/badge/@hiyufan-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/hiyufan)
