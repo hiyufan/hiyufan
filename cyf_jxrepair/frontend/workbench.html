@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>维修工作台 · CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="content">
+    <div class="page-head">
+      <div><h1 id="hello">维修工作台</h1><p>只显示指派给你本人的工单</p></div>
+    </div>
+
+    <div class="grid grid-4" id="stats" style="margin-bottom:16px"></div>
+
+    <section class="card">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="work-cards" id="cards"></div>
+      <div id="pager"></div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/workbench.js"></script>
+</body>
+</html>

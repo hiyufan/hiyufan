@@ -1,0 +1,19 @@
+[project]
+name = "cyf-jxrepair"
+version = "1.0.0"
+description = "CYF捷修云报修工单管理系统 - 后端"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 130  # 中文字符串较多，适当放宽
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "N"]
+ignore = [
+    "B008",  # FastAPI 依赖注入写法
+    "N818",  # Unauthorized / Forbidden 等异常沿用 HTTP 语义命名
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

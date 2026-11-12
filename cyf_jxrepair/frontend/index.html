@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+</head>
+<body>
+  <script type="module">
+    import { getToken, getUser, homeOf } from "./js/core/session.js";
+    location.replace(getToken() && getUser() ? homeOf(getUser()) : "login.html");
+  </script>
+</body>
+</html>

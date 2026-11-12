@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工单详情 · CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="content">
+    <div style="margin-bottom:12px"><a class="btn btn-ghost btn-sm" id="backBtn" href="orders.html"></a></div>
+
+    <section class="card" style="margin-bottom:16px">
+      <div class="detail-head" id="head"><div class="skeleton" style="width:40%;height:24px"></div></div>
+      <div class="steps" id="steps"></div>
+    </section>
+
+    <div class="split">
+      <div class="grid">
+        <section class="card">
+          <div class="card-head"><h3>报修信息</h3></div>
+          <div class="card-body" id="info"></div>
+        </section>
+        <section class="card" id="resultCard">
+          <div class="card-head"><h3>维修与验收</h3></div>
+          <div class="card-body" id="result"></div>
+        </section>
+      </div>
+      <div class="grid">
+        <section class="card">
+          <div class="card-head" id="summaryHead"><h3>AI 工单摘要</h3><span class="extra subtle" id="summaryEngine"></span></div>
+          <div class="card-body" id="summary"><div class="skeleton"></div></div>
+        </section>
+        <section class="card">
+          <div class="card-head"><h3>流转记录</h3><span class="extra subtle" id="logCount"></span></div>
+          <div class="card-body"><div class="timeline" id="timeline"></div></div>
+        </section>
+        <section class="card hidden" id="similarCard">
+          <div class="card-head"><h3>相似历史案例</h3></div>
+          <div class="card-body" id="similar"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="js/pages/order-detail.js"></script>
+</body>
+</html>

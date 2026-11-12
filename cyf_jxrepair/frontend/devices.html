@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>设备台账 · CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="content">
+    <div class="page-head">
+      <div><h1>设备台账</h1><p>4 个厂区全部生产设备，报修记录较多的设备可在统计看板中查看排行</p></div>
+      <button class="btn btn-primary" type="button" id="addBtn"></button>
+    </div>
+    <section class="card">
+      <div class="toolbar">
+        <div class="input-icon search" id="searchBox"><input class="input" id="keyword" type="search" placeholder="编号 / 名称 / 位置 / 型号"></div>
+        <select class="input" id="category" aria-label="设备类别"><option value="">全部类别</option></select>
+        <select class="input" id="dept" aria-label="使用部门"><option value="">全部部门</option></select>
+        <select class="input" id="status" aria-label="设备状态"><option value="">全部状态</option></select>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>设备编号</th><th>设备名称</th><th>类别</th><th>规格型号</th><th>使用部门</th><th>安装位置</th><th>状态</th><th>报修次数</th><th class="actions">操作</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div id="pager"></div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/devices.js"></script>
+</body>
+</html>

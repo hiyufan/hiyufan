@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>派单中心 · CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="content">
+    <div class="page-head">
+      <div><h1>派单中心</h1><p>AI 已为每张待派工单生成故障类型与风险判断，派单时按擅长方向和负载推荐维修工</p></div>
+    </div>
+
+    <section class="card">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <div class="toolbar">
+        <div class="input-icon search" id="searchBox"><input class="input" id="keyword" type="search" placeholder="搜索工单号 / 设备 / 故障描述"></div>
+        <select class="input" id="urgency" aria-label="紧急程度">
+          <option value="">全部紧急程度</option><option value="HIGH">紧急</option><option value="NORMAL">较急</option><option value="LOW">一般</option>
+        </select>
+      </div>
+      <div class="work-cards" id="cards"></div>
+      <div id="pager"></div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/dispatch.js"></script>
+</body>
+</html>

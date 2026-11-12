@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>我要报修 · CYF捷修云</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <main class="content">
+    <div class="page-head">
+      <div><h1 id="pageTitle">我要报修</h1><p id="pageDesc">描述越具体，派单越快。系统会根据描述自动给出诊断建议。</p></div>
+    </div>
+
+    <div id="rejectBanner"></div>
+
+    <div class="split">
+      <form class="card report-form" id="reportForm" novalidate>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="field">
+              <label for="deviceId">报修设备<span class="req">*</span></label>
+              <select class="input" id="deviceId" name="device_id" required><option value="">加载中…</option></select>
+              <div class="device-hint" id="deviceHint"></div>
+            </div>
+            <div class="field">
+              <label>紧急程度</label>
+              <div class="segmented" id="urgency">
+                <label><input type="radio" name="urgency" value="LOW"><span><i class="dot" style="background:#8a99a5"></i>一般</span></label>
+                <label><input type="radio" name="urgency" value="NORMAL" checked><span><i class="dot" style="background:#b86e00"></i>较急</span></label>
+                <label><input type="radio" name="urgency" value="HIGH"><span><i class="dot" style="background:#cf3a3a"></i>紧急</span></label>
+              </div>
+              <span class="hint">紧急：影响安全或导致整线停产</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="faultDesc">故障描述<span class="req">*</span></label>
+            <textarea class="input" id="faultDesc" name="fault_desc" maxlength="500" rows="5"
+              placeholder="例如：主轴运转时有明显异响，加工表面出现振纹。可写明声音、气味、报警号、发生时间等"></textarea>
+            <span class="char-count"><span id="descCount">0</span>/500</span>
+          </div>
+
+          <div class="field">
+            <label>现场照片</label>
+            <div id="photoPicker"></div>
+            <span class="hint">支持 jpg / png，单张不超过 5MB，最多 3 张</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="button" id="resetBtn">重置</button>
+          <button class="btn btn-primary" type="submit" id="submitBtn">提交报修</button>
+        </div>
+      </form>
+
+      <aside class="card ai-panel">
+        <div class="card-head" id="aiHead"><h3>AI 故障诊断</h3><span class="extra" id="aiEngine"></span></div>
+        <div class="card-body" id="aiBody"></div>
+        <div class="card-body" id="similarBody" style="border-top:1px solid var(--line-soft)"></div>
+      </aside>
+    </div>
+  </main>
+  <script type="module" src="js/pages/report.js"></script>
+</body>
+</html>
