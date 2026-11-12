@@ -38,6 +38,11 @@ def scan(db: Session) -> dict[str, int]:
     deadline = now - timedelta(hours=settings.alert_threshold_hours)
     open_alerts = {(a.order_id, a.alert_type): a
                    for a in db.scalars(select(OrderAlert).where(OrderAlert.is_handled.is_(False)))}
+    # 人工处理过（如已催办）的预警，在一个阈值周期内不再重复提醒，否则催办后刷新页面又会冒出来
+    recently_handled = set(db.execute(
+        select(OrderAlert.order_id, OrderAlert.alert_type)
+        .where(OrderAlert.handled_by.is_not(None), OrderAlert.handled_at >= deadline)
+    ).all())
     created = resolved = 0
     still_overdue: set[tuple[int, AlertType]] = set()
 
@@ -50,7 +55,7 @@ def scan(db: Session) -> dict[str, int]:
             hours = int((now - getattr(order, time_field)).total_seconds() // 3600)
             if key in open_alerts:
                 open_alerts[key].overdue_hours = hours
-            else:
+            elif key not in recently_handled:
                 db.add(OrderAlert(order_id=order.id, alert_type=alert_type, overdue_hours=hours, created_at=now))
                 created += 1
 

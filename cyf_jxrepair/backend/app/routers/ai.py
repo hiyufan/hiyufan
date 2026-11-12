@@ -50,6 +50,7 @@ def summaries(
 
 @router.get("/alerts", summary="④ 超期工单预警列表", response_model=ApiResponse[list[AlertOut]])
 def alerts(db: DbSession, _: Viewer):
+    alert_service.scan(db)  # 扫描是幂等的；先扫一次，避免刚启动或刚重置数据时要等定时任务
     return ok(alert_service.list_open(db))
 
 

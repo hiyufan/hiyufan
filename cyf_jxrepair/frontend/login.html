@@ -11,47 +11,52 @@
   <link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
-  <div class="login-page">
-    <section class="login-hero">
-      <div class="brand">
-        <span class="brand-mark"><svg class="icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-        <span><div class="brand-name">CYF捷修云</div><div class="brand-sub">报修工单管理系统</div></span>
-      </div>
-      <div class="hero-copy">
-        <h1>设备报修<br>从<em>一通电话</em>到<em>一条闭环</em></h1>
-        <p>闽榕智造 4 个厂区、300 余名员工的设备报修、派单、维修、验收与数据统计，全流程线上可追溯。</p>
-        <div class="hero-flow" id="heroFlow"></div>
-      </div>
-      <div class="hero-foot">© 2026 CYF捷修云 · AI编程项目实战</div>
-    </section>
+  <header class="topbar login-top">
+    <div class="topbar-inner">
+      <span class="wordmark"><span class="wordmark-plate">CYF</span><span class="wordmark-name">捷修云 · 设备报修与维修工单</span></span>
+      <span class="who">闽榕智造 · 设备科</span>
+    </div>
+  </header>
 
-    <section class="login-panel">
-      <form class="login-box" id="loginForm" novalidate>
-        <h2>欢迎登录</h2>
-        <p>使用企业分配的账号登录系统</p>
-        <div id="notice"></div>
-        <div class="field">
-          <label for="username">账号</label>
-          <div class="input-icon" id="userIcon">
-            <input class="input" id="username" name="username" autocomplete="username" placeholder="请输入账号" required>
-          </div>
+  <main class="login-wrap">
+    <form class="login-form" id="loginForm" novalidate>
+      <h1>登录</h1>
+      <p>使用设备科分配的工号账号</p>
+      <div id="notice"></div>
+      <div class="field">
+        <label for="username">账号</label>
+        <input class="input" id="username" name="username" autocomplete="username" placeholder="如 emp01" required>
+      </div>
+      <div class="field">
+        <label for="password">密码</label>
+        <div style="position:relative">
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" class="btn btn-ghost btn-sm pwd-toggle" id="pwdToggle">显示</button>
         </div>
-        <div class="field">
-          <label for="password">密码</label>
-          <div class="input-icon" id="pwdIcon" style="position:relative">
-            <input class="input" id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required>
-            <button type="button" class="btn btn-ghost btn-sm pwd-toggle" id="pwdToggle" aria-label="显示密码"></button>
-          </div>
-        </div>
-        <button class="btn btn-primary btn-lg btn-block" type="submit" id="loginBtn">登 录</button>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" id="loginBtn">登录</button>
+    </form>
 
-        <div class="demo-accounts">
-          <span class="subtle">演示账号（初始密码均为 123456，点击快速填入）</span>
-          <div class="demo-grid" id="demoGrid"></div>
+    <div class="login-side">
+      <section>
+        <h2>报修处理流程</h2>
+        <ol class="flow" id="flow"></ol>
+      </section>
+      <section>
+        <h2>工单状态色（GB 2893 安全色）</h2>
+        <div class="legend" id="legend"></div>
+      </section>
+      <section>
+        <h2>演示账号 · 初始密码 123456 · 点击行填入</h2>
+        <div class="panel table-wrap">
+          <table class="table demo-table">
+            <thead><tr><th>账号</th><th>姓名</th><th>角色</th><th>登录后</th></tr></thead>
+            <tbody id="demoRows"></tbody>
+          </table>
         </div>
-      </form>
-    </section>
-  </div>
+      </section>
+    </div>
+  </main>
   <script type="module" src="js/pages/login.js"></script>
 </body>
 </html>

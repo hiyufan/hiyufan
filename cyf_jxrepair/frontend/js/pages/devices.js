@@ -15,7 +15,7 @@ let statusOptions = [];
 let rows = [];
 
 $("#searchBox").insertAdjacentHTML("afterbegin", icon("search"));
-$("#addBtn").innerHTML = `${icon("plus", "icon-sm")}新增设备`;
+$("#addBtn").textContent = "新增设备";
 
 const opt = (value, label, selected) => `<option value="${esc(value)}" ${selected ? "selected" : ""}>${esc(label)}</option>`;
 
@@ -38,15 +38,15 @@ async function load() {
       <tr data-id="${d.id}">
         <td class="mono primary-text">${esc(d.device_code)}</td>
         <td class="primary-text">${esc(d.device_name)}</td>
-        <td><span class="chip">${esc(d.category)}</span></td>
+        <td>${esc(d.category)}</td>
         <td class="muted">${esc(d.model || "—")}</td>
         <td>${esc(d.dept_name)}<div class="subtle">${esc(d.factory_area)}</div></td>
         <td>${esc(d.location)}</td>
         <td><span class="tag ${DEVICE_TONE[d.status]}">${esc(d.status_label)}</span></td>
         <td class="num">${d.fault_count ? `<a href="orders.html?keyword=${encodeURIComponent(d.device_code)}">${d.fault_count} 次</a>` : '<span class="subtle">0</span>'}</td>
         <td class="actions">
-          <button class="btn btn-sm btn-ghost" data-edit>${icon("edit", "icon-sm")}编辑</button>
-          <button class="btn btn-sm btn-ghost" data-del style="color:var(--danger)">${icon("trash", "icon-sm")}删除</button>
+          <button class="btn btn-sm btn-ghost" data-edit>编辑</button>
+          <button class="btn btn-sm btn-ghost" data-del style="color:var(--red)">删除</button>
         </td>
       </tr>`).join("") : `<tr><td colspan="9">${emptyState("没有符合条件的设备")}</td></tr>`;
     renderPager($("#pager"), page, (p) => { state.page = p; load(); });

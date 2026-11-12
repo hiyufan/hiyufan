@@ -7,7 +7,7 @@ from app.core.enums import UserRole
 from app.core.response import ApiResponse, ok
 from app.models import User
 from app.schemas import DurationOut, MonthlyOut, NameValue, RankingItem, SummaryOut
-from app.services import stat_service
+from app.services import alert_service, stat_service
 
 router = APIRouter(prefix="/api/stats", tags=["统计看板"])
 
@@ -16,6 +16,7 @@ Viewer = Annotated[User, Depends(require_roles(UserRole.DEVICE_ADMIN, UserRole.D
 
 @router.get("/summary", summary="看板指标卡", response_model=ApiResponse[SummaryOut])
 def summary(db: DbSession, user: Viewer):
+    alert_service.scan(db)  # 指标中的超期数量依赖最新扫描结果
     return ok(stat_service.summary(db, user))
 
 

@@ -8,7 +8,7 @@ await mountLayout({ active: "knowledge", title: "维修知识库" });
 
 const HOT = ["异响", "漏油", "跳闸", "温度过高", "皮带跑偏", "伺服报警", "气压不足", "无法启动"];
 $("#searchBox").insertAdjacentHTML("afterbegin", icon("search"));
-$("#hot").innerHTML = `<span class="subtle">常见故障：</span>${HOT.map((k) => `<button type="button" class="chip-btn" data-q="${k}">${k}</button>`).join("")}`;
+$("#hot").innerHTML = `<span class="subtle">常查：</span>${HOT.map((k) => `<button type="button" class="chip-btn" data-q="${k}">${k}</button>`).join("")}`;
 
 /** 高亮查询词中的二字片段（与后端"字二元组"切分思路一致）。先匹配原文再逐段转义，保证不破坏 HTML */
 function highlight(text, query) {
@@ -39,10 +39,10 @@ async function search(query) {
     const hits = await api.get("/api/ai/knowledge", { q, top_k: 10 });
     $("#results").innerHTML = hits.length ? hits.map((h) => `
       <article class="kb-result">
-        <h4><a href="order-detail.html?id=${h.order_id}">${esc(h.device_name)}</a><span class="chip">${esc(h.category)}</span>
-          <span class="mono subtle">${esc(h.order_no)}</span><span class="subtle">· 归档于 ${fmtTime(h.archived_at, true).slice(0, 10)}</span></h4>
-        <div class="score-ring"><b>${Math.round(h.score * 100)}%</b><span>相似度</span></div>
-        <dl class="qa"><dt>现象</dt><dd>${highlight(h.fault_desc, q)}</dd><dt>处理</dt><dd>${highlight(h.repair_result, q)}</dd></dl>
+        <div class="sim">${Math.round(h.score * 100)}<small>相似度 %</small></div>
+        <h4><a href="order-detail.html?id=${h.order_id}">${esc(h.device_name)}</a><span class="subtle">${esc(h.category)}</span>
+          <span class="mono subtle">${esc(h.order_no)}</span><span class="subtle">${fmtTime(h.archived_at, true).slice(0, 10)} 归档</span></h4>
+        <dl><dt>现象</dt><dd>${highlight(h.fault_desc, q)}</dd><dt>处理</dt><dd>${highlight(h.repair_result, q)}</dd></dl>
       </article>`).join("") : emptyState("没有找到相似案例", "可以换一种描述方式，或直接提交报修", "search");
   } catch (err) {
     showError(err);

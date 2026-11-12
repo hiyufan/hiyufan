@@ -36,37 +36,34 @@ function bindPresets(el) {
   });
 }
 
-// ------------------------------------------------------------ 派单（含 AI 推荐）
-function repairerCard(r, checked) {
+// ------------------------------------------------------------ 派单：先初判故障类型，再按擅长方向与负载推荐维修工
+function repairerRow(r, checked) {
   return `
-    <label class="pick-card ${r.matched ? "matched" : ""}">
+    <label class="pick">
       <input type="radio" name="repairer" value="${r.id}" ${checked ? "checked" : ""}>
-      <span class="avatar">${esc(r.real_name.slice(-2))}</span>
-      <span class="pick-main"><b>${esc(r.real_name)}</b>
-        <span class="subtle">${r.skills.map(esc).join(" · ") || "通用"}</span></span>
-      <span class="pick-side">
-        ${r.matched ? '<span class="chip">擅长匹配</span>' : ""}
-        <span class="load load-${Math.min(r.active_orders, 3)}">在手 ${r.active_orders} 单</span>
-      </span>
+      <b data-name>${esc(r.real_name)}</b>
+      <span class="skills">${r.skills.map(esc).join("、") || "通用"}${r.matched ? '<span class="match">擅长</span>' : ""}</span>
+      <span class="load">${r.active_orders}<small>单在手</small></span>
     </label>`;
 }
 
 async function openDispatch(order, onSuccess) {
   const { el } = openModal({
-    title: `派单 · ${order.order_no}`,
-    confirmText: "确认派单",
+    title: `派单 ${order.order_no}`,
+    confirmText: "派单",
     wide: true,
     body: `
-      <div class="dispatch-brief">
-        <div><span class="subtle">报修设备</span><b>${esc(order.device.device_name)}</b>
-          <span class="mono subtle">${esc(order.device.device_code)}</span></div>
+      <div class="brief">
+        <b>${esc(order.device.device_name)}</b> <span class="mono subtle">${esc(order.device.device_code)}</span>
+        <span class="subtle"> · ${esc(order.device.factory_area)} ${esc(order.device.location)}</span>
         <p>${esc(order.fault_desc)}</p>
       </div>
-      <div class="ai-box" data-ai><div class="skeleton" style="width:60%"></div></div>
-      <div class="field"><label>选择维修工<span class="req">*</span></label>
-        <div class="pick-list" data-repairers><div class="skeleton"></div></div></div>
-      <div class="field"><label>派单备注</label>
-        <input class="input" name="remark" maxlength="200" placeholder="选填，如：注意先断电挂牌"></div>`,
+      <div class="judge-box" data-ai><div class="skeleton" style="width:60%"></div></div>
+      <div class="field"><span class="field-label">维修工<span class="req">*</span></span>
+        <div class="picks" data-repairers><div class="panel-body"><div class="skeleton"></div></div></div>
+        <span class="hint">擅长方向与本次故障类型一致的排在前面，同组内按手头工单从少到多</span></div>
+      <div class="field"><label for="dispatchRemark">派单备注</label>
+        <input class="input" id="dispatchRemark" name="remark" maxlength="200" placeholder="选填，如：先断电挂牌再拆检"></div>`,
     async onConfirm(modal) {
       const picked = $("input[name=repairer]:checked", modal);
       if (!picked) throw new Error("请选择一名维修工");
@@ -74,29 +71,31 @@ async function openDispatch(order, onSuccess) {
         repairer_id: Number(picked.value),
         remark: $("[name=remark]", modal).value.trim() || null,
       });
-      toast(`已派单给 ${picked.closest(".pick-card").querySelector("b").textContent}`);
+      toast(`已派给 ${picked.closest(".pick").querySelector("[data-name]").textContent}`);
       onSuccess?.();
     },
   });
 
-  // 故障诊断 → 按故障大类推荐维修工（擅长匹配优先，负载低优先）
+  let category;
   try {
     const diag = await api.post("/api/ai/diagnose", { fault_desc: order.fault_desc, device_id: order.device.id });
     const top = diag.items[0];
+    category = top?.category;
     $("[data-ai]", el).innerHTML = top
-      ? `<div class="ai-head">${icon("sparkles", "icon-sm")}AI 诊断建议
-           <span class="chip">${esc(top.category)}</span><span class="subtle">置信度 ${Math.round(top.confidence * 100)}%</span></div>
-         <p><b>可能原因：</b>${esc(top.cause)}</p><p class="muted"><b>处理建议：</b>${esc(top.suggestion)}</p>
-         ${diag.risk_tips.map((t) => `<p class="risk">${icon("alert", "icon-sm")}${esc(t)}</p>`).join("")}`
-      : `<div class="ai-head">${icon("sparkles", "icon-sm")}AI 诊断建议</div><p class="muted">未匹配到已知故障模式，请人工判断</p>`;
-    const repairers = await api.get("/api/repairers", { category: top?.category });
-    $("[data-repairers]", el).innerHTML = repairers.length
-      ? repairers.map((r, i) => repairerCard(r, i === 0)).join("")
-      : '<p class="muted">暂无在岗维修工</p>';
+      ? `<b>初判：${esc(top.category)}</b> <span class="subtle">匹配度 ${Math.round(top.confidence * 100)}%</span>
+         <p>可能原因：${esc(top.cause)}</p><p class="muted">建议：${esc(top.suggestion)}</p>
+         ${diag.risk_tips.map((t) => `<p style="color:var(--red)">${esc(t)}</p>`).join("")}`
+      : "<b>未能初判</b><p class=\"muted\">知识库没有匹配的故障，请按经验指派。</p>";
   } catch (err) {
-    $("[data-ai]", el).innerHTML = `<p class="muted">AI 诊断暂不可用：${esc(err.message)}</p>`;
-    const repairers = await api.get("/api/repairers");
-    $("[data-repairers]", el).innerHTML = repairers.map((r, i) => repairerCard(r, i === 0)).join("");
+    $("[data-ai]", el).innerHTML = `<p class="muted">暂时无法初判：${esc(err.message)}</p>`;
+  }
+  try {
+    const repairers = await api.get("/api/repairers", { category });
+    $("[data-repairers]", el).innerHTML = repairers.length
+      ? repairers.map((r, i) => repairerRow(r, i === 0)).join("")
+      : '<div class="panel-body muted">没有在岗的维修工</div>';
+  } catch (err) {
+    $("[data-repairers]", el).innerHTML = `<div class="panel-body muted">${esc(err.message)}</div>`;
   }
 }
 
@@ -160,7 +159,7 @@ function openEvaluate(order, onSuccess) {
     title: `验收评价 · ${order.order_no}`,
     confirmText: "验收通过并归档",
     body: `
-      ${order.repair_result ? `<div class="alert alert-info">${icon("wrench", "icon-sm")}<span><b>维修结果：</b>${esc(order.repair_result)}</span></div>` : ""}
+      ${order.repair_result ? `<div class="notice notice-info"><span><b>维修结果</b>　${esc(order.repair_result)}</span></div>` : ""}
       <div class="field" style="margin-top:14px"><label>满意度评分</label>
         <div class="rate-row"><div class="stars" role="radiogroup">
           ${[1, 2, 3, 4, 5].map((n) => `<button type="button" data-score="${n}" class="on" aria-label="${n} 星">${icon("star")}</button>`).join("")}
@@ -224,14 +223,9 @@ export const ACTION_STYLE = {
   DISPATCH: "btn-primary", TAKE: "btn-primary", COMPLETE: "btn-primary", ACCEPT: "btn-primary",
   RESUBMIT: "btn-primary", REJECT: "btn-danger", ACCEPT_FAIL: "btn-danger",
 };
-export const ACTION_ICON = {
-  DISPATCH: "send", REJECT: "xCircle", TAKE: "hammer", COMPLETE: "check", ACCEPT: "star",
-  ACCEPT_FAIL: "refresh", RESUBMIT: "edit",
-};
-
 export function actionButtons(actions, size = "") {
   return actions.map((a) => `<button type="button" class="btn ${size} ${ACTION_STYLE[a.value] || ""}" data-action="${a.value}">
-    ${icon(ACTION_ICON[a.value] || "arrowRight", "icon-sm")}${esc(a.label)}</button>`).join("");
+    ${esc(a.label)}</button>`).join("");
 }
 
 /**

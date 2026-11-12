@@ -46,7 +46,7 @@ export function duration(start, end) {
 }
 
 export const statusTag = (code, label) => `<span class="tag st-${esc(code)}">${esc(label)}</span>`;
-export const urgencyTag = (code, label) => `<span class="tag plain ug-${esc(code)}">${esc(label)}</span>`;
+export const urgencyTag = (code, label) => `<span class="urg urg-${esc(code)}">${esc(label)}</span>`;
 
 export function emptyState(title = "暂无数据", desc = "", iconName = "inbox") {
   return `<div class="empty">${icon(iconName)}<b>${esc(title)}</b>${desc ? `<span>${esc(desc)}</span>` : ""}</div>`;

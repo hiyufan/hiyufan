@@ -5,9 +5,9 @@ import { renderPager } from "../components/pager.js";
 import { api } from "../core/http.js";
 import { icon } from "../core/icons.js";
 import { mountLayout } from "../core/layout.js";
-import { $, debounce, emptyState, esc, showError } from "../core/ui.js";
+import { $, debounce, emptyState, showError } from "../core/ui.js";
 
-await mountLayout({ active: "dispatch", title: "派单中心" });
+await mountLayout({ active: "dispatch", title: "派单" });
 
 const TABS = [
   { key: "PENDING", label: "待派单", actions: [{ value: "DISPATCH", label: "派单" }, { value: "REJECT", label: "驳回" }] },
@@ -27,7 +27,7 @@ async function loadTabs() {
 }
 
 async function loadCards() {
-  $("#cards").innerHTML = '<div class="skeleton" style="height:180px"></div>'.repeat(3);
+  $("#cards").innerHTML = '<div class="panel-body"><div class="skeleton"></div></div>'.repeat(3);
   try {
     const page = await api.get("/api/orders", {
       status: state.status, keyword: state.keyword.trim(), urgency: state.urgency, page: state.page, size: state.size,
@@ -45,10 +45,10 @@ async function loadCards() {
       || (b.urgency === "HIGH") - (a.urgency === "HIGH"));
     $("#cards").innerHTML = sorted.length
       ? sorted.map((o) => orderCard(o, { actions: tab.actions, summary: summaries[o.id] })).join("")
-      : `<div style="grid-column:1/-1">${emptyState(state.status === "PENDING" ? "没有待派单的工单" : "暂无数据", state.status === "PENDING" ? "所有报修都已处理" : "", "checkCircle")}</div>`;
+      : emptyState(state.status === "PENDING" ? "没有待派单的工单" : "暂无数据", state.status === "PENDING" ? "新的报修会出现在这里" : "", "checkCircle");
     renderPager($("#pager"), page, (p) => { state.page = p; loadCards(); });
   } catch (err) {
-    $("#cards").innerHTML = `<div style="grid-column:1/-1">${emptyState("加载失败", esc(err.message), "alert")}</div>`;
+    $("#cards").innerHTML = emptyState("加载失败", err.message, "alert");
     showError(err);
   }
 }

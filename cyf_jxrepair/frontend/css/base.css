@@ -1,56 +1,66 @@
 /* ==========================================================
-   CYF捷修云 · 设计令牌与基础样式
-   所有颜色、圆角、阴影都在 :root 中定义，页面样式只引用变量
+   CYF捷修云 · 设计令牌
+   版式思路：工厂 MES 终端 + 纸质维修单。顶部深灰导航，主体为冷灰纸面上的白色单据；
+   直角细线、不用投影；状态色遵循 GB 2893 安全色（蓝=指令、黄=警告、红=禁止、绿=安全）。
+   字体全部本地加载，考场断网也不回退。
    ========================================================== */
+@font-face {
+  font-family: "Barlow Condensed";
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/barlow-condensed-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/barlow-condensed-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+}
+
 :root {
-  /* 品牌色：工业青 */
-  --brand-700: #0f5f59;
-  --brand-600: #0f766e;
-  --brand-500: #14918a;
-  --brand-100: #ccf0ec;
-  --brand-50: #effaf8;
+  /* 纸面与墨色：中性色略带青灰，和蓝色指令色同一色温 */
+  --paper: #eceeeb;
+  --sheet: #fcfcfa;
+  --sheet-alt: #f5f6f3;
+  --ink: #1c2228;
+  --ink-2: #48525c;
+  --ink-3: #7a848d;
+  --rule: #c9cec9;
+  --rule-soft: #e1e4e0;
+  --graphite: #23292f;
+  --graphite-2: #313942;
+  --graphite-ink: #aab3ba;
 
-  /* 中性色 */
-  --ink-900: #0f1c24;
-  --ink-700: #334452;
-  --ink-500: #5f707d;
-  --ink-400: #8a99a5;
-  --line: #e3e8ec;
-  --line-soft: #eef2f4;
-  --bg: #f4f6f8;
-  --surface: #ffffff;
-  --sidebar: #0b1e26;
-  --sidebar-ink: #a9bcc5;
+  /* GB 2893 安全色 */
+  --blue: #1e5aa8;        /* 指令：主要操作 */
+  --blue-deep: #17467f;
+  --blue-wash: #e6edf6;
+  --yellow: #e8b100;      /* 警告：待派、超期 */
+  --yellow-wash: #fbf1cf;
+  --red: #c4312a;         /* 禁止：驳回、删除、印章 */
+  --red-wash: #f8e4e2;
+  --green: #2c7a4b;       /* 安全：归档、正常 */
+  --green-wash: #e2f0e7;
+  --orange: #d4691e;      /* 图表第二系列 */
 
-  /* 语义色 */
-  --success: #13895f;
-  --success-bg: #e3f6ee;
-  --warning: #b86e00;
-  --warning-bg: #fff3dc;
-  --danger: #cf3a3a;
-  --danger-bg: #fdecec;
-  --info: #2b67d1;
-  --info-bg: #e7effd;
+  --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "DIN Alternate", "Arial Narrow", var(--font-sans);
+  --font-mono: "IBM Plex Mono", Consolas, "SFMono-Regular", monospace;
 
-  /* 工单状态色（与后端 OrderStatus 一一对应） */
-  --st-pending: #b86e00;     --st-pending-bg: #fff3dc;
-  --st-assigned: #5b4bd4;    --st-assigned-bg: #eeebfd;
-  --st-repairing: #2b67d1;   --st-repairing-bg: #e7effd;
-  --st-to-accept: #9a3db8;   --st-to-accept-bg: #f6e9fb;
-  --st-archived: #13895f;    --st-archived-bg: #e3f6ee;
-  --st-rejected: #cf3a3a;    --st-rejected-bg: #fdecec;
-
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 14px;
-  --shadow-sm: 0 1px 2px rgba(15, 28, 36, .06);
-  --shadow: 0 1px 3px rgba(15, 28, 36, .06), 0 6px 16px rgba(15, 28, 36, .05);
-  --shadow-lg: 0 20px 48px rgba(15, 28, 36, .18);
-
-  --font: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --mono: "JetBrains Mono", "Cascadia Code", Consolas, "SFMono-Regular", monospace;
-  --sidebar-w: 232px;
-  --topbar-h: 60px;
+  --radius: 3px;
+  --bar-h: 52px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -59,35 +69,37 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  font: 14px/1.6 var(--font);
-  color: var(--ink-900);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
+  font: 14px/1.6 var(--font-sans);
+  color: var(--ink);
+  background: var(--paper);
 }
 
-h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.35; }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.35; text-wrap: balance; }
 p { margin: 0; }
-a { color: var(--brand-600); text-decoration: none; }
-a:hover { color: var(--brand-700); }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
 img { max-width: 100%; display: block; }
 button, input, select, textarea { font: inherit; color: inherit; }
 table { border-collapse: collapse; width: 100%; }
 
 .num { font-variant-numeric: tabular-nums; }
-.mono { font-family: var(--mono); font-size: 13px; letter-spacing: -.01em; }
-.muted { color: var(--ink-500); }
-.subtle { color: var(--ink-400); font-size: 12px; }
+.mono { font-family: var(--font-mono); font-size: .92em; letter-spacing: -.01em; }
+.muted { color: var(--ink-2); }
+.subtle { color: var(--ink-3); font-size: 12px; }
 .ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hidden { display: none !important; }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.label {
+  font-size: 11px; letter-spacing: .08em; color: var(--ink-3);
+  font-family: var(--font-display); font-weight: 500;
+}
 
-.icon { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8;
+.icon { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8;
         stroke-linecap: round; stroke-linejoin: round; }
-.icon-sm { width: 15px; height: 15px; }
-.icon-lg { width: 22px; height: 22px; }
+.icon-sm { width: 14px; height: 14px; }
+.icon-lg { width: 20px; height: 20px; }
 
-:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #cfd8de; border-radius: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

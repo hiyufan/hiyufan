@@ -12,39 +12,32 @@
 </head>
 <body>
   <main class="content">
-    <div style="margin-bottom:12px"><a class="btn btn-ghost btn-sm" id="backBtn" href="orders.html"></a></div>
-
-    <section class="card" style="margin-bottom:16px">
-      <div class="detail-head" id="head"><div class="skeleton" style="width:40%;height:24px"></div></div>
-      <div class="steps" id="steps"></div>
-    </section>
+    <div style="margin-bottom:12px"><a class="btn btn-ghost btn-sm" id="backBtn" href="orders.html">← 返回列表</a></div>
 
     <div class="split">
+      <article class="docket" id="docket"><div class="panel-body"><div class="skeleton" style="width:40%"></div></div></article>
+
       <div class="grid">
-        <section class="card">
-          <div class="card-head"><h3>报修信息</h3></div>
-          <div class="card-body" id="info"></div>
+        <section class="panel">
+          <div class="panel-head"><h3>工单摘要</h3><span class="extra" id="summaryEngine"></span></div>
+          <div class="panel-body" id="summary"><div class="skeleton"></div></div>
         </section>
-        <section class="card" id="resultCard">
-          <div class="card-head"><h3>维修与验收</h3></div>
-          <div class="card-body" id="result"></div>
-        </section>
-      </div>
-      <div class="grid">
-        <section class="card">
-          <div class="card-head" id="summaryHead"><h3>AI 工单摘要</h3><span class="extra subtle" id="summaryEngine"></span></div>
-          <div class="card-body" id="summary"><div class="skeleton"></div></div>
-        </section>
-        <section class="card">
-          <div class="card-head"><h3>流转记录</h3><span class="extra subtle" id="logCount"></span></div>
-          <div class="card-body"><div class="timeline" id="timeline"></div></div>
-        </section>
-        <section class="card hidden" id="similarCard">
-          <div class="card-head"><h3>相似历史案例</h3></div>
-          <div class="card-body" id="similar"></div>
+        <section class="panel hidden" id="similarCard">
+          <div class="panel-head"><h3>相似历史案例</h3><span class="extra">维修知识库</span></div>
+          <div class="panel-body" id="similar" style="padding-block:4px"></div>
         </section>
       </div>
     </div>
+
+    <section class="panel" style="margin-top:16px">
+      <div class="panel-head"><h3>流转记录</h3><span class="extra" id="logCount"></span></div>
+      <div class="table-wrap">
+        <table class="table log-table">
+          <thead><tr><th>时间</th><th>操作</th><th>操作人</th><th>状态变化</th><th>内容</th></tr></thead>
+          <tbody id="logs"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
   <script type="module" src="js/pages/order-detail.js"></script>
 </body>

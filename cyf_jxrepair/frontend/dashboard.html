@@ -13,36 +13,42 @@
 <body>
   <main class="content">
     <div class="page-head">
-      <div><h1 id="pageTitle">统计看板</h1><p id="pageDesc">数据实时来自数据库聚合</p></div>
+      <div><h1 id="pageTitle">统计看板</h1><p id="pageDesc"></p></div>
       <div class="btn-group">
         <select class="input" id="months" aria-label="统计月数" style="width:auto">
           <option value="6">近 6 个月</option><option value="12">近 12 个月</option><option value="3">近 3 个月</option>
         </select>
-        <button class="btn" type="button" id="refreshBtn"></button>
+        <button class="btn" type="button" id="refreshBtn">刷新</button>
       </div>
     </div>
 
-    <div class="grid grid-4" id="statCards" style="margin-bottom:16px"></div>
+    <div class="kpis" id="kpis"></div>
 
-    <section class="card alert-panel hidden" id="alertPanel" style="margin-bottom:16px">
-      <div class="card-head" id="alertHead"></div>
-      <div class="alert-list" id="alertList"></div>
+    <section class="panel alert-panel hidden" id="alertPanel">
+      <div class="hazard" aria-hidden="true"></div>
+      <div class="panel-head" id="alertHead"></div>
+      <div id="alertList"></div>
     </section>
 
     <div class="grid grid-2" style="margin-bottom:16px">
-      <section class="card"><div class="card-head"><h3>月度工单量</h3><span class="extra subtle">提交 vs 归档</span></div>
-        <div class="card-body"><div class="chart" id="chartMonthly"></div></div></section>
-      <section class="card"><div class="card-head"><h3>工单状态分布</h3><span class="extra subtle" id="statusTotal"></span></div>
-        <div class="card-body"><div class="chart" id="chartStatus"></div></div></section>
-      <section class="card"><div class="card-head"><h3>平均处理时长</h3><span class="extra subtle" id="durationAvg"></span></div>
-        <div class="card-body"><div class="chart" id="chartDuration"></div></div></section>
-      <section class="card"><div class="card-head"><h3>设备故障排行</h3><span class="extra subtle">TOP 10，不含已驳回</span></div>
-        <div class="card-body"><div class="chart" id="chartRanking"></div></div></section>
+      <section class="panel"><div class="panel-head"><h3>月度工单量</h3><span class="extra">提交与归档对比</span></div>
+        <div class="panel-body"><div class="chart" id="chartMonthly"></div></div></section>
+      <section class="panel"><div class="panel-head"><h3>工单状态分布</h3><span class="extra" id="statusTotal"></span></div>
+        <div class="panel-body"><div class="chart" id="chartStatus"></div></div></section>
+      <section class="panel"><div class="panel-head"><h3>平均处理时长</h3><span class="extra" id="durationAvg"></span></div>
+        <div class="panel-body"><div class="chart" id="chartDuration"></div></div></section>
+      <section class="panel"><div class="panel-head"><h3>设备故障排行</h3><span class="extra">前 10 台，不含被驳回的报修</span></div>
+        <div class="panel-body"><div class="chart" id="chartRanking"></div></div></section>
     </div>
 
-    <section class="card">
-      <div class="card-head" id="summaryHead"></div>
-      <div class="card-body"><div class="summary-list" id="summaryList"></div></div>
+    <section class="panel">
+      <div class="panel-head"><h3>处理中工单摘要</h3><span class="extra">最新 6 张，由故障描述自动生成</span></div>
+      <div class="table-wrap">
+        <table class="table summary-table">
+          <thead><tr><th>工单号</th><th>状态</th><th>故障类型</th><th>风险</th><th>摘要</th></tr></thead>
+          <tbody id="summaryRows"></tbody>
+        </table>
+      </div>
     </section>
   </main>
   <!-- ECharts 使用本地文件，考场无外网也能运行 -->

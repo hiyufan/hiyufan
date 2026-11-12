@@ -13,10 +13,10 @@
 <body>
   <main class="content">
     <div class="page-head">
-      <div><h1>派单中心</h1><p>AI 已为每张待派工单生成故障类型与风险判断，派单时按擅长方向和负载推荐维修工</p></div>
+      <div><h1>派单</h1><p>超期和紧急的工单排在最前。派单时按故障类型与维修工手头工单数推荐人选。</p></div>
     </div>
 
-    <section class="card">
+    <section class="panel">
       <div class="tabs" id="tabs" role="tablist"></div>
       <div class="toolbar">
         <div class="input-icon search" id="searchBox"><input class="input" id="keyword" type="search" placeholder="搜索工单号 / 设备 / 故障描述"></div>
@@ -24,7 +24,7 @@
           <option value="">全部紧急程度</option><option value="HIGH">紧急</option><option value="NORMAL">较急</option><option value="LOW">一般</option>
         </select>
       </div>
-      <div class="work-cards" id="cards"></div>
+      <div class="tickets" id="cards"></div>
       <div id="pager"></div>
     </section>
   </main>

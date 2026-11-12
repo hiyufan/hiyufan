@@ -37,12 +37,12 @@ const state = {
 $("#pageTitle").textContent = TITLES[user.role][0];
 $("#pageDesc").textContent = TITLES[user.role][1];
 $("#searchBox").insertAdjacentHTML("afterbegin", icon("search"));
-$("#refreshBtn").innerHTML = `${icon("refresh", "icon-sm")}刷新`;
+$("#refreshBtn").textContent = "刷新";
 $("#keyword").value = state.keyword;
 $("#urgency").value = state.urgency;
 if (["EMPLOYEE", "DEPT_ADMIN"].includes(user.role)) {
   $("#newBtn").classList.remove("hidden");
-  $("#newBtn").innerHTML = `${icon("plus", "icon-sm")}我要报修`;
+  $("#newBtn").textContent = "新建报修";
 }
 
 function syncUrl() {
@@ -64,13 +64,13 @@ async function loadCounts() {
 function row(o) {
   // 员工视角：被驳回的工单在列表中直接显示驳回原因
   const reject = o.status === "REJECTED" && o.reject_reason
-    ? `<div class="subtle" style="color:var(--danger);margin-top:2px">驳回：${esc(o.reject_reason)}</div>` : "";
+    ? `<div class="subtle" style="color:var(--red);margin-top:2px">驳回：${esc(o.reject_reason)}</div>` : "";
   const quick = o.status === "REJECTED" && o.reporter.id === user.id
     ? actionButtons([{ value: "RESUBMIT", label: "修改重提" }], "btn-sm") : "";
   return `
     <tr class="clickable" data-id="${o.id}">
       <td><span class="mono primary-text">${esc(o.order_no)}</span>
-        ${o.is_overdue ? '<div style="margin-top:4px"><span class="tag tag-overdue">超期</span></div>' : ""}</td>
+        ${o.is_overdue ? '<div style="margin-top:4px"><span class="flag-overdue">超期 48h+</span></div>' : ""}</td>
       <td><div class="primary-text">${esc(o.device.device_name)}</div><div class="subtle">${esc(o.device.factory_area)} · ${esc(o.device.location)}</div></td>
       <td class="wrap"><div class="desc ellipsis" title="${esc(o.fault_desc)}">${esc(o.fault_desc)}</div>${reject}</td>
       <td>${urgencyTag(o.urgency, o.urgency_label)}</td>

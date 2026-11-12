@@ -3,31 +3,26 @@ import { orderCard } from "../components/order-card.js";
 import { runAction } from "../components/order-actions.js";
 import { renderPager } from "../components/pager.js";
 import { api } from "../core/http.js";
-import { icon } from "../core/icons.js";
 import { mountLayout } from "../core/layout.js";
-import { $, emptyState, esc, showError } from "../core/ui.js";
+import { $, emptyState, showError } from "../core/ui.js";
 
 const user = await mountLayout({ active: "workbench", title: "维修工作台" });
 
 const TABS = [
-  { key: "ASSIGNED", label: "待接单", icon: "inbox", tone: "amber", actions: [{ value: "TAKE", label: "接单" }], empty: "暂无新派工单" },
-  { key: "REPAIRING", label: "维修中", icon: "hammer", tone: "blue", actions: [{ value: "COMPLETE", label: "完工提交" }], empty: "没有进行中的维修" },
-  { key: "TO_ACCEPT", label: "待验收", icon: "clock", tone: "violet", actions: [], empty: "没有等待验收的工单" },
-  { key: "ARCHIVED", label: "已归档", icon: "checkCircle", tone: "green", actions: [], empty: "还没有归档的工单" },
+  { key: "ASSIGNED", label: "待接单", actions: [{ value: "TAKE", label: "接单" }], empty: "暂无新派工单" },
+  { key: "REPAIRING", label: "维修中", actions: [{ value: "COMPLETE", label: "完工提交" }], empty: "没有进行中的维修" },
+  { key: "TO_ACCEPT", label: "待验收", actions: [], empty: "没有等待验收的工单" },
+  { key: "ARCHIVED", label: "已归档", actions: [], empty: "还没有归档的工单" },
 ];
 const state = { status: "ASSIGNED", page: 1, size: 9 };
 let items = [];
 
-const hour = new Date().getHours();
-$("#hello").textContent = `${hour < 12 ? "早上好" : hour < 18 ? "下午好" : "晚上好"}，${user.real_name}`;
+$("#hello").textContent = `${user.real_name} · ${user.skills.join("、") || "通用维修"} · 只显示指派给你本人的工单`;
 
 async function loadStats() {
   const counts = await api.get("/api/orders/status-counts");
   $("#stats").innerHTML = TABS.map((t) => `
-    <div class="card stat-card tone-${t.tone}">
-      <div class="label">${icon(t.icon)}${t.label}</div>
-      <div class="value">${counts[t.key]}<small>单</small></div>
-    </div>`).join("");
+    <div class="counter"><div class="label">${t.label}</div><div class="value num">${counts[t.key]}</div></div>`).join("");
   $("#tabs").innerHTML = TABS.map((t) => `
     <button class="tab ${t.key === state.status ? "active" : ""}" data-status="${t.key}">${t.label}<span class="count num">${counts[t.key]}</span></button>`).join("");
   return counts;
@@ -40,10 +35,10 @@ async function loadCards() {
     items = page.items;
     $("#cards").innerHTML = items.length
       ? items.map((o) => orderCard(o, { actions: tab.actions })).join("")
-      : `<div style="grid-column:1/-1">${emptyState(tab.empty, "", "checkCircle")}</div>`;
+      : emptyState(tab.empty, "", "checkCircle");
     renderPager($("#pager"), page, (p) => { state.page = p; loadCards(); });
   } catch (err) {
-    $("#cards").innerHTML = `<div style="grid-column:1/-1">${emptyState("加载失败", esc(err.message), "alert")}</div>`;
+    $("#cards").innerHTML = emptyState("加载失败", err.message, "alert");
   }
 }
 

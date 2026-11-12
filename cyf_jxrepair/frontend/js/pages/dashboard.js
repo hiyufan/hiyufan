@@ -1,5 +1,5 @@
 // 统计看板：指标卡 + 超期预警 + 4 类图表 + AI 摘要
-// 配色经过色盲安全校验：系列 1 青 #0d9488、系列 2 橙 #eb6834；单一指标的图只用一种颜色
+// 配色经过色盲安全校验：系列 1 指令蓝 #1e5aa8、系列 2 橙 #d4691e；单一指标的图只用一种颜色
 import { api } from "../core/http.js";
 import { icon } from "../core/icons.js";
 import { mountLayout } from "../core/layout.js";
@@ -9,34 +9,31 @@ const user = await mountLayout({ active: "dashboard", title: "统计看板" });
 const isAdmin = user.role === "DEVICE_ADMIN";
 
 const C = {
-  s1: "#0d9488",
-  s2: "#eb6834",
-  ink: "#334452",
-  muted: "#8a99a5",
-  grid: "#eef2f4",
-  axis: "#e3e8ec",
+  s1: "#1e5aa8",
+  s2: "#d4691e",
+  ink: "#1c2228",
+  muted: "#7a848d",
+  grid: "#e1e4e0",
+  axis: "#c9cec9",
+  num: '"Barlow Condensed", "Arial Narrow", sans-serif',
 };
 const charts = {};
 
 $("#pageTitle").textContent = isAdmin ? "全厂统计看板" : `${user.dept_name} · 统计看板`;
-$("#pageDesc").textContent = isAdmin ? "全部厂区数据，实时来自数据库聚合" : "本部门员工提交的工单数据";
-$("#refreshBtn").innerHTML = `${icon("refresh", "icon-sm")}刷新`;
+$("#pageDesc").textContent = isAdmin ? "A-D 四个厂区，数据实时从数据库汇总" : `${user.factory_area} · 仅统计本部门员工提交的工单`;
 
-// ------------------------------------------------------------ 指标卡
+// ------------------------------------------------------------ 指标条
 function renderStats(s) {
-  const cards = [
-    { label: "工单总数", value: s.total, unit: "单", icon: "file", tone: "brand", foot: "累计全部报修" },
-    { label: "待派单", value: s.pending, unit: "单", icon: "inbox", tone: "amber", foot: s.open_alerts ? `${s.open_alerts} 张超期待处理` : "无超期工单" },
-    { label: "处理中", value: s.in_progress + s.to_accept, unit: "单", icon: "hammer", tone: "blue", foot: `待接单/维修中 ${s.in_progress} · 待验收 ${s.to_accept}` },
-    { label: "本月归档", value: s.archived_this_month, unit: "单", icon: "checkCircle", tone: "green",
-      foot: s.avg_score ? `平均满意度 ${s.avg_score.toFixed(1)} / 5` : "暂无评价" },
+  const items = [
+    { label: "待派单", value: s.pending, foot: `累计工单 ${s.total} 张` },
+    { label: "处理中", value: s.in_progress, foot: "待接单 + 维修中" },
+    { label: "待验收", value: s.to_accept, foot: "等待报修人确认" },
+    { label: "超期 48h+", value: s.open_alerts, foot: "未派单或未完工", tone: s.open_alerts ? "bad" : "" },
+    { label: "本月归档", value: s.archived_this_month, foot: s.avg_score ? `平均满意度 ${s.avg_score.toFixed(1)} / 5` : "暂无评价" },
   ];
-  $("#statCards").innerHTML = cards.map((c) => `
-    <div class="card stat-card tone-${c.tone}">
-      <div class="label">${icon(c.icon)}${c.label}</div>
-      <div class="value">${c.value}<small>${c.unit}</small></div>
-      <div class="foot">${esc(c.foot)}</div>
-    </div>`).join("");
+  $("#kpis").innerHTML = items.map((k) => `
+    <div class="kpi ${k.tone || ""}"><div class="label">${k.label}</div>
+      <div class="value">${k.value}<small>单</small></div><div class="foot">${esc(k.foot)}</div></div>`).join("");
 }
 
 // ------------------------------------------------------------ 超期预警
@@ -45,18 +42,16 @@ async function loadAlerts() {
   const panel = $("#alertPanel");
   panel.classList.toggle("hidden", !alerts.length);
   if (!alerts.length) return;
-  $("#alertHead").innerHTML = `${icon("bell")}<h3>超期工单预警</h3>
-    <span class="tag tag-overdue">${alerts.length} 张</span>
-    <span class="extra subtle">超过 48 小时未派单或未完工${isAdmin ? "，可一键处理" : ""}</span>`;
+  $("#alertHead").innerHTML = `<h3>${icon("alert", "icon-sm")}超期工单 ${alerts.length} 张</h3>
+    <span class="extra">超过 48 小时未派单或未完工${isAdmin ? "，可直接处理" : ""}</span>`;
   $("#alertList").innerHTML = alerts.map((a) => `
     <div class="alert-row" data-id="${a.id}">
       <span class="hours">${a.overdue_hours}<small>小时</small></span>
       <div><a href="order-detail.html?id=${a.order_id}" class="mono">${esc(a.order_no)}</a>
-        <span class="muted"> · ${esc(a.device_name)}</span>
-        <div class="subtle">${esc(a.alert_label)} · 当前${esc(a.status_label)}</div></div>
-      <span class="tag ${a.alert_type === "DISPATCH_TIMEOUT" ? "st-PENDING" : "st-REPAIRING"}">${esc(a.alert_label)}</span>
-      ${isAdmin ? `<button class="btn btn-sm btn-primary" data-handle="${a.id}" data-type="${a.alert_type}">
-        ${icon(a.alert_type === "DISPATCH_TIMEOUT" ? "zap" : "bell", "icon-sm")}${a.alert_type === "DISPATCH_TIMEOUT" ? "一键派单" : "一键催办"}</button>` : "<span></span>"}
+        <span class="muted"> · ${esc(a.device_name)}</span><div class="subtle">当前${esc(a.status_label)}</div></div>
+      <span>${esc(a.alert_label)}</span>
+      ${isAdmin ? `<button class="btn btn-sm ${a.alert_type === "DISPATCH_TIMEOUT" ? "btn-primary" : ""}" data-handle="${a.id}" data-type="${a.alert_type}">
+        ${a.alert_type === "DISPATCH_TIMEOUT" ? "自动派单" : "催办维修工"}</button>` : "<span></span>"}
     </div>`).join("");
 }
 
@@ -65,7 +60,7 @@ $("#alertList").addEventListener("click", async (e) => {
   if (!btn) return;
   const dispatch = btn.dataset.type === "DISPATCH_TIMEOUT";
   const ok = await confirmDialog({
-    title: dispatch ? "一键派单" : "一键催办",
+    title: dispatch ? "自动派单" : "催办维修工",
     message: dispatch
       ? "系统将根据故障类型匹配擅长该方向、当前负载最低的维修工并自动派单，确定吗？"
       : "将向负责该工单的维修工发出催办，并记录在流转日志中。",
@@ -85,19 +80,19 @@ $("#alertList").addEventListener("click", async (e) => {
 const baseAxis = {
   axisLine: { lineStyle: { color: C.axis } },
   axisTick: { show: false },
-  axisLabel: { color: C.muted, fontSize: 12 },
+  axisLabel: { color: C.muted, fontSize: 13, fontFamily: C.num },
   splitLine: { lineStyle: { color: C.grid } },
 };
 const tooltip = (extra = {}) => ({
-  trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: "rgba(13,148,136,.06)" } },
-  backgroundColor: "#fff", borderColor: C.axis, textStyle: { color: C.ink, fontSize: 12 },
-  extraCssText: "box-shadow:0 6px 16px rgba(15,28,36,.12);border-radius:8px;", ...extra,
+  trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: "rgba(30,90,168,.06)" } },
+  backgroundColor: "#fcfcfa", borderColor: C.axis, textStyle: { color: C.ink, fontSize: 12 },
+  extraCssText: "box-shadow:0 4px 12px rgba(28,34,40,.12);border-radius:2px;", ...extra,
 });
-const legend = { top: 0, right: 0, icon: "roundRect", itemWidth: 10, itemHeight: 10, textStyle: { color: C.ink } };
-// 柱子：细、末端 4px 圆角、相邻柱之间留 2px 白边
+const legend = { top: 0, right: 0, icon: "rect", itemWidth: 12, itemHeight: 8, textStyle: { color: C.ink } };
+// 柱子：细、末端 2px 圆角、相邻柱之间留白边
 const bar = (color, horizontal = false) => ({
   type: "bar", barMaxWidth: horizontal ? 14 : 18, barGap: "20%",
-  itemStyle: { color, borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0], borderColor: "#fff", borderWidth: 1 },
+  itemStyle: { color, borderRadius: horizontal ? [0, 2, 2, 0] : [2, 2, 0, 0], borderColor: "#fcfcfa", borderWidth: 1 },
   emphasis: { focus: "series" },
 });
 
@@ -138,7 +133,7 @@ function renderStatus(list) {
     yAxis: { type: "category", inverse: true, data: list.map((i) => i.name), ...baseAxis, axisLine: { show: false },
       axisLabel: { color: C.ink, fontSize: 13 } },
     series: [{ ...bar(C.s1, true), barMaxWidth: 18, data: list.map((i) => i.value),
-      label: { show: true, position: "right", color: C.ink, formatter: (p) => `${p.value}` } }],
+      label: { show: true, position: "right", color: C.ink, fontFamily: C.num, fontSize: 14, formatter: (p) => `${p.value}` } }],
   });
 }
 
@@ -167,25 +162,25 @@ function renderRanking(list) {
     yAxis: { type: "category", inverse: true, data: list.map((i) => i.device_name), ...baseAxis, axisLine: { show: false },
       axisLabel: { color: C.ink, fontSize: 12, width: 84, overflow: "truncate" } },
     series: [{ ...bar(C.s1, true), data: list.map((i) => i.count),
-      label: { show: true, position: "right", color: C.ink } }],
+      label: { show: true, position: "right", color: C.ink, fontFamily: C.num, fontSize: 14 } }],
   });
 }
 
-// ------------------------------------------------------------ AI 摘要
+// ------------------------------------------------------------ 工单摘要
 async function loadSummaries() {
-  $("#summaryHead").innerHTML = `${icon("sparkles", "icon-sm")}<h3>AI 工单摘要</h3><span class="extra subtle">最新 6 张处理中的工单</span>`;
   const cards = await api.get("/api/ai/summaries", { status: ["PENDING", "ASSIGNED", "REPAIRING", "TO_ACCEPT"], limit: 6 });
-  $("#summaryList").innerHTML = cards.length ? cards.map((c) => `
-    <div class="summary-card" data-id="${c.order_id}" tabindex="0" role="link">
-      <h4><span class="mono">${esc(c.order_no)}</span><span class="tag plain">${esc(c.fields["当前状态"])}</span></h4>
-      <p>${esc(c.text)}</p>
-      <div class="kv"><span class="chip">${esc(c.fields["故障类型"])}</span>
-        <span class="risk-chip risk-${esc(c.fields["风险等级"])}">风险 ${esc(c.fields["风险等级"])}</span></div>
-    </div>`).join("") : emptyState("没有处理中的工单");
+  $("#summaryRows").innerHTML = cards.length ? cards.map((c) => `
+    <tr class="clickable" data-id="${c.order_id}">
+      <td><a class="mono" href="order-detail.html?id=${c.order_id}">${esc(c.order_no)}</a></td>
+      <td>${esc(c.fields["当前状态"])}</td>
+      <td>${esc(c.fields["故障类型"])}</td>
+      <td><span class="risk risk-${esc(c.fields["风险等级"])}">${esc(c.fields["风险等级"])}</span></td>
+      <td class="wrap">${esc(c.text)}</td>
+    </tr>`).join("") : `<tr><td colspan="5">${emptyState("没有处理中的工单")}</td></tr>`;
 }
-$("#summaryList").addEventListener("click", (e) => {
-  const card = e.target.closest("[data-id]");
-  if (card) location.href = `order-detail.html?id=${card.dataset.id}`;
+$("#summaryRows").addEventListener("click", (e) => {
+  const row = e.target.closest("[data-id]");
+  if (row && !e.target.closest("a")) location.href = `order-detail.html?id=${row.dataset.id}`;
 });
 
 async function loadAll() {

@@ -8,7 +8,7 @@ import { $, clearFieldErrors, debounce, esc, fieldError, showError, toast, withL
 const resubmitId = Number(new URLSearchParams(location.search).get("resubmit")) || null;
 const user = await mountLayout({
   active: resubmitId ? "orders" : "report",
-  title: resubmitId ? "修改并重新提交" : "我要报修",
+  title: resubmitId ? "修改并重新提交" : "设备报修",
   roles: ["EMPLOYEE", "DEPT_ADMIN"],
 });
 
@@ -38,43 +38,41 @@ function renderDevices(selectedId) {
 function showDeviceHint() {
   const d = devices.find((x) => x.id === Number(deviceSelect.value));
   $("#deviceHint").innerHTML = d
-    ? `${icon("mapPin", "icon-sm")}${esc(d.factory_area)} · ${esc(d.location)}<span class="chip">${esc(d.category)}</span>${d.model ? `<span class="subtle">${esc(d.model)}</span>` : ""}`
+    ? `<span>${esc(d.factory_area)} · ${esc(d.location)}</span><span class="chip">${esc(d.category)}</span>${d.model ? `<span class="mono subtle">${esc(d.model)}</span>` : ""}`
     : "";
 }
 
-// ------------------------------------------------------------ AI 诊断面板
+// ------------------------------------------------------------ 故障初判与相似案例
 function renderAiEmpty() {
-  $("#aiBody").innerHTML = `<div class="ai-empty">${icon("sparkles")}输入至少 4 个字的故障描述<br>系统将自动分析可能原因</div>`;
-  $("#similarBody").classList.add("hidden");
+  $("#aiEngine").textContent = "";
+  $("#aiBody").innerHTML = '<p class="side-empty">输入故障描述后，这里会给出可能原因和处理建议，供你和设备科参考。</p>';
+  $("#similarBody").innerHTML = '<p class="side-empty">同类故障以前怎么修好的，会列在这里。</p>';
 }
 
 function renderDiagnosis(d) {
-  $("#aiEngine").innerHTML = `<span class="subtle">${d.engine === "llm" ? "大模型" : "本地知识库"}</span>`;
+  $("#aiEngine").textContent = d.engine === "llm" ? "大模型" : "本地故障知识库";
   const items = d.items.length ? d.items.map((it) => `
-    <div class="diag-item">
-      <div class="top"><span class="chip">${esc(it.category)}</span>
-        <span class="bar"><i style="width:${Math.round(it.confidence * 100)}%"></i></span>
+    <div class="diag">
+      <div class="diag-top"><b>${esc(it.category)}</b><span class="meter"><i style="width:${Math.round(it.confidence * 100)}%"></i></span>
         <span class="subtle num">${Math.round(it.confidence * 100)}%</span></div>
-      <p><b>可能原因：</b>${esc(it.cause)}</p>
-      <p class="muted"><b>建议：</b>${esc(it.suggestion)}</p>
-      ${it.matched_keywords.length ? `<div class="kw">${it.matched_keywords.map((k) => `<span class="tag plain">${esc(k)}</span>`).join("")}</div>` : ""}
-    </div>`).join("") : '<p class="muted">暂未匹配到已知故障模式</p>';
+      <p><em>可能原因</em>　${esc(it.cause)}</p>
+      <p><em>建议</em>　${esc(it.suggestion)}</p>
+      ${it.matched_keywords.length ? `<div class="kw">${it.matched_keywords.map((k) => `<span class="chip">${esc(k)}</span>`).join("")}</div>` : ""}
+    </div>`).join("") : '<p class="side-empty">没有匹配到已知故障，请补充更具体的现象。</p>';
   $("#aiBody").innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <span class="subtle">风险等级</span><span class="risk-chip risk-${esc(d.risk_level)}">${esc(d.risk_level)}</span></div>
-    ${d.risk_tips.map((t) => `<div class="alert alert-${d.risk_level === "高" ? "danger" : "warning"}" style="margin-bottom:10px">${icon("alert", "icon-sm")}<span>${esc(t)}</span></div>`).join("")}
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+      <span class="subtle">安全风险</span><span class="risk risk-${esc(d.risk_level)}">${esc(d.risk_level)}</span></div>
+    ${d.risk_tips.map((t) => `<div class="notice notice-${d.risk_level === "高" ? "danger" : "warning"}" style="margin-bottom:10px">${icon("alert", "icon-sm")}<span>${esc(t)}</span></div>`).join("")}
     ${items}`;
   // 识别到高风险时自动把紧急程度调为"紧急"（用户仍可手动修改）
   if (d.risk_level === "高") form.querySelector('input[value="HIGH"]').checked = true;
 }
 
 function renderSimilar(hits) {
-  const box = $("#similarBody");
-  box.classList.toggle("hidden", !hits.length);
-  box.innerHTML = `<div class="subtle" style="margin-bottom:2px">相似历史案例（维修知识库）</div>${hits.map((h) => `
-    <a class="similar-item" href="order-detail.html?id=${h.order_id}" target="_blank" rel="noopener">
-      <b>${esc(h.device_name)} · ${esc(h.fault_desc)}</b>
-      <span class="muted">处理：${esc(h.repair_result)}</span></a>`).join("")}`;
+  $("#similarBody").innerHTML = hits.length ? hits.map((h) => `
+    <a class="case" href="order-detail.html?id=${h.order_id}" target="_blank" rel="noopener">
+      <b>${esc(h.device_name)}：${esc(h.fault_desc)}</b>
+      <span>处理：${esc(h.repair_result)}</span></a>`).join("") : '<p class="side-empty">知识库里还没有相似案例。</p>';
 }
 
 const analyze = debounce(async () => {
@@ -88,7 +86,7 @@ const analyze = debounce(async () => {
     renderDiagnosis(diag);
     renderSimilar(hits);
   } catch (err) {
-    $("#aiBody").innerHTML = `<p class="muted">诊断服务暂不可用：${esc(err.message)}</p>`;
+    $("#aiBody").innerHTML = `<p class="side-empty">暂时无法初判：${esc(err.message)}</p>`;
   }
 }, 500);
 
@@ -164,7 +162,7 @@ async function init() {
     }
     $("#pageTitle").textContent = `修改并重新提交 · ${original.order_no}`;
     $("#pageDesc").textContent = "根据驳回意见修改后重新提交，工单将回到「待派单」状态。";
-    $("#rejectBanner").innerHTML = `<div class="alert alert-danger reject-banner">${icon("xCircle", "icon-sm")}
+    $("#rejectBanner").innerHTML = `<div class="notice notice-danger" style="margin-bottom:16px">${icon("xCircle", "icon-sm")}
       <span><b>驳回意见：</b>${esc(original.reject_reason || "无")}</span></div>`;
     $("#submitBtn").textContent = "重新提交";
   }

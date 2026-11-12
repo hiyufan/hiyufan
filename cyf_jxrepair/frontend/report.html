@@ -13,14 +13,14 @@
 <body>
   <main class="content">
     <div class="page-head">
-      <div><h1 id="pageTitle">我要报修</h1><p id="pageDesc">描述越具体，派单越快。系统会根据描述自动给出诊断建议。</p></div>
+      <div><h1 id="pageTitle">设备报修</h1><p id="pageDesc">写清现象（声音、气味、报警号、发生时间），设备科能更快判断派谁去。</p></div>
     </div>
 
     <div id="rejectBanner"></div>
 
     <div class="split">
-      <form class="card report-form" id="reportForm" novalidate>
-        <div class="card-body">
+      <form class="panel report-form" id="reportForm" novalidate>
+        <div class="panel-body">
           <div class="form-row">
             <div class="field">
               <label for="deviceId">报修设备<span class="req">*</span></label>
@@ -30,11 +30,11 @@
             <div class="field">
               <label>紧急程度</label>
               <div class="segmented" id="urgency">
-                <label><input type="radio" name="urgency" value="LOW"><span><i class="dot" style="background:#8a99a5"></i>一般</span></label>
-                <label><input type="radio" name="urgency" value="NORMAL" checked><span><i class="dot" style="background:#b86e00"></i>较急</span></label>
-                <label><input type="radio" name="urgency" value="HIGH"><span><i class="dot" style="background:#cf3a3a"></i>紧急</span></label>
+                <label><input type="radio" name="urgency" value="LOW"><span>一般</span></label>
+                <label><input type="radio" name="urgency" value="NORMAL" checked><span>较急</span></label>
+                <label><input type="radio" name="urgency" value="HIGH"><span>紧急</span></label>
               </div>
-              <span class="hint">紧急：影响安全或导致整线停产</span>
+              <span class="hint">紧急 = 有安全隐患或导致整线停产</span>
             </div>
           </div>
 
@@ -57,10 +57,11 @@
         </div>
       </form>
 
-      <aside class="card ai-panel">
-        <div class="card-head" id="aiHead"><h3>AI 故障诊断</h3><span class="extra" id="aiEngine"></span></div>
-        <div class="card-body" id="aiBody"></div>
-        <div class="card-body" id="similarBody" style="border-top:1px solid var(--line-soft)"></div>
+      <aside class="panel side-panel">
+        <div class="panel-head"><h3>故障初判</h3><span class="extra" id="aiEngine"></span></div>
+        <div class="panel-body" id="aiBody"></div>
+        <div class="panel-head" style="border-top:1px solid var(--rule)"><h3>相似历史案例</h3><span class="extra">维修知识库</span></div>
+        <div class="panel-body" id="similarBody" style="padding-block:4px 8px"></div>
       </aside>
     </div>
   </main>

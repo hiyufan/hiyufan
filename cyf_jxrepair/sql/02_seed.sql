@@ -14,19 +14,19 @@ INSERT INTO sys_dept (id, dept_name, factory_area) VALUES
     (5, '设备科', 'A厂区');
 
 INSERT INTO sys_user (id, username, password_hash, real_name, phone, role, dept_id, skills) VALUES
-    (1, 'sbk01', 'pbkdf2_sha256$120000$e8e210218f7791dd99f0b1b52e3bf5ea$f9a5ee4b0c8f108429b39a509f601e50ecc87cff236b041ae1707b9f60aa6e9e', '王建国', '13805910001', 'DEVICE_ADMIN', 5, NULL),
-    (2, 'sbk02', 'pbkdf2_sha256$120000$629783c9f8d90eed249dfd2dcb333ae0$0b479456cecd7371d08ec2c5517654fc65af22ca334396af94c8955722332759', '李晓峰', '13805910002', 'DEVICE_ADMIN', 5, NULL),
-    (3, 'dept01', 'pbkdf2_sha256$120000$a260d2e056b18459516ddd927f4b393f$f0be4623791b4203deafaabbf7e3aa18c980c989226604d5790ed827a35cd343', '陈立华', '13805910003', 'DEPT_ADMIN', 1, NULL),
-    (4, 'dept02', 'pbkdf2_sha256$120000$c311cb4db433ca9a43495d5cc774d38c$e75de56b4e14e0643454a33a2d7ae30594e1507241192e58c145e880a505cc05', '周敏', '13805910004', 'DEPT_ADMIN', 2, NULL),
-    (5, 'emp01', 'pbkdf2_sha256$120000$9f77582f9f50b6bad2bc2549cdbbe9ff$a0a6700d2cd0ab05d43c5ad83c58c2eb6e378c5b496bac48243bd9cf9dcf2fc3', '林志强', '13805910005', 'EMPLOYEE', 1, NULL),
-    (6, 'emp02', 'pbkdf2_sha256$120000$574623ebb327c4083c6685ac28f3c1e7$572de637de3c4fbaa3afc123b760b4c9240753262255f5a2d20307a66ccba9c8', '黄雅婷', '13805910006', 'EMPLOYEE', 1, NULL),
-    (7, 'emp03', 'pbkdf2_sha256$120000$7741ba0b5671d67b0fa78b87f8f750f1$d25b713e4ea94f1f4b617af7814ed56934ce4d2a2a97bea054552eb4f764e0dd', '郑凯', '13805910007', 'EMPLOYEE', 2, NULL),
-    (8, 'emp04', 'pbkdf2_sha256$120000$be403c523491ce9294e5bf8b80c757c3$b14b5539fa2d97bd7b8ba83a9279c47c25a55d53b7f00f0f5b85be7eb1867316', '吴思琪', '13805910008', 'EMPLOYEE', 3, NULL),
-    (9, 'emp05', 'pbkdf2_sha256$120000$04cfd1c39ede3c19a04b6ff1df639e15$224ffce3ee2af3bb86edce7ac347c2c32c32594a3a4da60814e3050f9539de54', '许俊', '13805910009', 'EMPLOYEE', 4, NULL),
-    (10, 'wx01', 'pbkdf2_sha256$120000$921114d8961019e02a3470e353b23316$655578ecf045aa7798fd79374397a0c4c0a862c6f3bf553232439ed43cc813b0', '张国庆', '13805910010', 'REPAIRER', 5, '电气故障,数控系统'),
-    (11, 'wx02', 'pbkdf2_sha256$120000$23ac1f1649e6068eced59ff64045d7a9$8be4a8281558fe1a450c2f015b7ce0413ca6f3ac05421973c765b801588844c6', '刘德明', '13805910011', 'REPAIRER', 5, '机械故障,液压故障'),
-    (12, 'wx03', 'pbkdf2_sha256$120000$8204647c1bb99ea88409181320047f61$d6240f204eff5dc179d81fb1513c1dd015f9cab3b7ce1f52e02c62512897be0d', '杨帆', '13805910012', 'REPAIRER', 5, '气动故障,润滑冷却'),
-    (13, 'wx04', 'pbkdf2_sha256$120000$e0ef54eca6153777d4af2edbc7cb7557$2593f1fa4e4ac6c98fdf5808dae582ea7dd5c6333e4aa1d4e3629b1d5b2d8472', '何振宇', '13805910013', 'REPAIRER', 5, '电气故障,机械故障');
+    (1, 'sbk01', 'pbkdf2_sha256$120000$c775442fbd68a4f6ac8d5b6fdbf66090$17b7f2f69a927652346e613ef00671910f84dd3e159d76df993becec2ac1b07c', '王建国', '13805910001', 'DEVICE_ADMIN', 5, NULL),
+    (2, 'sbk02', 'pbkdf2_sha256$120000$8a0653023334e2c2caf521446b65d3ff$b68ebd4ae1fcad5d66654bac8e8b04ccec139b606855bbd84547681650448b54', '李晓峰', '13805910002', 'DEVICE_ADMIN', 5, NULL),
+    (3, 'dept01', 'pbkdf2_sha256$120000$afe20ad00026b04d031673248222314a$97e75648856a896e4b086a46e51231c5da6df99a63fda56bc04ddb2dbf5bcfad', '陈立华', '13805910003', 'DEPT_ADMIN', 1, NULL),
+    (4, 'dept02', 'pbkdf2_sha256$120000$13a73f4fc6f7649d78409aabcfad9304$143c1cf6a67c090e11ccd714b81f33ad7f0bef6d43e6b2a20d85e0680da4e317', '周敏', '13805910004', 'DEPT_ADMIN', 2, NULL),
+    (5, 'emp01', 'pbkdf2_sha256$120000$bf9694104b62fecf2b26cfd4fa1d5483$e00de43f86cf03df5baa5bfd5e54b3743cf22c6e92a05493226bd63bc101df9b', '林志强', '13805910005', 'EMPLOYEE', 1, NULL),
+    (6, 'emp02', 'pbkdf2_sha256$120000$67153e63b2f5d6f4b224a7e982ee2ec3$5fded357d80ebbcbe8a155c692f9710b155c304c17dfbd7858eca7a01d48ebf8', '黄雅婷', '13805910006', 'EMPLOYEE', 1, NULL),
+    (7, 'emp03', 'pbkdf2_sha256$120000$14bca74f26952524aceff153e0d51ce3$7879b2c83c17e294584bafebfe097d88a6b3ee527d8e71f0544b2378452dabc5', '郑凯', '13805910007', 'EMPLOYEE', 2, NULL),
+    (8, 'emp04', 'pbkdf2_sha256$120000$b904f32acaf32de6cefd9614a15ccb9d$4515bfd4dcc4d959ea33a3e9ce0763b9ab1826aacfdad1056b704be6bbb84e4c', '吴思琪', '13805910008', 'EMPLOYEE', 3, NULL),
+    (9, 'emp05', 'pbkdf2_sha256$120000$1108c7a8515e2967b617c7c4cbe37ea3$5db68e4ea0e899a57c73b38fa9b635b2e19feefe5e076043b12cc728b2ceace8', '许俊', '13805910009', 'EMPLOYEE', 4, NULL),
+    (10, 'wx01', 'pbkdf2_sha256$120000$5e9dbe724cc8e199026e156cdbed5f4e$81f8cb002f830eee36ad09a643d9276d1d5566b8b1e6b2b64d1063f381aeae03', '张国庆', '13805910010', 'REPAIRER', 5, '电气故障,数控系统'),
+    (11, 'wx02', 'pbkdf2_sha256$120000$0c75e8d663a9b9f5cb4b6af5e994a3af$c6b8e5cb9d36030b71be7a9e70c7e4b830af2ec0d7266794b2da9d8af87ba895', '刘德明', '13805910011', 'REPAIRER', 5, '机械故障,液压故障'),
+    (12, 'wx03', 'pbkdf2_sha256$120000$edb0fb927a02f1bad061c04e27bf50b3$8e7083b703ee7b3aca2a47381164342b11935bec836ebe8ba9b105a27bc34d5c', '杨帆', '13805910012', 'REPAIRER', 5, '气动故障,润滑冷却'),
+    (13, 'wx04', 'pbkdf2_sha256$120000$af8f7d9bff0daccc9553ffce36e441d9$d6641ea57137d0e05b4a00614e93411380c466884b53afbc4500643bce51151f', '何振宇', '13805910013', 'REPAIRER', 5, '电气故障,机械故障');
 
 INSERT INTO device (id, device_code, device_name, category, model, dept_id, location, status, purchase_date) VALUES
     (1, 'CNC-A-001', '数控车床', '数控机床', 'CK6150', 1, '1号线', 'NORMAL', '2021-03-15'),
@@ -58,7 +58,7 @@ INSERT INTO fault_knowledge (category, keywords, cause, suggestion) VALUES
     ('机械故障', '跑偏,皮带,链条,打滑', '张紧不当或托辊平行度偏差', '调整张紧装置与托辊平行度，更换磨损件'),
     ('机械故障', '卡滞,卡死,不顺,移动困难', '导轨/导柱润滑不足或异物卡阻', '清理异物，检查导轨润滑与拉伤情况'),
     ('液压故障', '漏油,渗油,油缸,保压,压力下降', '密封圈老化、油管接头松动', '定位漏点，更换密封件，保压测试确认'),
-    ('液压故障', '油温高,油温过高,动作变慢,无力,起升', '液压油不足或污染、冷却器堵塞、泵磨损', '检查油位与油质，清洗滤网和冷却器，必要时更换液压油'),
+    ('液压故障', '油温高,油温过高,动作变慢,速度变慢,变慢,无力,起升', '液压油不足或污染、冷却器堵塞、泵磨损', '检查油位与油质，清洗滤网和冷却器，必要时更换液压油'),
     ('气动故障', '气压,压力上不去,漏气,供气不足', '进气阀膜片破损、管路泄漏', '检查进气阀与管路接头，查漏补漏'),
     ('气动故障', '气缸,电磁阀,夹爪,不动作', '电磁阀卡滞或内漏、气源压力不足', '检查电磁阀动作与线圈，确认气源三联件压力'),
     ('数控系统', '报警,伺服,回零,未就绪,ALM', '伺服驱动器供电/通讯异常或编码器故障', '读取报警号查手册，检查驱动器端子与编码器线缆'),

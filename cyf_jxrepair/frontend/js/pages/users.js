@@ -5,9 +5,8 @@ import { icon } from "../core/icons.js";
 import { mountLayout } from "../core/layout.js";
 import { $, confirmDialog, debounce, emptyState, esc, fieldError, openModal, showError, skeletonRows, toast } from "../core/ui.js";
 
-const me = await mountLayout({ active: "users", title: "用户管理" });
+const me = await mountLayout({ active: "users", title: "人员" });
 const isDeptAdmin = me.role === "DEPT_ADMIN";
-const ROLE_TONE = { EMPLOYEE: "ug-LOW", DEPT_ADMIN: "st-ASSIGNED", DEVICE_ADMIN: "st-ARCHIVED", REPAIRER: "st-REPAIRING" };
 
 const state = { keyword: "", role: "", dept_id: "", page: 1, size: 10 };
 let roles = [];
@@ -17,7 +16,7 @@ let rows = [];
 
 $("#pageDesc").textContent = isDeptAdmin ? `仅显示 ${me.dept_name} 的人员，可新增和管理本部门普通员工` : "管理全厂账号、角色与维修工擅长方向";
 $("#searchBox").insertAdjacentHTML("afterbegin", icon("search"));
-$("#addBtn").innerHTML = `${icon("plus", "icon-sm")}${isDeptAdmin ? "新增员工" : "新增用户"}`;
+$("#addBtn").textContent = isDeptAdmin ? "新增员工" : "新增人员";
 if (isDeptAdmin) $("#dept").classList.add("hidden");
 
 const opt = (value, label, selected) => `<option value="${esc(value)}" ${selected ? "selected" : ""}>${esc(label)}</option>`;
@@ -41,16 +40,16 @@ async function load() {
     $("#rows").innerHTML = rows.length ? rows.map((u) => `
       <tr data-id="${u.id}" style="${u.is_active ? "" : "opacity:.55"}">
         <td class="mono primary-text">${esc(u.username)}</td>
-        <td><div style="display:flex;align-items:center;gap:8px"><span class="avatar" style="width:28px;height:28px;font-size:12px">${esc(u.real_name.slice(-2))}</span>${esc(u.real_name)}</div></td>
-        <td><span class="tag plain ${ROLE_TONE[u.role]}">${esc(u.role_label)}</span></td>
+        <td class="primary-text">${esc(u.real_name)}</td>
+        <td>${esc(u.role_label)}</td>
         <td>${esc(u.dept_name)}<div class="subtle">${esc(u.factory_area)}</div></td>
         <td class="num">${esc(u.phone || "—")}</td>
         <td>${u.skills.length ? u.skills.map((s) => `<span class="chip" style="margin:1px">${esc(s)}</span>`).join("") : '<span class="subtle">—</span>'}</td>
-        <td>${u.is_active ? '<span class="tag st-ARCHIVED">启用</span>' : '<span class="tag ug-LOW">停用</span>'}</td>
+        <td>${u.is_active ? '<span class="tag st-ARCHIVED">启用</span>' : '<span class="tag st-REJECTED">停用</span>'}</td>
         <td class="actions">${canManage(u) && u.id !== me.id ? `
-          <button class="btn btn-sm btn-ghost" data-act="edit">${icon("edit", "icon-sm")}编辑</button>
-          <button class="btn btn-sm btn-ghost" data-act="reset">${icon("key", "icon-sm")}重置密码</button>
-          <button class="btn btn-sm btn-ghost" data-act="toggle" style="color:${u.is_active ? "var(--danger)" : "var(--success)"}">${icon("power", "icon-sm")}${u.is_active ? "停用" : "启用"}</button>`
+          <button class="btn btn-sm btn-ghost" data-act="edit">编辑</button>
+          <button class="btn btn-sm btn-ghost" data-act="reset">重置密码</button>
+          <button class="btn btn-sm btn-ghost" data-act="toggle" style="color:${u.is_active ? "var(--red)" : "var(--green)"}">${u.is_active ? "停用" : "启用"}</button>`
           : `<span class="subtle">${u.id === me.id ? "当前账号" : "无权管理"}</span>`}</td>
       </tr>`).join("") : `<tr><td colspan="8">${emptyState("没有符合条件的用户")}</td></tr>`;
     renderPager($("#pager"), page, (p) => { state.page = p; load(); });
