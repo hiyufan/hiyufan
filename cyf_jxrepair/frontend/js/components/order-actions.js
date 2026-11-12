@@ -39,11 +39,11 @@ function bindPresets(el) {
 // ------------------------------------------------------------ 派单：先初判故障类型，再按擅长方向与负载推荐维修工
 function repairerRow(r, checked) {
   return `
-    <label class="pick">
+    <label class="pick ${checked ? "is-picked" : ""}">
       <input type="radio" name="repairer" value="${r.id}" ${checked ? "checked" : ""}>
       <b data-name>${esc(r.real_name)}</b>
-      <span class="skills">${r.skills.map(esc).join("、") || "通用"}${r.matched ? '<span class="match">擅长</span>' : ""}</span>
-      <span class="load">${r.active_orders}<small>单在手</small></span>
+      <span class="skills">${r.reasons.map(esc).join(" · ")}</span>
+      <span class="load" title="推荐得分：擅长 40% + 空闲 30% + 同类经验 15% + 满意度 15%">${Math.round(r.score * 100)}<small>分</small></span>
     </label>`;
 }
 
@@ -61,7 +61,7 @@ async function openDispatch(order, onSuccess) {
       <div class="judge-box" data-ai><div class="skeleton" style="width:60%"></div></div>
       <div class="field"><span class="field-label">维修工<span class="req">*</span></span>
         <div class="picks" data-repairers><div class="panel-body"><div class="skeleton"></div></div></div>
-        <span class="hint">擅长方向与本次故障类型一致的排在前面，同组内按手头工单从少到多</span></div>
+        <span class="hint">推荐得分 = 擅长方向 40% + 空闲程度 30% + 同类故障经验 15% + 历史满意度 15%</span></div>
       <div class="field"><label for="dispatchRemark">派单备注</label>
         <input class="input" id="dispatchRemark" name="remark" maxlength="200" placeholder="选填，如：先断电挂牌再拆检"></div>`,
     async onConfirm(modal) {
@@ -74,6 +74,10 @@ async function openDispatch(order, onSuccess) {
       toast(`已派给 ${picked.closest(".pick").querySelector("[data-name]").textContent}`);
       onSuccess?.();
     },
+  });
+
+  $("[data-repairers]", el).addEventListener("change", () => {
+    el.querySelectorAll(".pick").forEach((row) => row.classList.toggle("is-picked", row.querySelector("input").checked));
   });
 
   let category;
@@ -136,21 +140,41 @@ function openTake(order, onSuccess) {
   });
 }
 
-function openComplete(order, onSuccess) {
-  openModal({
-    title: `完工提交 · ${order.order_no}`,
+const FAULT_CATEGORIES = ["电气故障", "机械故障", "液压故障", "气动故障", "数控系统", "润滑冷却"];
+
+async function openComplete(order, onSuccess) {
+  const { el } = openModal({
+    title: `完工提交 ${order.order_no}`,
     confirmText: "提交完工",
     body: `
-      <div class="field"><label>处理结果<span class="req">*</span></label>
-        <textarea class="input" name="result" maxlength="500" placeholder="故障原因、更换的配件、试机情况等，将沉淀进维修知识库"></textarea>
-        <span class="hint">写得越具体，后续相似故障检索越准确</span></div>`,
-    async onConfirm(el) {
-      const result = requireText($("[name=result]", el), 5, "处理结果");
-      await api.post(`/api/orders/${order.id}/complete`, { repair_result: result });
+      <div class="field"><label for="faultCategory">实际故障类别<span class="req">*</span></label>
+        <select class="input" id="faultCategory" name="category">
+          <option value="">请选择</option>${FAULT_CATEGORIES.map((c) => `<option>${c}</option>`).join("")}
+        </select>
+        <span class="hint" data-hint>按现场实际判断。确认的类别会作为历史案例，帮助系统以后诊断同类故障</span></div>
+      <div class="field"><label for="repairResult">处理结果<span class="req">*</span></label>
+        <textarea class="input" id="repairResult" name="result" maxlength="500" placeholder="故障原因、更换的配件、试机情况，会收进维修知识库"></textarea></div>`,
+    async onConfirm(modal) {
+      const category = $("[name=category]", modal);
+      if (!category.value) {
+        fieldError(category, "请选择实际故障类别");
+        throw new Error("请选择实际故障类别");
+      }
+      const result = requireText($("[name=result]", modal), 5, "处理结果");
+      await api.post(`/api/orders/${order.id}/complete`, { repair_result: result, fault_category: category.value });
       toast("已提交完工，等待报修人验收");
       onSuccess?.();
     },
   });
+  // 用系统初判预选故障类别，维修工按实际情况修改
+  try {
+    const diag = await api.post("/api/ai/diagnose", { fault_desc: order.fault_desc, device_id: order.device?.id });
+    const top = diag.items[0];
+    if (top && !$("[name=category]", el).value) {
+      $("[name=category]", el).value = top.category;
+      $("[data-hint]", el).textContent = `已按系统初判预选「${top.category}」，请按现场实际确认。确认的类别会作为历史案例，帮助以后诊断同类故障`;
+    }
+  } catch { /* 初判失败不影响手动选择 */ }
 }
 
 function openEvaluate(order, onSuccess) {

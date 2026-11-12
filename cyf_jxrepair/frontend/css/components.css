@@ -23,7 +23,7 @@
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
 .btn-primary:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
-.btn-danger { color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, var(--rule)); }
+.btn-danger { color: var(--red); border-color: #e3aaa6; }
 .btn-danger:hover { border-color: var(--red); background: var(--red-wash); }
 .btn-danger.solid { background: var(--red); border-color: var(--red); color: #fff; }
 .btn-ghost { border-color: transparent; background: transparent; color: var(--ink-2); }

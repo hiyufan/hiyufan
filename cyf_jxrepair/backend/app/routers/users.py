@@ -47,12 +47,12 @@ def reset_password(user_id: int, db: DbSession, operator: UserManager):
     return ok(message="密码已重置为 123456")
 
 
-@router.get("/repairers", summary="维修工列表及当前负载（派单用）", response_model=ApiResponse[list[RepairerLoad]])
+@router.get("/repairers", summary="派单推荐：维修工综合得分与理由", response_model=ApiResponse[list[RepairerLoad]])
 def repairers(
     db: DbSession, _: DeviceAdmin,
     category: Annotated[str | None, Query(description="故障大类，匹配擅长方向的排在前面")] = None,
 ):
-    return ok(user_service.repairers_with_load(db, category))
+    return ok(user_service.recommend_repairers(db, category))
 
 
 @router.get("/depts", summary="部门列表", response_model=ApiResponse[list[DeptOut]])

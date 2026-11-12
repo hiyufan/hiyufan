@@ -73,7 +73,10 @@ def test_full_business_loop(client):
     assert client.get(f"/api/orders/{oid}", headers=wx).json()["data"]["actions"] == [
         {"value": "TAKE", "label": "接单"}]
     assert client.post(f"/api/orders/{oid}/take", headers=wx).json()["data"]["status"] == "REPAIRING"
-    r = client.post(f"/api/orders/{oid}/complete", headers=wx, json={"repair_result": "更换夹爪电磁阀并调整气压至 0.6MPa"})
+    no_category = client.post(f"/api/orders/{oid}/complete", headers=wx, json={"repair_result": "更换夹爪电磁阀"})
+    assert no_category.status_code == 422  # 完工必须确认故障类别
+    r = client.post(f"/api/orders/{oid}/complete", headers=wx,
+                    json={"repair_result": "更换夹爪电磁阀并调整气压至 0.6MPa", "fault_category": "气动故障"})
     assert r.json()["data"]["status"] == "TO_ACCEPT"
 
     # 维修工不能验收
@@ -81,6 +84,7 @@ def test_full_business_loop(client):
     r = client.post(f"/api/orders/{oid}/evaluate", headers=emp, json={"score": 5, "comment": "很快"})
     detail = r.json()["data"]
     assert detail["status"] == "ARCHIVED" and detail["evaluation"]["score"] == 5
+    assert detail["fault_category"] == "气动故障"
     assert [lg["action"] for lg in detail["logs"]] == ["SUBMIT", "DISPATCH", "TAKE", "COMPLETE", "ACCEPT", "ARCHIVE"]
 
     # 已归档不可再变更
@@ -166,3 +170,29 @@ def test_ai_features(client):
     r = client.post(f"/api/ai/alerts/{alerts[0]['id']}/handle", headers=admin).json()
     assert r["code"] == 200, r
     assert len(client.get("/api/ai/alerts", headers=admin).json()["data"]) == len(alerts) - 1
+
+
+def test_hybrid_diagnosis_uses_cases(client):
+    emp = login(client, "emp04")
+    # 与历史案例"冷却塔风机振动大，噪音异常"相近：规则(机械故障)与案例两路证据同时成立
+    d = client.post("/api/ai/diagnose", headers=emp, json={"fault_desc": "冷却塔风机振动很大，噪音异常"}).json()["data"]
+    top = d["items"][0]
+    assert top["category"] == "机械故障"
+    assert top["rule_confidence"] > 0 and top["case_confidence"] > 0 and top["evidence_cases"]
+    # noisy-OR：合成置信度不低于任何一路证据
+    assert top["confidence"] >= max(top["rule_confidence"], top["case_confidence"])
+
+
+def test_recommendation_ranking(client):
+    admin = login(client, "sbk01")
+    ranked = client.get("/api/repairers", headers=admin, params={"category": "液压故障"}).json()["data"]
+    assert [r["score"] for r in ranked] == sorted((r["score"] for r in ranked), reverse=True)
+    assert ranked[0]["matched"] and "擅长液压故障" in ranked[0]["reasons"]
+
+
+def test_login_lockout(client):
+    for _ in range(5):
+        r = client.post("/api/auth/login", json={"username": "lock_probe", "password": "wrong-pass"})
+    assert r.status_code == 429
+    r = client.post("/api/auth/login", json={"username": "lock_probe", "password": "wrong-pass"})
+    assert r.status_code == 429 and "锁定" in r.json()["message"]

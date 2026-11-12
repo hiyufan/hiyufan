@@ -109,7 +109,7 @@ def to_detail(db: Session, o: RepairOrder, user: User) -> OrderDetail:
     return OrderDetail(
         **brief.model_dump(),
         photo_urls=file_service.to_urls(o.photo_paths),
-        repair_result=o.repair_result, dispatcher=_user_brief(o.dispatcher),
+        repair_result=o.repair_result, fault_category=o.fault_category, dispatcher=_user_brief(o.dispatcher),
         dispatched_at=o.dispatched_at, taken_at=o.taken_at, completed_at=o.completed_at,
         archived_at=o.archived_at, logs=logs,
         evaluation=EvaluationOut(score=ev.score, comment=ev.comment, created_at=ev.created_at) if ev else None,
@@ -315,8 +315,9 @@ def take(db: Session, user: User, order_id: int, remark: str | None) -> RepairOr
 def complete(db: Session, user: User, order_id: int, data: CompleteIn) -> RepairOrder:
     def apply(order: RepairOrder, now: datetime) -> str:
         order.repair_result = data.repair_result.strip()
+        order.fault_category = data.fault_category
         order.completed_at = now
-        return f"完工提交：{order.repair_result}"
+        return f"完工提交（{data.fault_category}）：{order.repair_result}"
 
     order = _transit(db, user, order_id, OrderAction.COMPLETE, apply)
     _close_alerts(db, order.id, AlertType.REPAIR_TIMEOUT, user, "已完工")

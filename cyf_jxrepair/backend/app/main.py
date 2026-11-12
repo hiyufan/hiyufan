@@ -9,9 +9,11 @@
 import asyncio
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -23,6 +25,7 @@ from app.services.alert_service import run_scheduler
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s | %(message)s")
 
 FRONTEND_DIR = PROJECT_DIR / "frontend"
+SWAGGER_DIR = Path(__file__).resolve().parent / "static" / "swagger"
 
 
 @asynccontextmanager
@@ -41,6 +44,8 @@ app = FastAPI(
     description="设备报修与维修工单管理系统 REST 接口。先调用 **/api/auth/login** 获取 token，"
                 "再点击右上角 **Authorize** 填入 token 即可调试需要登录的接口。",
     lifespan=lifespan,
+    docs_url=None,   # 默认 /docs 从外网 CDN 加载 Swagger UI，考场断网会白屏，改为下面的本地版本
+    redoc_url=None,
 )
 
 app.add_middleware(
@@ -61,10 +66,23 @@ def health():
     return {"code": 200, "message": "ok", "data": {"app": settings.app_name}}
 
 
+@app.get("/docs", include_in_schema=False)
+def swagger_ui():
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title=f"{settings.app_name} - 接口文档",
+        swagger_js_url="/static/swagger/swagger-ui-bundle.js",
+        swagger_css_url="/static/swagger/swagger-ui.css",
+        swagger_favicon_url="/static/swagger/favicon-32x32.png",
+        swagger_ui_parameters={"persistAuthorization": True, "docExpansion": "none", "defaultModelsExpandDepth": -1},
+    )
+
+
 @app.get("/", include_in_schema=False)
 def index():
     return RedirectResponse("/login.html")
 
 
+app.mount("/static/swagger", StaticFiles(directory=SWAGGER_DIR), name="swagger")
 app.mount("/uploads", StaticFiles(directory=settings.upload_dir, check_dir=False), name="uploads")
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

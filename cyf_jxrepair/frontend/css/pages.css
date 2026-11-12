@@ -82,7 +82,8 @@
 .meter i { display: block; height: 100%; background: var(--blue); }
 .diag p { font-size: 13px; margin-top: 4px; color: var(--ink-2); }
 .diag p em { font-style: normal; color: var(--ink); font-weight: 600; }
-.diag .kw { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+.diag .evidence { margin-top: 6px; font-size: 12px; color: var(--ink-3); line-height: 1.6; }
+.diag .evidence a { font-family: var(--font-mono); }
 .risk { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
 .risk::before { content: ""; width: 10px; height: 10px; background: var(--sw); }
 .risk-高 { --sw: var(--red); color: var(--red); }
@@ -159,11 +160,11 @@
 .judge-box { padding: 10px 12px; border-left: 4px solid var(--blue); background: var(--blue-wash); margin-bottom: 14px; font-size: 13px; }
 .judge-box p { margin-top: 3px; }
 .picks { border: 1px solid var(--rule); }
-.pick { display: grid; grid-template-columns: 20px 72px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 12px;
+.pick { display: grid; grid-template-columns: 20px 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 12px;
         border-bottom: 1px solid var(--rule-soft); cursor: pointer; background: #fff; }
 .pick:last-child { border-bottom: 0; }
 .pick:hover { background: var(--sheet-alt); }
-.pick:has(input:checked) { background: var(--blue-wash); }
+.pick.is-picked { background: var(--blue-wash); }
 .pick input { accent-color: var(--blue); margin: 0; }
 .pick .skills { color: var(--ink-3); font-size: 12px; }
 .pick .load { font-family: var(--font-display); font-weight: 600; font-size: 16px; text-align: right; }

@@ -89,12 +89,12 @@ def handle(db: Session, operator: User, alert_id: int) -> AlertHandleOut:
 
     if alert.alert_type is AlertType.DISPATCH_TIMEOUT:
         category = diagnosis.top_category(db, order.fault_desc)
-        candidates = user_service.repairers_with_load(db, category)
+        candidates = user_service.recommend_repairers(db, category)
         if not candidates:
             raise BizError("当前没有在岗的维修工")
         best = candidates[0]
         order_service.dispatch(db, operator, order.id, DispatchIn(
-            repairer_id=best.id, remark=f"超期预警一键派单（{category or '通用'}，当前负载 {best.active_orders}）"))
+            repairer_id=best.id, remark=f"超期自动派单：{'，'.join(best.reasons)}"))
         note = f"已自动派单给 {best.real_name}"
     else:
         order_service.urge(db, operator, order, alert.overdue_hours)

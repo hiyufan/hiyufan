@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.core.config import settings
-from app.core.enums import DeviceStatus, OrderStatus, Urgency, UserRole
+from app.core.enums import FAULT_CATEGORIES, DeviceStatus, OrderStatus, Urgency, UserRole
 from app.core.response import ApiResponse, ok
 
 router = APIRouter(prefix="/api/meta", tags=["基础数据"])
@@ -16,7 +16,7 @@ def options():
         "roles": UserRole.options(),
         "urgency": Urgency.options(),
         "device_status": DeviceStatus.options(),
-        "fault_categories": ["电气故障", "机械故障", "液压故障", "气动故障", "数控系统", "润滑冷却"],
+        "fault_categories": list(FAULT_CATEGORIES),
         "upload": {"max_mb": settings.upload_max_mb, "max_count": settings.upload_max_count,
                    "accept": ["image/jpeg", "image/png"]},
     })

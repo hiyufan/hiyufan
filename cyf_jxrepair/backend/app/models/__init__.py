@@ -77,6 +77,7 @@ class RepairOrder(Base):
     status: Mapped[OrderStatus] = mapped_column(_enum(OrderStatus), default=OrderStatus.PENDING)
     reject_reason: Mapped[str | None] = mapped_column(String(200))
     repair_result: Mapped[str | None] = mapped_column(String(500))
+    fault_category: Mapped[str | None] = mapped_column(String(20))
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     dispatched_at: Mapped[datetime | None] = mapped_column(DateTime)
     taken_at: Mapped[datetime | None] = mapped_column(DateTime)

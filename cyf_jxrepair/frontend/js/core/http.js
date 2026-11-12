@@ -47,7 +47,8 @@ async function request(method, path, { params, json, form } = {}) {
     throw new ApiError(`服务器返回异常（HTTP ${resp.status}）`, resp.status);
   }
 
-  if (payload.code === 401) {
+  // 只有携带了 token 的请求返回 401 才说明登录过期；登录接口本身的 401 是"账号或密码错误"，交给页面显示
+  if (payload.code === 401 && token) {
     toLogin("expired");
     throw new ApiError(payload.message, 401);
   }

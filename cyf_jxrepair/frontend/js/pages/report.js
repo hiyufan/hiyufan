@@ -49,6 +49,17 @@ function renderAiEmpty() {
   $("#similarBody").innerHTML = '<p class="side-empty">同类故障以前怎么修好的，会列在这里。</p>';
 }
 
+/** 置信度来源：规则命中了哪些关键词、哪些历史案例支持这个判断 */
+function evidence(it) {
+  const parts = [];
+  if (it.matched_keywords.length) parts.push(`规则 ${Math.round(it.rule_confidence * 100)}%：命中「${it.matched_keywords.map(esc).join("」「")}」`);
+  if (it.evidence_cases.length) {
+    parts.push(`案例 ${Math.round(it.case_confidence * 100)}%：${it.evidence_cases.map((c) =>
+      `<a href="order-detail.html?id=${c.order_id}" target="_blank" rel="noopener">${esc(c.order_no)}</a>`).join("、")}`);
+  }
+  return parts.join("<br>");
+}
+
 function renderDiagnosis(d) {
   $("#aiEngine").textContent = d.engine === "llm" ? "大模型" : "本地故障知识库";
   const items = d.items.length ? d.items.map((it) => `
@@ -57,7 +68,7 @@ function renderDiagnosis(d) {
         <span class="subtle num">${Math.round(it.confidence * 100)}%</span></div>
       <p><em>可能原因</em>　${esc(it.cause)}</p>
       <p><em>建议</em>　${esc(it.suggestion)}</p>
-      ${it.matched_keywords.length ? `<div class="kw">${it.matched_keywords.map((k) => `<span class="chip">${esc(k)}</span>`).join("")}</div>` : ""}
+      <p class="evidence">${evidence(it)}</p>
     </div>`).join("") : '<p class="side-empty">没有匹配到已知故障，请补充更具体的现象。</p>';
   $("#aiBody").innerHTML = `
     <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">

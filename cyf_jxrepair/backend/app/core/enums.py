@@ -67,5 +67,8 @@ class AlertType(LabeledEnum):
     REPAIR_TIMEOUT = "REPAIR_TIMEOUT", "超时未完工"
 
 
+# 故障大类：知识库规则、维修工擅长方向、完工时确认的故障类别共用这一套分类
+FAULT_CATEGORIES = ("电气故障", "机械故障", "液压故障", "气动故障", "数控系统", "润滑冷却")
+
 # 工单仍在处理中的状态（用于维修工负载、设备状态联动、超期扫描）
 ACTIVE_STATUSES = frozenset({OrderStatus.ASSIGNED, OrderStatus.REPAIRING, OrderStatus.TO_ACCEPT})

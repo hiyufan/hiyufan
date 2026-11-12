@@ -4,11 +4,12 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.deps import PageParams
-from app.core.enums import ACTIVE_STATUSES, UserRole
+from app.core.enums import ACTIVE_STATUSES, OrderStatus, UserRole
 from app.core.exceptions import BizError, Conflict, Forbidden, NotFound, Unauthorized
+from app.core.login_guard import login_guard
 from app.core.response import PageResult, page_of
 from app.core.security import create_token, hash_password, verify_password
-from app.models import Dept, RepairOrder, User
+from app.models import Dept, RepairEvaluation, RepairOrder, User
 from app.schemas import (
     LoginOut,
     PasswordChangeIn,
@@ -21,12 +22,17 @@ from app.schemas import (
 
 # ------------------------------------------------------------------ 登录
 def login(db: Session, username: str, password: str) -> LoginOut:
+    login_guard.check(username)
     user = db.scalar(select(User).where(User.username == username))
     # 账号不存在与密码错误给出相同提示，避免被用来探测有效账号
     if user is None or not verify_password(password, user.password_hash):
-        raise Unauthorized("账号或密码错误")
+        left = login_guard.fail(username)
+        if left == 0:
+            raise BizError("密码错误次数过多，账号已锁定 10 分钟", 429)
+        raise Unauthorized(f"账号或密码错误，还可尝试 {left} 次" if left <= 2 else "账号或密码错误")
     if not user.is_active:
         raise Forbidden("账号已被停用，请联系管理员")
+    login_guard.succeed(username)
     return LoginOut(
         token=create_token(user.id, user.role.value),
         expires_in=settings.jwt_expire_minutes * 60,
@@ -145,9 +151,21 @@ def list_depts(db: Session) -> list[Dept]:
     return list(db.scalars(select(Dept).order_by(Dept.id)))
 
 
-# ------------------------------------------------------------------ 维修工负载（派单用）
-def repairers_with_load(db: Session, category: str | None = None) -> list[RepairerLoad]:
-    """返回启用中的维修工及其手头工单数。匹配擅长方向的排前面，同组内负载低的排前面。"""
+# ------------------------------------------------------------------ 派单推荐
+# 多准则加权打分（简单加权法 SAW）：每项先归一到 0~1，再按权重求和。
+# 权重体现设备科的派单习惯：先看会不会修，再看忙不忙，最后参考经验和口碑。
+RECOMMEND_WEIGHTS = {"skill": 0.40, "load": 0.30, "experience": 0.15, "quality": 0.15}
+DEFAULT_QUALITY = 0.6   # 还没有评价的维修工按中等口碑计算，避免新人永远排不上
+
+
+def recommend_repairers(db: Session, category: str | None = None) -> list[RepairerLoad]:
+    """返回在岗维修工及推荐得分，得分高的在前。
+
+    skill       擅长方向是否包含本次故障类别                1 / 0
+    load        手头未完成工单越少越好                       1 / (1 + 在手单数)
+    experience  处理过多少张同类故障（已归档）               n / (n + 2)，n=2 时 0.5
+    quality     历史平均满意度                               (平均分 − 1) / 4
+    """
     load = (
         select(RepairOrder.repairer_id, func.count().label("cnt"))
         .where(RepairOrder.status.in_(ACTIVE_STATUSES))
@@ -159,12 +177,39 @@ def repairers_with_load(db: Session, category: str | None = None) -> list[Repair
         .outerjoin(load, load.c.repairer_id == User.id)
         .where(User.role == UserRole.REPAIRER, User.is_active.is_(True))
     ).all()
-    result = [
-        RepairerLoad(
-            id=u.id, real_name=u.real_name, skills=u.skill_list, active_orders=int(cnt),
-            matched=bool(category and category in u.skill_list),
-        )
-        for u, cnt in rows
-    ]
-    result.sort(key=lambda r: (not r.matched, r.active_orders, r.id))
+
+    experience: dict[int, int] = {}
+    if category:
+        experience = dict(db.execute(
+            select(RepairOrder.repairer_id, func.count())
+            .where(RepairOrder.status == OrderStatus.ARCHIVED, RepairOrder.fault_category == category)
+            .group_by(RepairOrder.repairer_id)
+        ).all())
+    quality = {rid: float(avg) for rid, avg in db.execute(
+        select(RepairOrder.repairer_id, func.avg(RepairEvaluation.score))
+        .join(RepairEvaluation, RepairEvaluation.order_id == RepairOrder.id)
+        .group_by(RepairOrder.repairer_id)
+    ).all()}
+
+    w = RECOMMEND_WEIGHTS
+    result = []
+    for u, active in rows:
+        active = int(active)
+        matched = bool(category and category in u.skill_list)
+        done = experience.get(u.id, 0)
+        avg = quality.get(u.id)
+        score = (w["skill"] * matched
+                 + w["load"] / (1 + active)
+                 + w["experience"] * done / (done + 2)
+                 + w["quality"] * ((avg - 1) / 4 if avg is not None else DEFAULT_QUALITY))
+        reasons = [f"擅长{category}" if matched else "非擅长方向", f"在手 {active} 单"]
+        if category:
+            reasons.append(f"修过同类 {done} 次")
+        reasons.append(f"满意度 {avg:.1f}" if avg is not None else "暂无评价")
+        result.append(RepairerLoad(
+            id=u.id, real_name=u.real_name, skills=u.skill_list, active_orders=active, matched=matched,
+            same_category_done=done, avg_score=round(avg, 2) if avg is not None else None,
+            score=round(score, 3), reasons=reasons,
+        ))
+    result.sort(key=lambda r: (-r.score, r.active_orders, r.id))
     return result

@@ -52,6 +52,7 @@ function renderDocket(o) {
       <dt>派单人</dt><dd>${o.dispatcher ? esc(o.dispatcher.real_name) : "—"}</dd>
       <dt>响应用时</dt><dd class="num">${duration(o.created_at, o.taken_at)}</dd>
       <dt>维修用时</dt><dd class="num">${duration(o.taken_at, o.completed_at)}</dd>
+      <dt>故障类别</dt><dd class="span">${o.fault_category ? esc(o.fault_category) : '<span class="subtle">完工时由维修工确认</span>'}</dd>
       <dt>处理结果</dt><dd class="span">${o.repair_result ? esc(o.repair_result) : '<span class="subtle">维修中</span>'}</dd>` : "";
   const evalRows = ev ? `
       <div class="docket-section">验收</div>

@@ -23,7 +23,8 @@ def _hours(start, end) -> str:
 def build(db: Session, order: RepairOrder, use_llm: bool = False) -> SummaryCard:
     """use_llm 只在查看单张工单时开启；列表批量生成摘要始终走本地规则，避免逐条请求大模型拖慢页面。"""
     device = order.device
-    category = diagnosis.top_category(db, order.fault_desc)
+    # 维修工已确认的故障类别最可靠；还没完工的工单用诊断结果
+    category = order.fault_category or diagnosis.top_category(db, order.fault_desc, exclude_order_id=order.id)
     risk, _ = diagnosis.assess_risk(order.fault_desc)  # 与故障诊断复用同一套风险词规则
     symptom = first_sentence(order.fault_desc)
     result = first_sentence(order.repair_result or "", 40) if order.repair_result else "尚未处理"

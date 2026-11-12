@@ -3,7 +3,7 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.core.enums import DeviceStatus, OrderAction, OrderStatus, Urgency, UserRole
+from app.core.enums import FAULT_CATEGORIES, DeviceStatus, OrderAction, OrderStatus, Urgency, UserRole
 
 
 class Option(BaseModel):
@@ -85,6 +85,10 @@ class RepairerLoad(BaseModel):
     skills: list[str]
     active_orders: int = Field(description="手头未完成工单数")
     matched: bool = Field(False, description="擅长方向是否匹配本次故障")
+    same_category_done: int = Field(0, description="处理过的同类故障工单数")
+    avg_score: float | None = Field(None, description="历史平均满意度")
+    score: float = Field(0, description="推荐综合得分 0-1")
+    reasons: list[str] = Field(default_factory=list, description="推荐理由")
 
 
 class DeptOut(BaseModel):
@@ -186,6 +190,7 @@ class EvaluationOut(BaseModel):
 class OrderDetail(OrderBrief):
     photo_urls: list[str]
     repair_result: str | None
+    fault_category: str | None
     dispatcher: UserBrief | None
     dispatched_at: datetime | None
     taken_at: datetime | None
@@ -215,6 +220,14 @@ class ReasonIn(BaseModel):
 
 class CompleteIn(BaseModel):
     repair_result: str = Field(min_length=5, max_length=500)
+    fault_category: str = Field(description="维修工确认的实际故障类别，作为故障诊断的历史案例标签")
+
+    @field_validator("fault_category")
+    @classmethod
+    def _check_category(cls, v: str) -> str:
+        if v not in FAULT_CATEGORIES:
+            raise ValueError(f"必须是以下之一：{'、'.join(FAULT_CATEGORIES)}")
+        return v
 
 
 class EvaluateIn(BaseModel):
@@ -269,12 +282,21 @@ class DiagnoseIn(BaseModel):
     device_id: int | None = None
 
 
+class CaseRef(BaseModel):
+    order_id: int
+    order_no: str
+    similarity: float
+
+
 class DiagnosisItem(BaseModel):
     category: str
     cause: str
     suggestion: str
-    confidence: float = Field(description="0-1 置信度")
+    confidence: float = Field(description="0-1 综合置信度（规则与案例证据 noisy-OR 合成）")
+    rule_confidence: float = Field(0, description="规则证据置信度")
+    case_confidence: float = Field(0, description="历史案例证据置信度")
     matched_keywords: list[str]
+    evidence_cases: list[CaseRef] = Field(default_factory=list, description="支持该判断的相似历史案例")
 
 
 class DiagnoseOut(BaseModel):
