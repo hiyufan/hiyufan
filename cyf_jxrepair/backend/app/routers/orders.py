@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
+from pydantic import StringConstraints
 
 from app.core.deps import CurrentUser, DbSession, Pagination, require_roles
 from app.core.enums import OrderStatus, Urgency, UserRole
@@ -25,7 +26,10 @@ DeviceAdmin = Annotated[User, Depends(require_roles(UserRole.DEVICE_ADMIN))]
 Repairer = Annotated[User, Depends(require_roles(UserRole.REPAIRER))]
 Reporter = Annotated[User, Depends(require_roles(UserRole.EMPLOYEE, UserRole.DEPT_ADMIN))]
 
-FaultDesc = Annotated[str, Form(min_length=5, max_length=500, description="故障描述，至少 5 个字")]
+FaultDesc = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=5, max_length=500),
+    Form(description="故障描述，去除首尾空白后 5~500 个字"),
+]
 Photos = Annotated[list[UploadFile], File(description="现场照片，jpg/png，单张 ≤ 5MB，最多 3 张")]
 
 

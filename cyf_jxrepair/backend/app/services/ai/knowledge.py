@@ -14,8 +14,9 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.enums import OrderStatus
+from app.core.exceptions import NotFound
 from app.models import RepairOrder
-from app.schemas import KnowledgeHit
+from app.schemas import KnowledgeCase, KnowledgeHit
 from app.services.ai.text import Bm25Index
 
 
@@ -87,3 +88,18 @@ class _KnowledgeBase:
 
 
 knowledge_base = _KnowledgeBase()
+
+
+def get_case(db: Session, order_id: int) -> KnowledgeCase:
+    """共享案例只公开归档工单的维修知识，不返回人员、照片、操作日志或操作权限。"""
+    order = db.scalar(select(RepairOrder).where(
+        RepairOrder.id == order_id, RepairOrder.status == OrderStatus.ARCHIVED,
+        RepairOrder.repair_result.is_not(None),
+    ))
+    if order is None:
+        raise NotFound("维修案例不存在或尚未归档")
+    return KnowledgeCase(
+        order_id=order.id, order_no=order.order_no, device_name=order.device.device_name,
+        category=order.fault_category or order.device.category, fault_desc=order.fault_desc,
+        repair_result=order.repair_result, archived_at=order.archived_at,
+    )

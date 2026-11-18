@@ -1,16 +1,17 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
+from pydantic import StringConstraints
 
 from app.core.config import settings
 from app.core.deps import CurrentUser, DbSession, PageParams, require_roles
 from app.core.enums import OrderStatus, UserRole
 from app.core.response import ApiResponse, ok
 from app.models import User
-from app.schemas import AlertHandleOut, AlertOut, DiagnoseIn, DiagnoseOut, KnowledgeHit, SummaryCard
+from app.schemas import AlertHandleOut, AlertOut, DiagnoseIn, DiagnoseOut, KnowledgeCase, KnowledgeHit, SummaryCard
 from app.services import alert_service, order_service
 from app.services.ai import diagnosis, summary
-from app.services.ai.knowledge import knowledge_base
+from app.services.ai.knowledge import get_case, knowledge_base
 
 router = APIRouter(prefix="/api/ai", tags=["AI 智能拓展"])
 
@@ -31,11 +32,19 @@ def diagnose(body: DiagnoseIn, db: DbSession, _: CurrentUser):
 @router.get("/knowledge", summary="② 维修知识库检索（相似故障）", response_model=ApiResponse[list[KnowledgeHit]])
 def knowledge(
     db: DbSession, _: CurrentUser,
-    q: Annotated[str, Query(min_length=2, max_length=100, description="故障关键词或描述")],
+    q: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=2, max_length=500),
+        Query(description="故障关键词或描述，最多 500 个字"),
+    ],
     exclude_order_id: int | None = None,
     top_k: Annotated[int, Query(ge=1, le=20)] = 8,
 ):
     return ok(knowledge_base.search(db, q, top_k=top_k, exclude_order_id=exclude_order_id))
+
+
+@router.get("/knowledge/{order_id}", summary="维修案例详情（仅共享归档知识）", response_model=ApiResponse[KnowledgeCase])
+def knowledge_case(order_id: int, db: DbSession, _: CurrentUser):
+    return ok(get_case(db, order_id))
 
 
 @router.get("/summaries", summary="③ 工单智能摘要（批量，派单页/看板用）", response_model=ApiResponse[list[SummaryCard]])
@@ -49,9 +58,9 @@ def summaries(
 
 
 @router.get("/alerts", summary="④ 超期工单预警列表", response_model=ApiResponse[list[AlertOut]])
-def alerts(db: DbSession, _: Viewer):
+def alerts(db: DbSession, user: Viewer):
     alert_service.scan(db)  # 扫描是幂等的；先扫一次，避免刚启动或刚重置数据时要等定时任务
-    return ok(alert_service.list_open(db))
+    return ok(alert_service.list_open(db, user))
 
 
 @router.post("/alerts/scan", summary="④ 立即执行一次超期扫描", response_model=ApiResponse[dict])

@@ -55,7 +55,7 @@ function evidence(it) {
   if (it.matched_keywords.length) parts.push(`规则 ${Math.round(it.rule_confidence * 100)}%：命中「${it.matched_keywords.map(esc).join("」「")}」`);
   if (it.evidence_cases.length) {
     parts.push(`案例 ${Math.round(it.case_confidence * 100)}%：${it.evidence_cases.map((c) =>
-      `<a href="order-detail.html?id=${c.order_id}" target="_blank" rel="noopener">${esc(c.order_no)}</a>`).join("、")}`);
+      `<a href="knowledge-detail.html?id=${c.order_id}" target="_blank" rel="noopener">${esc(c.order_no)}</a>`).join("、")}`);
   }
   return parts.join("<br>");
 }
@@ -81,24 +81,28 @@ function renderDiagnosis(d) {
 
 function renderSimilar(hits) {
   $("#similarBody").innerHTML = hits.length ? hits.map((h) => `
-    <a class="case" href="order-detail.html?id=${h.order_id}" target="_blank" rel="noopener">
+    <a class="case" href="knowledge-detail.html?id=${h.order_id}" target="_blank" rel="noopener">
       <b>${esc(h.device_name)}：${esc(h.fault_desc)}</b>
       <span>处理：${esc(h.repair_result)}</span></a>`).join("") : '<p class="side-empty">知识库里还没有相似案例。</p>';
 }
 
 const analyze = debounce(async () => {
   const text = faultDesc.value.trim();
+  const deviceId = Number(deviceSelect.value) || null;
   if (text.length < 4) return renderAiEmpty();
-  try {
-    const [diag, hits] = await Promise.all([
-      api.post("/api/ai/diagnose", { fault_desc: text, device_id: Number(deviceSelect.value) || null }),
-      api.get("/api/ai/knowledge", { q: text, top_k: 3 }),
-    ]);
-    renderDiagnosis(diag);
-    renderSimilar(hits);
-  } catch (err) {
-    $("#aiBody").innerHTML = `<p class="side-empty">暂时无法初判：${esc(err.message)}</p>`;
+  const [diagnosis, similar] = await Promise.allSettled([
+    api.post("/api/ai/diagnose", { fault_desc: text, device_id: deviceId }),
+    api.get("/api/ai/knowledge", { q: text, top_k: 3 }),
+  ]);
+  // 输入变化后，旧请求不能覆盖新描述的诊断，也不能改变新表单的紧急程度。
+  if (faultDesc.value.trim() !== text || (Number(deviceSelect.value) || null) !== deviceId) return;
+  if (diagnosis.status === "fulfilled") renderDiagnosis(diagnosis.value);
+  else {
+    $("#aiEngine").textContent = "";
+    $("#aiBody").innerHTML = `<p class="side-empty">暂时无法初判：${esc(diagnosis.reason.message)}</p>`;
   }
+  if (similar.status === "fulfilled") renderSimilar(similar.value);
+  else $("#similarBody").innerHTML = `<p class="side-empty">暂时无法检索：${esc(similar.reason.message)}</p>`;
 }, 500);
 
 // ------------------------------------------------------------ 表单

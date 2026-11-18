@@ -121,7 +121,7 @@ async function renderSimilar(o) {
     const hits = await api.get("/api/ai/knowledge", { q: o.fault_desc, exclude_order_id: o.id, top_k: 3 });
     $("#similarCard").classList.toggle("hidden", !hits.length);
     $("#similar").innerHTML = hits.map((h) => `
-      <a class="case" href="order-detail.html?id=${h.order_id}">
+      <a class="case" href="knowledge-detail.html?id=${h.order_id}">
         <b>${esc(h.device_name)}：${esc(h.fault_desc)}</b>
         <span>处理：${esc(h.repair_result)}</span></a>`).join("");
   } catch { /* 相似案例非核心，失败时不打扰用户 */ }

@@ -1,4 +1,4 @@
-// 维修知识库检索：TF-IDF 相似度排序，结果中高亮命中的字词
+// 维修知识库检索：BM25 相似度排序，结果中高亮命中的字词
 import { api } from "../core/http.js";
 import { icon } from "../core/icons.js";
 import { mountLayout } from "../core/layout.js";
@@ -40,7 +40,7 @@ async function search(query) {
     $("#results").innerHTML = hits.length ? hits.map((h) => `
       <article class="kb-result">
         <div class="sim">${Math.round(h.score * 100)}<small>相似度 %</small></div>
-        <h4><a href="order-detail.html?id=${h.order_id}">${esc(h.device_name)}</a><span class="subtle">${esc(h.category)}</span>
+        <h4><a href="knowledge-detail.html?id=${h.order_id}">${esc(h.device_name)}</a><span class="subtle">${esc(h.category)}</span>
           <span class="mono subtle">${esc(h.order_no)}</span><span class="subtle">${fmtTime(h.archived_at, true).slice(0, 10)} 归档</span></h4>
         <dl><dt>现象</dt><dd>${highlight(h.fault_desc, q)}</dd><dt>处理</dt><dd>${highlight(h.repair_result, q)}</dd></dl>
       </article>`).join("") : emptyState("没有找到相似案例", "可以换一种描述方式，或直接提交报修", "search");

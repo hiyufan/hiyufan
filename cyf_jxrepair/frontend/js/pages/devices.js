@@ -114,7 +114,7 @@ function openEditor(device) {
   });
 }
 
-$("#addBtn").addEventListener("click", () => openEditor(null));
+$("#addBtn").addEventListener("click", () => openEditor());
 $("#rows").addEventListener("click", async (e) => {
   const tr = e.target.closest("tr[data-id]");
   if (!tr) return;

@@ -6,6 +6,7 @@
 不依赖 mysql 命令行客户端，只用 PyMySQL。
 """
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -15,6 +16,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.core.config import PROJECT_DIR, settings  # noqa: E402
 
 SQL_FILES = [PROJECT_DIR / "sql" / "01_schema.sql", PROJECT_DIR / "sql" / "02_seed.sql"]
+
+
+def use_database_name(statement: str, name: str) -> str:
+    """仅替换建库/选库命令的标识符，不改动种子数据与表定义中的文字。"""
+    quoted = "`" + name.replace("`", "``") + "`"
+    return re.sub(
+        r"(?m)^((?:DROP DATABASE IF EXISTS|CREATE DATABASE|USE)\s+)cyf_jxrepair\b",
+        lambda match: match[1] + quoted,
+        statement,
+    )
 
 
 def split_statements(script: str) -> list[str]:
@@ -67,7 +78,7 @@ def main() -> int:
         with conn.cursor() as cur:
             for path in SQL_FILES:
                 for stmt in split_statements(path.read_text(encoding="utf-8")):
-                    cur.execute(stmt)
+                    cur.execute(use_database_name(stmt, settings.db_name))
                 print(f"[完成] {path.name}")
     print(f"[成功] 数据库 {settings.db_name} 初始化完毕，所有账号初始密码 123456")
     return 0

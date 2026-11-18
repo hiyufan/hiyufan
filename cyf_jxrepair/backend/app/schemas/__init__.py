@@ -1,7 +1,8 @@
 """接口出入参模型。出参中的人名、设备名均通过外键关联查询得到，不在工单表冗余存储。"""
 from datetime import date, datetime
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
 from app.core.enums import FAULT_CATEGORIES, DeviceStatus, OrderAction, OrderStatus, Urgency, UserRole
 
@@ -219,7 +220,7 @@ class ReasonIn(BaseModel):
 
 
 class CompleteIn(BaseModel):
-    repair_result: str = Field(min_length=5, max_length=500)
+    repair_result: Annotated[str, StringConstraints(strip_whitespace=True, min_length=5, max_length=500)]
     fault_category: str = Field(description="维修工确认的实际故障类别，作为故障诊断的历史案例标签")
 
     @field_validator("fault_category")
@@ -278,7 +279,7 @@ class RankingItem(BaseModel):
 
 # ------------------------------------------------------------------ AI 拓展
 class DiagnoseIn(BaseModel):
-    fault_desc: str = Field(min_length=4, max_length=500)
+    fault_desc: Annotated[str, StringConstraints(strip_whitespace=True, min_length=4, max_length=500)]
     device_id: int | None = None
 
 
@@ -307,15 +308,18 @@ class DiagnoseOut(BaseModel):
     recommended_repairers: list[RepairerLoad]
 
 
-class KnowledgeHit(BaseModel):
+class KnowledgeCase(BaseModel):
     order_id: int
     order_no: str
     device_name: str
     category: str
     fault_desc: str
     repair_result: str
-    score: float
     archived_at: datetime | None
+
+
+class KnowledgeHit(KnowledgeCase):
+    score: float
 
 
 class SummaryCard(BaseModel):

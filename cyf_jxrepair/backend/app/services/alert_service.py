@@ -67,9 +67,12 @@ def scan(db: Session) -> dict[str, int]:
     return {"created": created, "resolved": resolved}
 
 
-def list_open(db: Session) -> list[AlertOut]:
+def list_open(db: Session, user: User) -> list[AlertOut]:
+    # 与工单列表共用数据范围，部门看板不能显示其他部门的预警。
+    visible_orders = order_service.scope_filter(select(RepairOrder.id), user)
     alerts = db.scalars(
-        select(OrderAlert).where(OrderAlert.is_handled.is_(False)).order_by(OrderAlert.overdue_hours.desc())
+        select(OrderAlert).where(OrderAlert.is_handled.is_(False), OrderAlert.order_id.in_(visible_orders))
+        .order_by(OrderAlert.overdue_hours.desc())
     ).unique()
     return [
         AlertOut(id=a.id, order_id=a.order_id, order_no=a.order.order_no, device_name=a.order.device.device_name,

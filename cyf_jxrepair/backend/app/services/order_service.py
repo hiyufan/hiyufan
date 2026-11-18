@@ -188,6 +188,9 @@ def _check_device(db: Session, device_id: int, exclude_order_id: int | None = No
 
 def _add_log(db: Session, order: RepairOrder, operator: User, action: OrderAction,
              from_status: OrderStatus | None, content: str) -> None:
+    # 完整描述与处理结果保存在工单中；日志摘要含操作前缀，不能超出 VARCHAR(500)。
+    if len(content) > 500:
+        content = content[:499] + "…"
     db.add(OrderLog(order_id=order.id, operator_id=operator.id, action=action,
                     from_status=from_status.value if from_status else None,
                     to_status=order.status.value, content=content, created_at=datetime.now()))
