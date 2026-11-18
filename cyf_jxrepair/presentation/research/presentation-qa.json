@@ -1,0 +1,22 @@
+{
+  "slides": 11,
+  "errors": [],
+  "requests": [],
+  "overflows": [],
+  "during": {
+    "current": 0.07801220709771353,
+    "target": 1,
+    "moving": true
+  },
+  "offline": true,
+  "checks": [
+    "11 scenes",
+    "persistent DOM",
+    "overview",
+    "paper links",
+    "screenshot tabs",
+    "mobile controls",
+    "keyboard",
+    "interrupted motion"
+  ]
+}

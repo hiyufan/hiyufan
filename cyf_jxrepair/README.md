@@ -55,7 +55,7 @@
 | ④ 超期工单预警 | 后台定时扫描 + 一键自动派单 / 催办 | 看板顶部警示带 |
 | ⑤ 智能派单推荐 | 擅长方向、空闲、同类经验、满意度加权打分 | 每个推荐附带理由 |
 
-完工时维修工确认的故障类别会成为新的诊断案例，系统越用越准。算法、公式、参考文献和评测见 [docs/AI拓展功能说明.md](docs/AI拓展功能说明.md)。
+完工时维修工确认的故障类别会成为新的诊断案例；案例库增长后的效果仍需独立样本验证。算法、公式、参考文献和评测见 [docs/AI拓展功能说明.md](docs/AI拓展功能说明.md)。
 
 配置 `LLM_API_KEY`（兼容 OpenAI 协议，如 DeepSeek、通义千问）后，诊断和单张摘要会优先调用大模型，失败或无外网时自动回到本地方案。
 
@@ -105,13 +105,13 @@ cyf_jxrepair/
 │   │   ├── schemas/              接口出入参模型
 │   │   ├── services/             业务逻辑（workflow 状态机、order、user、device、stat、alert、file）
 │   │   │   └── ai/               智能诊断、知识库检索、智能摘要、文本处理、大模型适配
-│   │   └── routers/              REST 接口（43 个）
+│   │   └── routers/              REST 接口（44 个）
 │   ├── scripts/                  init_db.py 初始化数据库 · export_api_doc.py 生成接口清单 · eval_diagnosis.py 诊断评测
-│   ├── tests/                    状态机、算法单元测试 + 接口集成测试（50 个用例）
+│   ├── tests/                    状态机、算法单元测试 + 接口集成测试（51 个用例）
 │   ├── uploads/                  现场照片（数据库只存相对路径）
 │   └── requirements.txt
 ├── frontend/
-│   ├── *.html                    10 个页面
+│   ├── *.html                    11 个页面
 │   ├── css/                      base 设计令牌 · layout 框架 · components 组件 · pages 页面
 │   ├── js/core/                  http 请求 · session 登录态 · layout 菜单与守卫 · ui 弹窗/提示
 │   ├── js/components/            分页、照片选择、工单卡片、工单操作弹窗
@@ -127,7 +127,7 @@ cyf_jxrepair/
 
 ```bash
 cd backend
-python -m pytest -q              # 50 个用例：状态机、算法、权限隔离、上传校验、业务闭环、统计、AI
+python -m pytest -q              # 51 个用例：状态机、算法、权限隔离、上传校验、业务闭环、统计、AI
 python scripts/eval_diagnosis.py # 故障诊断三种方案的准确率对比
 ruff check app tests scripts
 ```
@@ -153,3 +153,10 @@ E2E_BASE_URL=http://127.0.0.1:8000 E2E_PASSWORD='测试账号的实际密码' np
 | `cryptography package is required` | MySQL 8 默认认证方式需要该依赖：`pip install cryptography` |
 | 页面空白、控制台报模块加载错误 | 不要双击打开 html，请通过 `http://127.0.0.1:8000` 访问。如果用 Live Server 单独打开前端，在控制台执行 `localStorage.setItem("cyf_api_base","http://127.0.0.1:8000")` 后刷新 |
 | 端口 8000 被占用 | 修改启动脚本中的 `--port` |
+
+## 演示与报告工具
+
+- `presentation/`：11页HTML演示、共享元素转场、可复现实验与原始JSON；`export.py`导出离线单文件。
+- `report/`：按八章提纲生成Word报告，个人信息由仓库外配置读取。
+- 本地并发修正：MariaDB快照冲突时在锁阶段回滚重取；新增回归后51项后端测试通过。
+- 量化口径：24条开发集自测11/24→23/24；万条合成文档复用索引的算法中位耗时约16.1倍改善，不等于生产准确率、整站延迟或并发容量。

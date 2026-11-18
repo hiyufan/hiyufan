@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="CYF捷修云项目演示：用一张工单串起需求、数据、接口、权限、AI与验证。">
+  <title>CYF 捷修云 · 让故障，有下文。</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="viewport" aria-label="捷修云项目演示">
+    <div id="stage">
+      <div id="paper" aria-hidden="true"></div>
+      <div id="grain" aria-hidden="true"></div>
+      <div id="photo" aria-hidden="true"><img src="assets/robot.png" alt=""></div>
+      <div id="accent" aria-hidden="true"></div>
+      <svg id="thread" viewBox="0 0 1600 900" aria-hidden="true"><path id="threadBack"/><path id="threadLine"/></svg>
+      <div id="ghostWord" aria-hidden="true">REPAIR</div>
+      <a id="brand" href="#1" aria-label="回到封面"><span>CYF</span> 捷修云</a>
+
+      <div id="scenes">
+        <section class="scene cover" data-scene="0" aria-label="让故障，有下文">
+          <h1>让故障<span class="orange">，</span><br>有下文<span class="orange">。</span></h1>
+          <div class="cover-rule"></div>
+        </section>
+
+        <section class="scene flow" data-scene="1" aria-label="业务闭环">
+          <h2>一张工单，<br>走完六道关。</h2>
+          <ol class="flow-steps">
+            <li><b>01</b><strong>提交报修</strong><span>员工 · 现场照片</span></li>
+            <li><b>02</b><strong>派单</strong><span>设备科 · 指派维修工</span></li>
+            <li><b>03</b><strong>接单</strong><span>维修工 · 确认到场</span></li>
+            <li><b>04</b><strong>完工</strong><span>维修工 · 处理结果</span></li>
+            <li><b>05</b><strong>验收评价</strong><span>报修人 · 1—5 星</span></li>
+            <li><b>06</b><strong>归档</strong><span>历史记录 · 维修知识</span></li>
+          </ol>
+          <div class="branch"><b>驳回</b><span>补充说明</span><span>重新提交</span></div>
+          <p class="return-branch">验收不通过 <span>→</span> 返回维修中</p>
+        </section>
+
+        <section class="scene database" data-scene="2" aria-label="数据库设计">
+          <h2>工单是中心，<br>数据各归其位。</h2>
+          <div class="database-count"><b>8</b><span>张业务表</span></div>
+          <div class="seed"><span>种子数据</span><b>13<em>名用户</em></b><b>16<em>台设备</em></b><b>38<em>张工单</em></b></div>
+          <svg class="db-lines" viewBox="0 0 1600 900" aria-hidden="true">
+            <path d="M875 325V400H1050 M1280 325V400H1210 M1050 585V655H850 M1210 585V655H1325"/>
+            <circle cx="1050" cy="400" r="5"/><circle cx="1210" cy="400" r="5"/>
+          </svg>
+          <div class="db-node node-device"><strong>设备台账</strong><code>device</code></div>
+          <div class="db-node node-user"><strong>用户</strong><code>sys_user</code></div>
+          <div class="db-node node-log"><strong>流转日志</strong><code>order_log</code></div>
+          <div class="db-node node-evaluation"><strong>维修评价</strong><code>repair_evaluation</code></div>
+          <div class="db-support">部门 <span>／</span> 故障规则 <span>／</span> 超期预警</div><div class="index-design"><code>(status, created_at)</code><span>状态筛选与时间排序</span><code>UNIQUE(order_id)</code><span>同一工单仅一条评价</span></div>
+        </section>
+
+        <section class="scene concurrent" data-scene="3" aria-label="并发与事务验证">
+          <h2>十次抢单，<br>只落一笔。</h2>
+          <div class="race-number"><b>10<span>→</span>1</b><p>并发派单调用 → 成功流转</p></div>
+          <div class="race-results"><div><b>1</b><strong>成功派单</strong></div><div><b>9</b><strong>409 业务冲突</strong></div><div><b>1</b><strong>派单日志</strong></div></div>
+          <div class="transaction-chain"><strong>锁定工单行</strong><span>↓</span><strong>校验状态与归属</strong><span>↓</span><strong>改状态 + 写日志</strong><span>↓</span><strong>同一事务提交</strong></div>
+          <p class="race-scope">MariaDB 11.8 · 独立会话 · 10 轮复验 · 本地修正后结果</p>
+        </section>
+
+        <section class="scene algorithm" data-scene="4" aria-label="案例推理与BM25论文依据">
+          <h2>建议有出处，<br>经验能回流。</h2>
+          <div class="algorithm-pipeline"><div><b>01</b><strong>找相似案例</strong><span>中文二元组 → BM25 → Top-5</span></div><div><b>02</b><strong>融合两路证据</strong><span>关键词规则 + 案例相似度投票</span></div><div><b>03</b><strong>人工确认，归档复用</strong><span>维修工确认类别 → 案例库增量积累</span></div></div>
+          <div class="formula"><span>BM25</span><div>Σ IDF(t) × <span class="fraction"><i>tf × (k₁ + 1)</i><i>tf + k₁ × (1 − b + b × |d| / avgdl)</i></span></div><p>词频饱和 · 文档长度归一　 k₁ = 1.2　 b = 0.75</p></div>
+          <div class="paper-links"><a href="https://www.staff.city.ac.uk/~sbrp622/papers/foundations_bm25_review.pdf" target="_blank" rel="noopener">Robertson &amp; Zaragoza · 2009 ↗</a><a href="https://www.iiia.csic.es/~enric/papers/Aamodt_1994_Case.pdf" target="_blank" rel="noopener">Aamodt &amp; Plaza · 1994 ↗</a></div>
+        </section>
+
+        <section class="scene ablation" data-scene="5" aria-label="诊断消融实验">
+          <h2>多走一步，<br>多判对十二条。</h2>
+          <div class="accuracy-gain"><b>+50<span>pp</span></b><p>相对纯规则的 Top-1 提升</p></div>
+          <div class="accuracy-chart"><div><strong>纯规则</strong><b>11 / 24</b><span><i style="width:45.833%"></i></span><em>45.8%</em></div><div><strong>规则 + 案例</strong><b>19 / 24</b><span><i style="width:79.167%"></i></span><em>79.2%</em></div><div class="best"><strong>再加同义词</strong><b>23 / 24</b><span><i style="width:95.833%"></i></span><em>95.8%</em></div></div>
+          <p class="evaluation-scope">24 条自建口语样本 · 6 类故障 · 同库同条件消融</p>
+          <p class="evaluation-limit">开发集自测；不代表真实车间准确率。</p>
+        </section>
+
+        <section class="scene performance" data-scene="6" aria-label="索引缓存性能与复杂度">
+          <h2>复用索引，<br>省下重复功。</h2>
+          <div class="speed-gain"><b id="speedGain">16.1<span>×</span></b><p>万条合成案例 · 中位耗时比</p></div>
+          <div class="speed-table"><div class="speed-head"><span>案例数</span><span>每次重建 + 检索</span><span>复用索引检索</span></div><div><strong>1,000</strong><b data-cold="0">27.84 ms</b><b data-warm="0">1.46 ms</b></div><div><strong>5,000</strong><b data-cold="1">148.37 ms</b><b data-warm="1">7.82 ms</b></div><div><strong>10,000</strong><b data-cold="2">303.74 ms</b><b data-warm="2">18.86 ms</b></div></div>
+          <div class="complexity"><div><span>构建</span><code>O(T)</code></div><div><span>查询</span><code>O(NQ + H log H)</code></div><p>N 案例数 · Q 查询词数 · H 命中数 · T 语料总长度</p></div>
+          <p class="speed-scope">同语料同查询 · 各 40 次 · ARM64 / Python 3.11 · 仅算法耗时</p>
+        </section>
+
+        <section class="scene frontend" data-scene="7" aria-label="前端页面与导航优化">
+          <h2>换页面，<br>不换现场。</h2>
+          <div class="zero"><b>0</b><span>次整页重载</span></div>
+          <div class="screen-frame"><div class="screen-tools"><button id="dashboardTab" type="button" aria-pressed="true">统计看板</button><button id="reportTab" type="button" aria-pressed="false">报修与初判</button></div><div class="screen-window"><img id="productScreen" src="assets/dashboard.png" alt="捷修云统计看板真实运行截图"></div></div>
+          <p class="frontend-rule">11 个页面 · 保留前进后退 · 旧请求退出即取消</p>
+        </section>
+
+        <section class="scene fixes" data-scene="8" aria-label="缺陷甄别和优化">
+          <h2>修掉边界，<br>数字才站得住。</h2>
+          <div class="fix-list">
+            <div><b>01</b><strong>并发派单异常</strong><p><del>快照隔离冲突</del><span>→</span>回滚重取 + 行锁</p></div>
+            <div><b>02</b><strong>部门预警越界</strong><p><del>全厂预警</del><span>→</span>按工单范围过滤</p></div>
+            <div><b>03</b><strong>知识库案例打不开</strong><p><del>复用完整工单</del><span>→</span>独立只读接口</p></div>
+            <div><b>04</b><strong>空白／过长文本</strong><p><del>缺少边界</del><span>→</span>trim + 长度校验</p></div>
+            <div><b>05</b><strong>测试触碰业务库</strong><p><del>共用数据库</del><span>→</span>独立测试库</p></div>
+            <div><b>06</b><strong>导航整页刷新</strong><p><del>普通链接跳转</del><span>→</span>路由 + 生命周期清理</p></div>
+          </div>
+          <p class="fix-rule">问题 → 定位 → 修正 → 验证</p>
+        </section>
+
+        <section class="scene proof" data-scene="9" aria-label="运行验证与部署">
+          <h2>闭环，<br>用运行结果回答。</h2>
+          <div class="test-count"><b>51</b><span>项后端测试<br>全部通过</span></div>
+          <div class="proof-count"><b>9</b><span>组浏览器回归场景</span></div>
+          <div class="order-proof"><img src="assets/order.png" alt="导航回归验证工单的真实归档截图"></div>
+          <div class="proof-flow"><span>提交</span><i>→</i><span>驳回</span><i>→</i><span>重提</span><i>→</i><span>派单</span><i>→</i><span>接单</span><i>→</i><span>完工</span><i>→</i><span>验收</span><i>→</i><b>归档</b></div>
+        </section>
+
+        <section class="scene ending" data-scene="10" aria-label="交付与后续">
+          <h2>修好设备，<br>也留下答案。</h2>
+          <a class="live-link" href="https://jxrepair.oiya.net" target="_blank" rel="noopener">jxrepair.oiya.net <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 32L32 7M9 7h23v23"/></svg></a>
+          <div class="deploy-line"><span>宝塔反代</span><i>／</i><span>HTTPS</span><i>／</i><span>MariaDB 11.8</span></div>
+          <p class="ending-line">报修 → 修复 → 归档 → 知识</p><p class="delivery-limit">权限隔离 · 事务保护 · 流转留痕 · 离线可用</p>
+        </section>
+      </div>
+
+      <article id="ticket" aria-label="贯穿演示的共享工单">
+        <div class="ticket-inner"><div class="ticket-code">CYF20261118001</div><div class="ticket-divider"></div><div class="ticket-title">气压不足</div><div class="ticket-detail">夹爪气缸动作无力</div><div class="ticket-foot"><span id="statusDot"></span><strong id="ticketStatus">待派单</strong><svg id="ticketArrow" viewBox="0 0 36 36" aria-hidden="true"><path d="M5 18h26M20 7l11 11-11 11"/></svg></div></div>
+      </article>
+      <div id="signalDot" aria-hidden="true"></div>
+      <div id="folio" aria-hidden="true"><span id="pageNumber">01</span><span class="folio-total">/ 11</span></div>
+      <div id="progressTrack" aria-hidden="true"><div id="progressFill"></div></div>
+      <nav id="controls" aria-label="演示控制">
+        <button id="overviewBtn" aria-label="页面总览（M）" title="页面总览 M"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></button>
+        <button id="notesBtn" aria-label="讲稿与评分依据（N）" title="讲稿与评分依据 N"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5"/></svg></button>
+        <button id="fullBtn" aria-label="全屏（F）" title="全屏 F"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9V3h6M15 3h6v6M21 15v6h-6M9 21H3v-6"/></svg></button>
+        <button id="prevBtn" aria-label="上一页" title="上一页 ←"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8"/></svg></button>
+        <button id="nextBtn" aria-label="下一页" title="下一页 →"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4l8 8-8 8"/></svg></button>
+      </nav>
+    </div>
+  </main>
+  <div id="announcer" class="sr-only" role="status" aria-live="polite"></div>
+  <dialog id="overview" aria-label="页面总览"><div class="dialog-head"><h2>十一页，一张工单。</h2><button class="close-dialog" aria-label="关闭页面总览">×</button></div><div id="overviewGrid"></div></dialog>
+  <dialog id="notes" aria-label="讲稿与评分依据"><div class="dialog-head"><h2 id="notesTitle"></h2><button class="close-dialog" aria-label="关闭讲稿">×</button></div><div id="notesBody"></div></dialog>
+  <script src="app.js"></script>
+</body>
+</html>

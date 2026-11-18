@@ -1,0 +1,3 @@
+student-info*.json
+output/
+__pycache__/

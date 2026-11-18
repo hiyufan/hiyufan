@@ -1,0 +1,651 @@
+{
+  "utc": "2026-11-18T13:46:17.969826+00:00",
+  "source_commit": "a03eee1cc8170271f4fc2607e62ddbdf97fb042c",
+  "python": "3.11.15",
+  "machine": "aarch64",
+  "cpu_count_visible": 4,
+  "seed_sha256": "2194f5961837b32e19039908774d251e5f6091a761baffd1d0f8ca82278bb6f2",
+  "scope": "isolated seeded DB; synthetic corpus; algorithm microbenchmark, not HTTP capacity",
+  "database": "11.8.6-MariaDB-log",
+  "archived_cases": 26,
+  "ablation": [
+    {
+      "name": "A 仅规则",
+      "n": 24,
+      "top1_correct": 11,
+      "top3_correct": 12,
+      "covered": 12,
+      "predictions": [
+        {
+          "query": "注塑机料筒加热不上来，产品缺料",
+          "expected": "电气故障",
+          "predicted": []
+        },
+        {
+          "query": "机器人示教器屏幕不亮，按什么都没反应",
+          "expected": "电气故障",
+          "predicted": []
+        },
+        {
+          "query": "配电柜有烧焦味，老是断电",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "叉车开起来没劲，电量看着是满的",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "货梯门关不上，电梯不走",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "输送线电机摸着很烫，过一会就停",
+          "expected": "电气故障",
+          "predicted": []
+        },
+        {
+          "query": "冲床滑块下行越来越慢",
+          "expected": "液压故障",
+          "predicted": []
+        },
+        {
+          "query": "叉车货叉抬不起来，泵在响",
+          "expected": "液压故障",
+          "predicted": []
+        },
+        {
+          "query": "油缸下面有一滩油，滴油",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "压力机保压保不住，压力往下掉",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "注塑机开合模动作慢，油很烫",
+          "expected": "液压故障",
+          "predicted": []
+        },
+        {
+          "query": "输送带往一边偏，东西掉下去",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "冷却塔风扇转起来晃得厉害，嗡嗡响",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "主轴转的时候咔咔响",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "机器人第三轴动起来抖",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "模板移动时卡一下卡一下的",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "车间里风动扳手没劲，气不够",
+          "expected": "气动故障",
+          "predicted": []
+        },
+        {
+          "query": "夹爪夹不住工件，有嘶嘶声",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "分拣挡板不动作了",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "开机报警伺服没准备好，回不了零",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "零件尺寸一会大一会小",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "冷却液出不来，刀具烫手",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "空压机排气温度高停机了",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "导轨缺油报警",
+          "expected": "润滑冷却",
+          "predicted": [
+            "数控系统",
+            "润滑冷却"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "B 规则 + 案例",
+      "n": 24,
+      "top1_correct": 19,
+      "top3_correct": 19,
+      "covered": 19,
+      "predictions": [
+        {
+          "query": "注塑机料筒加热不上来，产品缺料",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "机器人示教器屏幕不亮，按什么都没反应",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "配电柜有烧焦味，老是断电",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "叉车开起来没劲，电量看着是满的",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "货梯门关不上，电梯不走",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "输送线电机摸着很烫，过一会就停",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "冲床滑块下行越来越慢",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "叉车货叉抬不起来，泵在响",
+          "expected": "液压故障",
+          "predicted": []
+        },
+        {
+          "query": "油缸下面有一滩油，滴油",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "压力机保压保不住，压力往下掉",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "注塑机开合模动作慢，油很烫",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "输送带往一边偏，东西掉下去",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "冷却塔风扇转起来晃得厉害，嗡嗡响",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "主轴转的时候咔咔响",
+          "expected": "机械故障",
+          "predicted": []
+        },
+        {
+          "query": "机器人第三轴动起来抖",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "模板移动时卡一下卡一下的",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "车间里风动扳手没劲，气不够",
+          "expected": "气动故障",
+          "predicted": []
+        },
+        {
+          "query": "夹爪夹不住工件，有嘶嘶声",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "分拣挡板不动作了",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "开机报警伺服没准备好，回不了零",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "零件尺寸一会大一会小",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "冷却液出不来，刀具烫手",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "空压机排气温度高停机了",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "导轨缺油报警",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却",
+            "数控系统"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "C 规则 + 案例 + 同义词",
+      "n": 24,
+      "top1_correct": 23,
+      "top3_correct": 23,
+      "covered": 23,
+      "predictions": [
+        {
+          "query": "注塑机料筒加热不上来，产品缺料",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "机器人示教器屏幕不亮，按什么都没反应",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "配电柜有烧焦味，老是断电",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "叉车开起来没劲，电量看着是满的",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "货梯门关不上，电梯不走",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "输送线电机摸着很烫，过一会就停",
+          "expected": "电气故障",
+          "predicted": [
+            "电气故障"
+          ]
+        },
+        {
+          "query": "冲床滑块下行越来越慢",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "叉车货叉抬不起来，泵在响",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "油缸下面有一滩油，滴油",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "压力机保压保不住，压力往下掉",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "注塑机开合模动作慢，油很烫",
+          "expected": "液压故障",
+          "predicted": [
+            "液压故障"
+          ]
+        },
+        {
+          "query": "输送带往一边偏，东西掉下去",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "冷却塔风扇转起来晃得厉害，嗡嗡响",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "主轴转的时候咔咔响",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "机器人第三轴动起来抖",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "模板移动时卡一下卡一下的",
+          "expected": "机械故障",
+          "predicted": [
+            "机械故障"
+          ]
+        },
+        {
+          "query": "车间里风动扳手没劲，气不够",
+          "expected": "气动故障",
+          "predicted": []
+        },
+        {
+          "query": "夹爪夹不住工件，有嘶嘶声",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "分拣挡板不动作了",
+          "expected": "气动故障",
+          "predicted": [
+            "气动故障"
+          ]
+        },
+        {
+          "query": "开机报警伺服没准备好，回不了零",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "零件尺寸一会大一会小",
+          "expected": "数控系统",
+          "predicted": [
+            "数控系统"
+          ]
+        },
+        {
+          "query": "冷却液出不来，刀具烫手",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "空压机排气温度高停机了",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却"
+          ]
+        },
+        {
+          "query": "导轨缺油报警",
+          "expected": "润滑冷却",
+          "predicted": [
+            "润滑冷却",
+            "数控系统"
+          ]
+        }
+      ]
+    }
+  ],
+  "retrieval": [
+    {
+      "documents": 1000,
+      "warm_query": {
+        "median_ms": 1.394,
+        "p95_ms": 1.424,
+        "n": 40
+      },
+      "rebuild_and_query": {
+        "median_ms": 27.87,
+        "p95_ms": 28.489,
+        "n": 40
+      },
+      "median_speedup": 19.99
+    },
+    {
+      "documents": 5000,
+      "warm_query": {
+        "median_ms": 8.539,
+        "p95_ms": 9.102,
+        "n": 40
+      },
+      "rebuild_and_query": {
+        "median_ms": 144.31,
+        "p95_ms": 146.076,
+        "n": 40
+      },
+      "median_speedup": 16.9
+    },
+    {
+      "documents": 10000,
+      "warm_query": {
+        "median_ms": 16.747,
+        "p95_ms": 19.051,
+        "n": 40
+      },
+      "rebuild_and_query": {
+        "median_ms": 295.582,
+        "p95_ms": 348.286,
+        "n": 40
+      },
+      "median_speedup": 17.65
+    }
+  ],
+  "concurrency": {
+    "parallel_calls": 10,
+    "rounds": [
+      {
+        "round": 1,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 2,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 3,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 4,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 5,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 6,
+        "outcomes": {
+          "success": 1,
+          "database_error_1020": 9
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 7,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 8,
+        "outcomes": {
+          "success": 1,
+          "database_error_1020": 9
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 9,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      },
+      {
+        "round": 10,
+        "outcomes": {
+          "database_error_1020": 9,
+          "success": 1
+        },
+        "dispatch_logs": 1,
+        "state": "ASSIGNED"
+      }
+    ],
+    "scope": "service-layer calls; independent DB sessions; synchronized barrier; not HTTP load test"
+  }
+}
