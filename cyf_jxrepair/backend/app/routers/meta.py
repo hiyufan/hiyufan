@@ -12,6 +12,7 @@ router = APIRouter(prefix="/api/meta", tags=["基础数据"])
 def options():
     return ok({
         "app_name": settings.app_name,
+        "show_demo_accounts": settings.show_demo_accounts,
         "order_status": OrderStatus.options(),
         "roles": UserRole.options(),
         "urgency": Urgency.options(),

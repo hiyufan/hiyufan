@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     app_name: str = "CYF捷修云报修工单管理系统"
     app_version: str = "1.0.0"
     order_prefix: str = "CYF"
+    show_demo_accounts: bool = True
 
     # ---- 数据库 ----
     db_host: str = "127.0.0.1"

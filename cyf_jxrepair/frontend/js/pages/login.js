@@ -38,7 +38,11 @@ if (getToken() && getUser() && !params.has("reason")) {
 
 $("#flow").innerHTML = FLOW.map(([t, d], i) => `<li><b>${i + 1}</b><div><span>${t}</span><small>${d}</small></div></li>`).join("");
 $("#legend").innerHTML = LEGEND.map(([c, t, d]) => `<div><i class="sw" style="background:${c}"></i><span>${t}<br><small>${d}</small></span></div>`).join("");
-$("#demoRows").innerHTML = DEMO.map(([u, n, r, h]) => `<tr data-user="${u}" tabindex="0"><td>${u}</td><td>${esc(n)}</td><td>${esc(r)}</td><td class="muted">${esc(h)}</td></tr>`).join("");
+api.get("/api/meta/options").then((options) => {
+  if (!options.show_demo_accounts) return;
+  $("#demoRows").innerHTML = DEMO.map(([u, n, r, h]) => `<tr data-user="${u}" tabindex="0"><td>${u}</td><td>${esc(n)}</td><td>${esc(r)}</td><td class="muted">${esc(h)}</td></tr>`).join("");
+  $("#demoAccounts").classList.remove("hidden");
+}).catch(() => {});
 
 const reason = NOTICE[params.get("reason")];
 if (reason) {
