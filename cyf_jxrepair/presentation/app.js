@@ -301,11 +301,11 @@
     "compact": true
   },
   {
-    "title": "换页面，不换现场。",
-    "x": 1020,
-    "y": 585,
-    "w": 470,
-    "h": 152,
+    "title": "同样一单，派给谁更合适。",
+    "x": 70,
+    "y": 625,
+    "w": 540,
+    "h": 164,
     "r": 0,
     "dark": 1,
     "photo": [
@@ -318,12 +318,12 @@
     "accent": [
       60,
       359,
-      435,
-      7
+      550,
+      5
     ],
     "dot": [
-      613,
-      181
+      1519,
+      177
     ],
     "word": [
       64,
@@ -332,9 +332,9 @@
       0
     ],
     "code": "CYF20261118001",
-    "subject": "切页不丢登录态",
+    "subject": "推荐 杨帆 · 0.762",
     "detail": "",
-    "status": "页面退出，旧请求取消",
+    "status": "擅长气动 · 在手 1 单 · 同类 3 次",
     "color": [
       223,
       255,
@@ -384,11 +384,11 @@
     ]
   },
   {
-    "title": "闭环，用运行结果回答。",
-    "x": 850,
-    "y": 499,
-    "w": 680,
-    "h": 224,
+    "title": "超期之后，系统继续推进。",
+    "x": 70,
+    "y": 632,
+    "w": 540,
+    "h": 160,
     "r": 0,
     "dark": 1,
     "photo": [
@@ -400,13 +400,13 @@
     ],
     "accent": [
       60,
-      333,
-      650,
-      6
+      359,
+      550,
+      5
     ],
     "dot": [
       1519,
-      167
+      177
     ],
     "word": [
       250,
@@ -415,16 +415,16 @@
       0
     ],
     "code": "CYF20261118001",
-    "subject": "气动故障已处理",
+    "subject": "预警已处理",
     "detail": "",
-    "status": "已验收 · 5 / 5",
+    "status": "设备科一键派单 / 催办",
     "color": [
-      239,
-      236,
-      228
+      223,
+      255,
+      102
     ],
     "compact": true,
-    "archived": true
+    "archived": false
   },
   {
     "title": "修好设备，也留下答案。",
@@ -590,22 +590,24 @@
     "caveat": "没有倒排索引，也未证明百万级可用。后续可引入倒排候选与Top-K堆，但PPT不将其计为已实现。"
   },
   {
-    "focus": "前端页面开发 15分。",
-    "story": "11指登录页加10个应用视图，不计跳转用index.html。原生HTML/CSS/JS，ECharts与字体本地化。统计看板包含月度工单量、状态分布、平均处理时长和设备故障排行4类图表。可点击截图上方的两个选项切换真实截图。",
+    "focus": "拓展：可解释的多准则派单。前端15分的基础页面、图表和交互保留在讲稿。",
+    "story": "现场切换气动与电气故障：同一组维修工，前者首推杨帆0.762，后者首推何振宇0.756。堆叠条展示每项贡献，全部为隔离种子库调用业务服务的实际输出；PPT切换读取实验快照，不连接线上库。",
     "evidence": [
-      "报修照片选择预览、列表分页筛选检索、派单/评价弹窗、成功失败提示、会话保持与退出。",
-      "此前普通链接每次创建新document；现在模板复用、共享导航、同一文档切换，实测document请求为0。",
-      "History API保留前进后退与筛选；离开视图取消请求与debounce，释放图表和照片URL。",
-      "初始化期间暂缓交互，避免输入被初始状态覆盖。"
+      "评分 = 0.4×技能匹配 + 0.3/(1+在手单数) + 0.15×同类已归档数/(同类已归档数+2) + 0.15×(平均评价−1)/4；无评价用0.6作为质量基值。",
+      "气动场景：杨帆与何振宇都在手1单，得分分别0.762与0.281，显示只按负载无法区分两者；没有据此声称缩短实际维修时长。",
+      "电气场景：何振宇同类2次、在手1单；张国庆同类5次、在手2单。前者0.756排在后者0.732之前，体现经验与负载的权衡。",
+      "每项先归一化到0—1；经验项n/(n+2)边际贡献递减。得分相同再按在手单数、用户ID排序；推荐可被管理员改选。",
+      "R名候选的应用层评分O(R)，排序O(R log R)；数据库聚合扫描与SQL执行代价另计。权重为项目启发式，未经数据训练或最优性证明。",
+      "基础前端：11个页面、4类统计图表、照片预览、分页筛选、派单/评价弹窗、会话保持。共享路由保留前进后退、取消旧请求，释放图表与照片URL。"
     ],
     "sources": [
+      "backend/app/services/user_service.py:recommend_repairers",
+      "research/dispatch_alerts.py",
+      "research/dispatch-alerts.json",
       "frontend/js/core/router.js",
-      "frontend/js/core/http.js",
-      "frontend/js/pages/dashboard.js",
-      "frontend/tests/navigation.test.mjs",
-      "提交 1ffecd2 / a03eee1"
+      "frontend/tests/navigation.test.mjs"
     ],
-    "caveat": "嵌入的是实际运行截图，不是幻灯片内连接生产数据库的后台。浏览器回归使用Chromium，未据此声称已测Edge。"
+    "caveat": "这是单工单的可解释排序，不是全局任务调度、机器学习模型或真实效率提升。满意度显示值四舍五入，贡献图与得分可有小于0.001的舍入差。"
   },
   {
     "focus": "缺陷甄别与人工优化 15分。展示6项真实修复，避免只讲最终结果。",
@@ -630,21 +632,25 @@
     "caveat": "考试要求的“AI原始片段→分析→人工修正→验证”四步记录、10条排查日志及注释标记，仍应按本人实际过程整理；这里没有编造AI原始记录。"
   },
   {
-    "focus": "系统联调与业务闭环 15分。",
-    "story": "演示工单CYF20261118001已从提交走到归档，中间实际经历驳回和重新提交，照片保留，最后验收5分。右侧为该工单真实截图。51是本次后端pytest通过数（包含新增并发回归）；9是浏览器子场景数，node输出的10还包含外层父测试。",
+    "focus": "拓展：超期识别与业务动作闭环；联调15分的测试依据移入讲稿。",
+    "story": "后台每300秒扫描：待派单看提交时间，待接单/维修中看派单时间，严格超过48小时进入预警。设备科点击处理后，未派单走诊断→四维推荐→派单，未完工写催办日志。扫描自动运行，处理需要人工触发。",
     "evidence": [
-      "实际日志：SUBMIT、REJECT、RESUBMIT、DISPATCH、TAKE、COMPLETE、ACCEPT、ARCHIVE。",
-      "9组浏览器场景覆盖全导航/图表、历史、慢请求、重试、取消旧任务、初始化保护和三类其他角色。",
-      "宝塔Nginx反代到127.0.0.1:8026，服务开机启动；HTTPS证书自动续期。",
-      "数据库和上传目录持久化；重启后工单与照片保留。"
+      "38条初始种子工单、固定应用时间2026-11-18 12:00、全新隔离MariaDB。首次扫描新增7条，原样重扫新增0条。",
+      "分别处理1条未派单和1条未完工预警，实际新增1条DISPATCH和1条URGE日志，处理后重扫新增0条，剩余5条未处理预警。",
+      "已开放预警按工单ID+预警类型在扫描中去重；人工处理过的预警在一个阈值周期内抑制重复提醒。不再超期的开放预警会自动解除。",
+      "48h是检测阈值与提醒抑制周期，不是维修完成承诺；催办落入工单日志，未接短信、电话或外部通知。",
+      "51项后端测试、此前9组浏览器回归支持主流程与边界。实际演示工单经历提交、驳回、重提、派单、接单、完工、验收、归档。"
     ],
     "sources": [
+      "backend/app/services/alert_service.py:scan/handle/run_scheduler",
+      "backend/app/services/order_service.py:dispatch/urge",
+      "backend/app/core/config.py",
+      "research/dispatch_alerts.py",
+      "research/dispatch-alerts.json",
       "backend/tests/",
-      "frontend/tests/navigation.test.mjs",
-      "真实线上工单40",
-      "assets/order.png",
-      "本次会话的测试与部署验证记录"
-    ]
+      "frontend/tests/navigation.test.mjs"
+    ],
+    "caveat": "复验只证明单进程顺序扫描下的去重；未证明多进程并发扫描幂等、分布式任务可靠性、扫描耗时上界或真实业务效率提升。无关预警保留，不是全部7条已解决。"
   },
   {
     "focus": "交付与反思。回扣归档进入知识库，不做无内容的谢谢页。",
@@ -778,8 +784,29 @@
   $('#viewport').addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.4)go(target+(dx<0?1:-1));touchStart=null;},{passive:true});
   let wheelAt=0;
   $('#viewport').addEventListener('wheel',event=>{if(event.target.closest('.screen-window')||document.querySelector('dialog[open]')||Math.abs(event.deltaY)<22)return;event.preventDefault();if(performance.now()-wheelAt<1400)return;wheelAt=performance.now();go(target+(event.deltaY>0?1:-1));},{passive:false});
-  function screenshotView(which){const isDashboard=which==='dashboard';$('#productScreen').src=isDashboard?'assets/dashboard.png':'assets/report.png';$('#productScreen').alt=isDashboard?'捷修云统计看板真实运行截图':'捷修云报修与本地初判真实运行截图';$('#dashboardTab').setAttribute('aria-pressed',String(isDashboard));$('#reportTab').setAttribute('aria-pressed',String(!isDashboard));$('.screen-window').scrollTop=0;}
-  $('#dashboardTab').addEventListener('click',()=>screenshotView('dashboard'));$('#reportTab').addEventListener('click',()=>screenshotView('report'));
+  const dispatchSnapshots = {"气动故障":[{"id":12,"real_name":"杨帆","skills":["气动故障","润滑冷却"],"active_orders":1,"matched":true,"same_category_done":3,"avg_score":4.25,"score":0.762,"reasons":["擅长气动故障","在手 1 单","修过同类 3 次","满意度 4.2"],"contributions":[0.4,0.15,0.09,0.121875]},{"id":13,"real_name":"何振宇","skills":["电气故障","机械故障"],"active_orders":1,"matched":false,"same_category_done":0,"avg_score":4.5,"score":0.281,"reasons":["非擅长方向","在手 1 单","修过同类 0 次","满意度 4.5"],"contributions":[0.0,0.15,0.0,0.13125]},{"id":10,"real_name":"张国庆","skills":["电气故障","数控系统"],"active_orders":2,"matched":false,"same_category_done":0,"avg_score":4.33,"score":0.225,"reasons":["非擅长方向","在手 2 单","修过同类 0 次","满意度 4.3"],"contributions":[0.0,0.09999999999999999,0.0,0.124875]},{"id":11,"real_name":"刘德明","skills":["机械故障","液压故障"],"active_orders":3,"matched":false,"same_category_done":0,"avg_score":4.75,"score":0.216,"reasons":["非擅长方向","在手 3 单","修过同类 0 次","满意度 4.8"],"contributions":[0.0,0.075,0.0,0.140625]}],"电气故障":[{"id":13,"real_name":"何振宇","skills":["电气故障","机械故障"],"active_orders":1,"matched":true,"same_category_done":2,"avg_score":4.5,"score":0.756,"reasons":["擅长电气故障","在手 1 单","修过同类 2 次","满意度 4.5"],"contributions":[0.4,0.15,0.075,0.13125]},{"id":10,"real_name":"张国庆","skills":["电气故障","数控系统"],"active_orders":2,"matched":true,"same_category_done":5,"avg_score":4.33,"score":0.732,"reasons":["擅长电气故障","在手 2 单","修过同类 5 次","满意度 4.3"],"contributions":[0.4,0.09999999999999999,0.10714285714285714,0.124875]},{"id":12,"real_name":"杨帆","skills":["气动故障","润滑冷却"],"active_orders":1,"matched":false,"same_category_done":0,"avg_score":4.25,"score":0.272,"reasons":["非擅长方向","在手 1 单","修过同类 0 次","满意度 4.2"],"contributions":[0.0,0.15,0.0,0.121875]},{"id":11,"real_name":"刘德明","skills":["机械故障","液压故障"],"active_orders":3,"matched":false,"same_category_done":0,"avg_score":4.75,"score":0.216,"reasons":["非擅长方向","在手 3 单","修过同类 0 次","满意度 4.8"],"contributions":[0.0,0.075,0.0,0.140625]}]};
+  function showDispatch(category){
+    const rows=dispatchSnapshots[category];
+    const list=$('#dispatchRanking');list.replaceChildren();
+    for(const [index,row] of rows.entries()){
+      const item=document.createElement('div');item.className='dispatch-row';
+      const name=document.createElement('strong');name.textContent=`${String(index+1).padStart(2,'0')}  ${row.real_name}`;
+      const score=document.createElement('b');score.textContent=row.score.toFixed(3);
+      const bar=document.createElement('div');bar.className='contribution-bar';
+      for(const [i,value] of row.contributions.entries()){
+        const part=document.createElement('i');part.className=`factor-${i}`;part.style.width=`${value*100}%`;
+        part.title=`${['技能','负载','经验','口碑'][i]}贡献 ${value.toFixed(3)}`;bar.append(part);
+      }
+      const reason=document.createElement('p');reason.textContent=`${row.matched?'技能匹配':'非擅长方向'} · 在手 ${row.active_orders} 单 · 同类 ${row.same_category_done} 次 · 评价 ${row.avg_score}`;
+      item.append(name,score,bar,reason);list.append(item);
+    }
+    document.querySelectorAll('[data-category]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.category===category)));
+    const best=rows[0];states[7].subject=`推荐 ${best.real_name} · ${best.score.toFixed(3)}`;
+    states[7].status=`${category.replace('故障','')}匹配 · 在手 ${best.active_orders} 单 · 同类 ${best.same_category_done} 次`;
+    if(Math.round(current)===7){$('.ticket-title').textContent=states[7].subject;$('#ticketStatus').textContent=states[7].status;}
+  }
+  document.querySelectorAll('[data-category]').forEach(button=>button.addEventListener('click',()=>showDispatch(button.dataset.category)));
+  showDispatch('气动故障');
   addEventListener('hashchange',()=>go((Number(location.hash.slice(1))||1)-1,{fromHistory:true}));
   reduced.addEventListener('change',()=>{if(reduced.matches)go(target,{immediate:true});});
   render(current);

@@ -16,7 +16,7 @@
 
 ## 项目截图
 
-`dashboard.png`、`report.png`、`order.png`、`knowledge.png`、`docs.png`均在2026-11-18从当前线上项目采集。正文使用看板、报修和真实归档工单截图；知识库与接口文档截图保留在源码素材中供后续编辑。单文件HTML只嵌入实际使用的素材。
+`dashboard.png`、`report.png`、`order.png`、`knowledge.png`、`docs.png`均在2026-11-18从当前线上项目采集。截图均保留在源码素材中供答辩补充；正文第8/10页现改用原生派单贡献图与超期处理证据。单文件HTML只嵌入实际使用的素材。
 
 ## 文字与字体
 

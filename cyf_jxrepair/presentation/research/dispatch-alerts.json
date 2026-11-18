@@ -1,0 +1,253 @@
+{
+  "source_commit": "9f16e48687c81afdd673e0aa50264da7abdf96fc",
+  "scope": "38 seeded orders, fixed application clock 2026-11-18 12:00, isolated MariaDB; sequential scans",
+  "source_sha256": {
+    "user_service.py": "40cb1baf443ec4c69d5dcf09479eebfcfc3293e956084648246970a02028a533",
+    "alert_service.py": "fe9a1be801071a9b23fe7cd4d4010aedec5c89834aeeae50f6bdf19ca7a91ada"
+  },
+  "weights": {
+    "skill": 0.4,
+    "load": 0.3,
+    "experience": 0.15,
+    "quality": 0.15
+  },
+  "ranking": {
+    "气动故障": [
+      {
+        "id": 12,
+        "real_name": "杨帆",
+        "skills": [
+          "气动故障",
+          "润滑冷却"
+        ],
+        "active_orders": 1,
+        "matched": true,
+        "same_category_done": 3,
+        "avg_score": 4.25,
+        "score": 0.762,
+        "reasons": [
+          "擅长气动故障",
+          "在手 1 单",
+          "修过同类 3 次",
+          "满意度 4.2"
+        ],
+        "contributions": [
+          0.4,
+          0.15,
+          0.09,
+          0.121875
+        ]
+      },
+      {
+        "id": 13,
+        "real_name": "何振宇",
+        "skills": [
+          "电气故障",
+          "机械故障"
+        ],
+        "active_orders": 1,
+        "matched": false,
+        "same_category_done": 0,
+        "avg_score": 4.5,
+        "score": 0.281,
+        "reasons": [
+          "非擅长方向",
+          "在手 1 单",
+          "修过同类 0 次",
+          "满意度 4.5"
+        ],
+        "contributions": [
+          0.0,
+          0.15,
+          0.0,
+          0.13125
+        ]
+      },
+      {
+        "id": 10,
+        "real_name": "张国庆",
+        "skills": [
+          "电气故障",
+          "数控系统"
+        ],
+        "active_orders": 2,
+        "matched": false,
+        "same_category_done": 0,
+        "avg_score": 4.33,
+        "score": 0.225,
+        "reasons": [
+          "非擅长方向",
+          "在手 2 单",
+          "修过同类 0 次",
+          "满意度 4.3"
+        ],
+        "contributions": [
+          0.0,
+          0.09999999999999999,
+          0.0,
+          0.124875
+        ]
+      },
+      {
+        "id": 11,
+        "real_name": "刘德明",
+        "skills": [
+          "机械故障",
+          "液压故障"
+        ],
+        "active_orders": 3,
+        "matched": false,
+        "same_category_done": 0,
+        "avg_score": 4.75,
+        "score": 0.216,
+        "reasons": [
+          "非擅长方向",
+          "在手 3 单",
+          "修过同类 0 次",
+          "满意度 4.8"
+        ],
+        "contributions": [
+          0.0,
+          0.075,
+          0.0,
+          0.140625
+        ]
+      }
+    ],
+    "电气故障": [
+      {
+        "id": 13,
+        "real_name": "何振宇",
+        "skills": [
+          "电气故障",
+          "机械故障"
+        ],
+        "active_orders": 1,
+        "matched": true,
+        "same_category_done": 2,
+        "avg_score": 4.5,
+        "score": 0.756,
+        "reasons": [
+          "擅长电气故障",
+          "在手 1 单",
+          "修过同类 2 次",
+          "满意度 4.5"
+        ],
+        "contributions": [
+          0.4,
+          0.15,
+          0.075,
+          0.13125
+        ]
+      },
+      {
+        "id": 10,
+        "real_name": "张国庆",
+        "skills": [
+          "电气故障",
+          "数控系统"
+        ],
+        "active_orders": 2,
+        "matched": true,
+        "same_category_done": 5,
+        "avg_score": 4.33,
+        "score": 0.732,
+        "reasons": [
+          "擅长电气故障",
+          "在手 2 单",
+          "修过同类 5 次",
+          "满意度 4.3"
+        ],
+        "contributions": [
+          0.4,
+          0.09999999999999999,
+          0.10714285714285714,
+          0.124875
+        ]
+      },
+      {
+        "id": 12,
+        "real_name": "杨帆",
+        "skills": [
+          "气动故障",
+          "润滑冷却"
+        ],
+        "active_orders": 1,
+        "matched": false,
+        "same_category_done": 0,
+        "avg_score": 4.25,
+        "score": 0.272,
+        "reasons": [
+          "非擅长方向",
+          "在手 1 单",
+          "修过同类 0 次",
+          "满意度 4.2"
+        ],
+        "contributions": [
+          0.0,
+          0.15,
+          0.0,
+          0.121875
+        ]
+      },
+      {
+        "id": 11,
+        "real_name": "刘德明",
+        "skills": [
+          "机械故障",
+          "液压故障"
+        ],
+        "active_orders": 3,
+        "matched": false,
+        "same_category_done": 0,
+        "avg_score": 4.75,
+        "score": 0.216,
+        "reasons": [
+          "非擅长方向",
+          "在手 3 单",
+          "修过同类 0 次",
+          "满意度 4.8"
+        ],
+        "contributions": [
+          0.0,
+          0.075,
+          0.0,
+          0.140625
+        ]
+      }
+    ]
+  },
+  "alerts": {
+    "threshold_hours": 48,
+    "scan_interval_seconds": 300,
+    "first_scan": {
+      "created": 7,
+      "resolved": 0
+    },
+    "repeat_scan": {
+      "created": 0,
+      "resolved": 0
+    },
+    "actions": [
+      {
+        "type": "DISPATCH_TIMEOUT",
+        "order_id": 31,
+        "action": "DISPATCH",
+        "new_logs": 1,
+        "note": "已自动派单给 杨帆"
+      },
+      {
+        "type": "REPAIR_TIMEOUT",
+        "order_id": 29,
+        "action": "URGE",
+        "new_logs": 1,
+        "note": "已催办维修工 刘德明"
+      }
+    ],
+    "after_handling_scan": {
+      "created": 0,
+      "resolved": 0
+    },
+    "open_remaining": 5
+  }
+}

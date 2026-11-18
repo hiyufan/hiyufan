@@ -22,9 +22,6 @@ css = (ROOT / 'styles.css').read_text()
 script = (ROOT / 'app.js').read_text()
 css = re.sub(r"url\((['\"]?)(assets/[^)'\"]+)\1\)", lambda m: f'url("{data_url(m[2])}")', css)
 html = re.sub(r'(src|href)="(assets/[^"]+)"', lambda m: f'{m[1]}="{data_url(m[2])}"', html)
-# Only the two interactive screenshot assignments are runtime asset references.
-for name in ('dashboard.png', 'report.png'):
-    script = script.replace(f"'assets/{name}'", repr(data_url(f'assets/{name}')))
 html = html.replace('<link rel="stylesheet" href="styles.css">', f'<style>\n{css}\n</style>')
 html = html.replace('<script src="app.js"></script>', '<script>\n' + script.replace('</script', '<\\/script') + '\n</script>')
 licenses = '\n\n'.join(p.name + '\n' + p.read_text() for p in sorted((ROOT / 'assets').glob('OFL*.txt')))

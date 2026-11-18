@@ -4,7 +4,7 @@
   "requests": [],
   "overflows": [],
   "during": {
-    "current": 0.07801220709771353,
+    "current": 0.0779810076751726,
     "target": 1,
     "moving": true
   },
@@ -14,9 +14,25 @@
     "persistent DOM",
     "overview",
     "paper links",
-    "screenshot tabs",
+    "two dispatch categories",
+    "ranking scores and shared ticket",
+    "recommendation state retention",
+    "overdue evidence limits",
     "mobile controls",
     "keyboard",
     "interrupted motion"
-  ]
+  ],
+  "environment": {
+    "browser": "Chromium headless ARM64 via Playwright",
+    "browser_plugin": "not available",
+    "desktop": [
+      1600,
+      900
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "entry": "offline standalone HTML"
+  }
 }

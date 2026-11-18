@@ -86,11 +86,13 @@
           <p class="speed-scope">同语料同查询 · 各 40 次 · ARM64 / Python 3.11 · 仅算法耗时</p>
         </section>
 
-        <section class="scene frontend" data-scene="7" aria-label="前端页面与导航优化">
-          <h2>换页面，<br>不换现场。</h2>
-          <div class="zero"><b>0</b><span>次整页重载</span></div>
-          <div class="screen-frame"><div class="screen-tools"><button id="dashboardTab" type="button" aria-pressed="true">统计看板</button><button id="reportTab" type="button" aria-pressed="false">报修与初判</button></div><div class="screen-window"><img id="productScreen" src="assets/dashboard.png" alt="捷修云统计看板真实运行截图"></div></div>
-          <p class="frontend-rule">11 个页面 · 保留前进后退 · 旧请求退出即取消</p>
+        <section class="scene dispatch" data-scene="7" aria-label="可解释派单推荐">
+          <h2>同样一单，<br>派给谁更合适。</h2>
+          <div class="dispatch-weights"><div><b>40<span>%</span></b><strong>技能</strong></div><div><b>30<span>%</span></b><strong>负载</strong></div><div><b>15<span>%</span></b><strong>经验</strong></div><div><b>15<span>%</span></b><strong>口碑</strong></div></div>
+          <div class="dispatch-tabs" role="group" aria-label="切换故障类别"><button type="button" data-category="气动故障" aria-pressed="true">气动故障</button><button type="button" data-category="电气故障" aria-pressed="false">电气故障</button></div>
+          <div id="dispatchRanking" class="dispatch-ranking" aria-live="polite"></div>
+          <div class="dispatch-formula"><code>负载 = 1 / (1 + 在手单数)</code><code>经验 = 同类完工数 / (同类完工数 + 2)</code></div>
+          <p class="dispatch-scope">种子库实算 · 四维加权 · 支持人工改选</p>
         </section>
 
         <section class="scene fixes" data-scene="8" aria-label="缺陷甄别和优化">
@@ -106,12 +108,13 @@
           <p class="fix-rule">问题 → 定位 → 修正 → 验证</p>
         </section>
 
-        <section class="scene proof" data-scene="9" aria-label="运行验证与部署">
-          <h2>闭环，<br>用运行结果回答。</h2>
-          <div class="test-count"><b>51</b><span>项后端测试<br>全部通过</span></div>
-          <div class="proof-count"><b>9</b><span>组浏览器回归场景</span></div>
-          <div class="order-proof"><img src="assets/order.png" alt="导航回归验证工单的真实归档截图"></div>
-          <div class="proof-flow"><span>提交</span><i>→</i><span>驳回</span><i>→</i><span>重提</span><i>→</i><span>派单</span><i>→</i><span>接单</span><i>→</i><span>完工</span><i>→</i><span>验收</span><i>→</i><b>归档</b></div>
+        <section class="scene intervention" data-scene="9" aria-label="超期工单干预闭环">
+          <h2>超期之后，<br>系统继续推进。</h2>
+          <div class="overdue-clock"><b>48<span>h</span></b><p>超期阈值 · 每 5 分钟自动扫描</p></div>
+          <div class="intervention-paths"><div><strong>未派单 <i>→</i> 一键派单</strong><p>诊断故障 → 推荐人选 → 派单留痕</p></div><div><strong>未完工 <i>→</i> 一键催办</strong><p>记录催办 → 关闭预警 → 抑制重复</p></div></div>
+          <div class="intervention-results"><div><b>7</b><strong>首轮发现</strong></div><div><b>0</b><strong>重扫新增</strong></div><div><b>2</b><strong>处理留痕</strong></div></div>
+          <p class="cooldown-rule">设备科一键处理后，<br><span>48h</span> 内不再重复提醒。</p>
+          <p class="intervention-scope">隔离种子库顺序复验 · 派单、催办各 1 次 · 各新增 1 条日志</p>
         </section>
 
         <section class="scene ending" data-scene="10" aria-label="交付与后续">
