@@ -175,6 +175,31 @@ test("站内导航与页面生命周期", { skip: !password, timeout: 120_000 },
     await check(session);
   });
 
+  await t.test("初始化完成前不会丢失输入或触发表单原生跳转", async () => {
+    const session = await open("sbk01");
+    const { page } = session;
+    let release;
+    const gate = new Promise((resolve) => { release = resolve; });
+    await page.route("**/api/auth/me", async (route) => {
+      await gate;
+      await route.continue();
+    });
+    const requested = page.waitForRequest("**/api/auth/me");
+    await page.locator('.nav a[href="knowledge.html"]').click();
+    await requested;
+    await page.waitForURL("**/knowledge.html");
+    assert.equal(await page.locator("main.content").evaluate((el) => el.inert), true);
+    const typing = page.locator("#q").fill("气压不足");
+    release();
+    await typing;
+    await page.unrouteAll({ behavior: "wait" });
+    const result = page.waitForResponse((r) => r.url().includes("/api/ai/knowledge?"));
+    await page.locator("#searchForm").getByRole("button", { name: "查找", exact: true }).click();
+    await result;
+    assert.equal(await page.locator("#q").inputValue(), "气压不足");
+    await check(session);
+  });
+
   for (const [username, home, ready] of [
     ["dept01", "dashboard.html", "#chartMonthly svg"],
     ["emp01", "report.html", '#deviceId option[value="1"]'],

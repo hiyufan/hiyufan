@@ -17,6 +17,7 @@ const templates = new Map();
 const appBase = new URL("../../", import.meta.url);
 const initialRoot = document.querySelector("main.content");
 templates.set(location.pathname, { html: initialRoot.outerHTML, title: document.title });
+initialRoot.inert = true;
 let pending;
 let view;
 let chartsReady;
@@ -80,10 +81,12 @@ async function render(href, { replace = false, initial = false, pop = false } = 
     }
     document.title = template.title;
     const root = document.querySelector("main.content");
+    root.inert = true;
     root.setAttribute("aria-busy", "true");
     view = controller;
     await module.mount({ root, signal });
     signal.throwIfAborted();
+    root.inert = false;
     root.removeAttribute("aria-busy");
     if (!initial) {
       window.scrollTo(0, 0);
