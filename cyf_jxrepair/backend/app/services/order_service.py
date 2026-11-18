@@ -11,8 +11,8 @@ from datetime import datetime
 
 from fastapi import UploadFile
 from sqlalchemy import Select, func, or_, select
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.orm import Session, lazyload
 
 from app.core.config import settings
 from app.core.deps import PageParams
@@ -61,10 +61,23 @@ def scope_filter(stmt: Select, user: User) -> Select:
 
 
 def get_scoped(db: Session, user: User, order_id: int, *, for_update: bool = False) -> RepairOrder:
-    stmt = scope_filter(select(RepairOrder).where(RepairOrder.id == order_id), user)
-    if for_update:
-        stmt = stmt.with_for_update(of=RepairOrder)  # 行锁：防止两个管理员同时派单
-    order = db.scalar(stmt)
+    # 人工修改-CYF：此处是修改业务的第一个步骤，尚未写入任何业务数据。
+    # MariaDB 11.6.2+ 的快照隔离可能在等锁后报 1020；回滚旧快照后
+    # 重新取锁并执行状态校验，不能把数据库异常直接当作派单成功。
+    for attempt in range(3):
+        stmt = scope_filter(select(RepairOrder).where(RepairOrder.id == order_id), user)
+        if for_update:
+            # 锁查询只加载工单，避免关联表 JOIN 扩大锁定范围。
+            stmt = stmt.options(lazyload("*")).with_for_update(of=RepairOrder)
+        try:
+            order = db.scalar(stmt)
+            break
+        except OperationalError as exc:
+            if not for_update or exc.orig.args[0] != 1020:
+                raise
+            db.rollback()
+            if attempt == 2:
+                raise Conflict("工单正在被其他人处理，请刷新后重试") from exc
     if order is None:
         # 越权访问与不存在返回同样的提示，不暴露其他人工单是否存在
         raise NotFound("工单不存在或无权查看")

@@ -325,3 +325,59 @@ def test_ai_rejects_invalid_descriptions(client, path, method, body):
     else:
         response = client.post(path, headers=headers, json=body)
     assert response.status_code == 422
+
+
+def test_concurrent_dispatch_with_existing_read_snapshot(client):
+    """独立会话先读用户再抢同一单；快照冲突必须恢复为业务冲突。"""
+    from collections import Counter
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+
+    from sqlalchemy import func, select
+
+    from app.core.database import get_db
+    from app.core.enums import OrderAction, OrderStatus, Urgency
+    from app.core.exceptions import BizError
+    from app.main import app
+    from app.models import OrderLog, RepairOrder, User
+    from app.schemas import DispatchIn
+    from app.services import order_service
+
+    sessions = app.dependency_overrides[get_db]
+    dependency = sessions()
+    db = next(dependency)
+    try:
+        order = RepairOrder(order_no="CONCUR00000001", device_id=4, reporter_id=5,
+                            fault_desc="隔离库并发派单回归", urgency=Urgency.NORMAL, status=OrderStatus.PENDING)
+        db.add(order)
+        db.commit()
+        order_id = order.id
+    finally:
+        dependency.close()
+    barrier = Barrier(10)
+
+    def dispatch(_):
+        dependency = sessions()
+        db = next(dependency)
+        try:
+            user = db.get(User, 1)
+            barrier.wait(timeout=20)
+            try:
+                order_service.dispatch(db, user, order_id, DispatchIn(repairer_id=12))
+                return 200
+            except BizError as exc:
+                db.rollback()
+                return exc.code
+        finally:
+            dependency.close()
+
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        assert Counter(pool.map(dispatch, range(10))) == {200: 1, 409: 9}
+    dependency = sessions()
+    db = next(dependency)
+    try:
+        assert db.scalar(select(func.count()).select_from(OrderLog).where(
+            OrderLog.order_id == order_id, OrderLog.action == OrderAction.DISPATCH)) == 1
+        assert db.get(RepairOrder, order_id).status is OrderStatus.ASSIGNED
+    finally:
+        dependency.close()
