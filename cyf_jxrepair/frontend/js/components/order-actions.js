@@ -1,6 +1,7 @@
 // 工单操作弹窗：派单 / 驳回 / 接单 / 完工 / 验收评价 / 验收不通过
 // 可执行哪些操作由后端 detail.actions 决定，前端只负责收集参数并调用接口
 import { api } from "../core/http.js";
+import { navigate } from "../core/navigation.js";
 import { icon } from "../core/icons.js";
 import { $, $$, esc, fieldError, openModal, toast } from "../core/ui.js";
 
@@ -239,7 +240,7 @@ const HANDLERS = {
   COMPLETE: openComplete,
   ACCEPT: openEvaluate,
   ACCEPT_FAIL: openAcceptFail,
-  RESUBMIT: (order) => { location.href = `report.html?resubmit=${order.id}`; },
+  RESUBMIT: (order) => { navigate(`report.html?resubmit=${order.id}`); },
 };
 
 /** 按钮样式：主操作用主色，否定类操作用危险色 */

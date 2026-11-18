@@ -5,6 +5,11 @@
   position: sticky; top: 0; z-index: 30;
   background: var(--graphite); color: var(--graphite-ink);
 }
+.navigating .topbar::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: var(--yellow);
+}
+main.content:focus { outline: none; }
 .topbar-inner {
   display: flex; align-items: stretch; gap: 28px; height: var(--bar-h);
   max-width: 1400px; margin: 0 auto;

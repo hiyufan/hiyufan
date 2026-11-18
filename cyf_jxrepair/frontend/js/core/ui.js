@@ -11,9 +11,11 @@ export function esc(value) {
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-export function debounce(fn, wait = 300) {
+export function debounce(fn, wait = 300, signal) {
   let timer;
+  signal?.addEventListener("abort", () => clearTimeout(timer), { once: true });
   return (...args) => {
+    if (signal?.aborted) return;
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), wait);
   };
@@ -80,6 +82,7 @@ export function toast(message, type = "success", ms = 2600) {
 
 /** 统一错误提示：接口错误显示后端 message，其余显示通用文案 */
 export function showError(err) {
+  if (err?.name === "AbortError") return;
   console.error(err);
   toast(err?.message || "操作失败，请稍后重试", "error");
 }
@@ -99,6 +102,10 @@ export async function withLoading(button, task) {
 }
 
 // ------------------------------------------------------------ 弹窗
+const modalClosers = new Set();
+export function closeModals() {
+  [...modalClosers].forEach((close) => close());
+}
 /**
  * 打开弹窗。onConfirm 返回 Promise：成功则关闭；抛错则保持打开并提示，用户无需重新填写。
  * @returns {{el: HTMLElement, close: Function}}
@@ -118,12 +125,16 @@ export function openModal({ title, body = "", confirmText = "确定", cancelText
       </div>` : ""}
     </div>`;
   const prevFocus = document.activeElement;
+  let closed = false;
 
   const close = () => {
+    if (closed) return;
+    closed = true;
+    modalClosers.delete(close);
     mask.remove();
     onClose?.();
     document.removeEventListener("keydown", onKey);
-    prevFocus?.focus?.();
+    if (prevFocus?.isConnected) prevFocus.focus?.();
   };
   const onKey = (e) => { if (e.key === "Escape") close(); };
 
@@ -141,6 +152,7 @@ export function openModal({ title, body = "", confirmText = "确定", cancelText
     }
   });
   document.addEventListener("keydown", onKey);
+  modalClosers.add(close);
   document.body.append(mask);
   onOpen?.(mask);
   (mask.querySelector("input, textarea, select") || okBtn)?.focus();

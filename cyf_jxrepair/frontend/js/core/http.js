@@ -20,7 +20,8 @@ function buildUrl(path, params) {
   return url;
 }
 
-async function request(method, path, { params, json, form } = {}) {
+async function request(method, path, { params, json, form, signal } = {}) {
+  signal?.throwIfAborted();
   const headers = {};
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -35,8 +36,9 @@ async function request(method, path, { params, json, form } = {}) {
 
   let resp;
   try {
-    resp = await fetch(buildUrl(path, params), { method, headers, body });
-  } catch {
+    resp = await fetch(buildUrl(path, params), { method, headers, body, signal });
+  } catch (err) {
+    if (signal?.aborted) throw err;
     throw new ApiError("无法连接服务器，请确认后端已启动", 0);
   }
 
@@ -44,9 +46,11 @@ async function request(method, path, { params, json, form } = {}) {
   try {
     payload = await resp.json();
   } catch {
+    signal?.throwIfAborted();
     throw new ApiError(`服务器返回异常（HTTP ${resp.status}）`, resp.status);
   }
 
+  signal?.throwIfAborted();
   // 只有携带了 token 的请求返回 401 才说明登录过期；登录接口本身的 401 是"账号或密码错误"，交给页面显示
   if (payload.code === 401 && token) {
     toLogin("expired");
@@ -58,14 +62,15 @@ async function request(method, path, { params, json, form } = {}) {
   return payload.data;
 }
 
-export const api = {
-  get: (path, params) => request("GET", path, { params }),
-  post: (path, json) => request("POST", path, { json }),
-  put: (path, json) => request("PUT", path, { json }),
-  patch: (path, json) => request("PATCH", path, { json }),
-  del: (path) => request("DELETE", path),
-  upload: (path, form) => request("POST", path, { form }),
-};
+export const createApi = (signal) => ({
+  get: (path, params) => request("GET", path, { params, signal }),
+  post: (path, json) => request("POST", path, { json, signal }),
+  put: (path, json) => request("PUT", path, { json, signal }),
+  patch: (path, json) => request("PATCH", path, { json, signal }),
+  del: (path) => request("DELETE", path, { signal }),
+  upload: (path, form) => request("POST", path, { form, signal }),
+});
+export const api = createApi();
 
 /** 资源地址（图片等）补全为完整 URL */
 export const assetUrl = (path) => (path?.startsWith("http") ? path : API_BASE + path);

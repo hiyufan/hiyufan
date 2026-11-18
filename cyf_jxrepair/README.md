@@ -107,7 +107,7 @@ cyf_jxrepair/
 │   │   │   └── ai/               智能诊断、知识库检索、智能摘要、文本处理、大模型适配
 │   │   └── routers/              REST 接口（43 个）
 │   ├── scripts/                  init_db.py 初始化数据库 · export_api_doc.py 生成接口清单 · eval_diagnosis.py 诊断评测
-│   ├── tests/                    状态机、算法单元测试 + 接口集成测试（41 个用例）
+│   ├── tests/                    状态机、算法单元测试 + 接口集成测试（50 个用例）
 │   ├── uploads/                  现场照片（数据库只存相对路径）
 │   └── requirements.txt
 ├── frontend/
@@ -127,12 +127,23 @@ cyf_jxrepair/
 
 ```bash
 cd backend
-python -m pytest -q              # 41 个用例：状态机越权矩阵、BM25 性质、登录锁定、完整业务闭环、上传校验、数据隔离、统计、AI
+python -m pytest -q              # 50 个用例：状态机、算法、权限隔离、上传校验、业务闭环、统计、AI
 python scripts/eval_diagnosis.py # 故障诊断三种方案的准确率对比
 ruff check app tests scripts
 ```
 
-> 集成测试会重建 `cyf_jxrepair` 数据库，演示前请再执行一次 `python scripts/init_db.py --force`。
+> 集成测试只重建独立的 `<DB_NAME>_test` 数据库并使用临时上传目录，不清空业务数据库。测试连接需要建库权限。
+
+前端导航回归测试（先启动应用，使用演示数据和已知密码的测试实例）：
+
+```bash
+cd frontend
+npm ci
+npx playwright install chromium
+E2E_BASE_URL=http://127.0.0.1:8000 E2E_PASSWORD='测试账号的实际密码' npm test
+```
+
+测试覆盖四种角色的站内切换、模板复用、图表释放、筛选与详情前进后退、慢请求竞争、失败重试和独立入口刷新；只登录和读取数据，不修改业务记录。四种角色使用种子账号 `sbk01`、`dept01`、`emp01`、`wx01`，须具有相同测试密码；未设置 `E2E_PASSWORD` 时会跳过浏览器测试。
 
 ## 常见问题
 

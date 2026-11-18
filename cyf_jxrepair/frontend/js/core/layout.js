@@ -1,6 +1,7 @@
 // 页面框架：顶部导航（系统标识 · 按角色生成的菜单 · 当前用户）；同时负责页面级的登录与角色守卫
-import { api } from "./http.js";
+import { api, createApi } from "./http.js";
 import { icon } from "./icons.js";
+import { navigate } from "./navigation.js";
 import { clearSession, getToken, getUser, homeOf, saveSession, toLogin } from "./session.js";
 import { $, esc, openModal, toast } from "./ui.js";
 
@@ -48,7 +49,10 @@ function renderTopbar(user, active) {
     </div>`;
 }
 
+let barEvents;
 function bindTopbar(bar) {
+  barEvents?.abort();
+  barEvents = new AbortController();
   const btn = $(".who-btn", bar);
   const menu = $(".menu", bar);
   btn.addEventListener("click", (e) => {
@@ -58,7 +62,7 @@ function bindTopbar(bar) {
   document.addEventListener("click", () => {
     menu.classList.remove("open");
     btn.setAttribute("aria-expanded", "false");
-  });
+  }, { signal: barEvents.signal });
   menu.addEventListener("click", async (e) => {
     const act = e.target.closest("[data-act]")?.dataset.act;
     if (act === "logout") {
@@ -90,11 +94,11 @@ function openPasswordDialog() {
 }
 
 /** 菜单数量：派单显示待派单数，维修工作台显示待接单数 */
-async function loadBadges(bar) {
+async function loadBadges(bar, client) {
   const badges = [...bar.querySelectorAll("[data-badge]")];
   if (!badges.length) return;
   try {
-    const counts = await api.get("/api/orders/status-counts");
+    const counts = await client.get("/api/orders/status-counts");
     badges.forEach((b) => {
       const n = counts[b.dataset.badge] || 0;
       b.textContent = n > 99 ? "99+" : n;
@@ -103,40 +107,54 @@ async function loadBadges(bar) {
   } catch { /* 角标失败不影响页面 */ }
 }
 
-// 页面即将跳转时返回一个永不完成的 Promise，让页面脚本安静地停在 await 处，而不是抛出错误
-const HALT = new Promise(() => {});
-
 /**
  * 挂载页面框架：在页面顶部插入导航条，并做登录与角色校验。
- * @param {{active: string, title: string | ((user) => string), roles?: string[]}} options
- * @returns {Promise<object>} 当前登录用户
+ * @param {{active: string, title: string | ((user) => string), roles?: string[], signal?: AbortSignal}} options
+ * @returns {Promise<object|null>} 当前登录用户；守卫跳转时返回 null
  */
-export async function mountLayout({ active, title, roles }) {
+export async function mountLayout({ active, title, roles, signal }) {
+  const client = createApi(signal);
   if (!getToken()) {
     toLogin();
-    return HALT;
+    return null;
   }
   let user = getUser();
   try {
-    user = await api.get("/api/auth/me"); // 以服务端为准：角色被修改或账号被停用会立即生效
+    user = await client.get("/api/auth/me"); // 以服务端为准：角色被修改或账号被停用会立即生效
     saveSession(getToken(), user);
   } catch (err) {
-    if (err.code === 401) return HALT; // http.js 已跳转登录页
+    if (err.code === 401) return null; // http.js 已跳转登录页
+    throw err;
   }
+  signal?.throwIfAborted();
   const allowed = roles || MENU.find((m) => m.key === active)?.roles || ALL;
   if (!allowed.includes(user.role)) {
     toast("当前角色无权访问该页面，已返回首页", "warning");
-    setTimeout(() => location.replace(homeOf(user)), 600);
-    return HALT;
+    navigate(homeOf(user), { replace: true });
+    return null;
   }
 
   const pageTitle = typeof title === "function" ? title(user) : title;
-  const bar = document.createElement("header");
-  bar.className = "topbar";
-  bar.innerHTML = renderTopbar(user, active);
-  document.body.prepend(bar);
+  let bar = $("header.topbar");
+  const identity = JSON.stringify([user.id, user.role, user.real_name, user.dept_name, user.factory_area]);
+  if (!bar) {
+    bar = document.createElement("header");
+    bar.className = "topbar";
+    document.body.prepend(bar);
+  }
+  if (bar.dataset.identity !== identity) {
+    bar.innerHTML = renderTopbar(user, active);
+    bar.dataset.identity = identity;
+    bindTopbar(bar);
+  }
+  const href = MENU.find((m) => m.key === active)?.href;
+  bar.querySelectorAll(".nav a").forEach((link) => {
+    const selected = link.getAttribute("href") === href;
+    link.classList.toggle("active", selected);
+    if (selected) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
   document.title = `${pageTitle} · CYF捷修云`;
-  bindTopbar(bar);
-  loadBadges(bar);
+  loadBadges(bar, client);
   return user;
 }

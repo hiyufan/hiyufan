@@ -80,6 +80,10 @@ export function createPhotoPicker(container, { maxCount = 3, maxMb = 5, existing
   return {
     getFiles: () => files.map((f) => f.file),
     keepsOriginal: () => kept.length > 0,
+    destroy() {
+      files.forEach((f) => URL.revokeObjectURL(f.url));
+      files = [];
+    },
     reset() {
       files.forEach((f) => URL.revokeObjectURL(f.url));
       files = [];
