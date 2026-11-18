@@ -28,13 +28,16 @@
 
 ## 开源贡献 · Open Source Contributions
 
-> 给自己在用的项目提交的上游修复 —— **5 个 PR，全部合并**。
-> <br><sub><i>Fixes sent upstream to projects I actually use — 5 PRs, all merged.</i></sub>
+> 参与上游代码修复、功能补充和开源资源整理 —— **9 个 PR，均已合并**。
+> <br><sub><i>Upstream fixes, new features and open-source resources — 9 merged PRs.</i></sub>
 
 ### <img src="https://github.com/apache.png" width="20" align="center" /> [Apache TVM](https://github.com/apache/tvm) &nbsp;![stars](https://img.shields.io/github/stars/apache/tvm?style=flat-square&label=%E2%98%85&color=425066)&nbsp; 深度学习编译器 <sub><i>· deep learning compiler</i></sub>
 
 | PR | 状态 | 修复内容 · What it fixes |
 |:--|:--|:--|
+| [**#20818**](https://github.com/apache/tvm/pull/20818) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 为 Relax ONNX 前端新增 `LpNormalization` 转换，支持 L1 / L2 归一化；处理零范数切片，并让 float16 / bfloat16 输入在 float32 中计算以避免溢出。<br><sub><i>Added ONNX <code>LpNormalization</code> support for L1 / L2 norms, including zero-norm slices and float32 computation for float16 / bfloat16 inputs.</i></sub> |
+| [**#20816**](https://github.com/apache/tvm/pull/20816) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 修复 `RemoveUnusedOutputs` 在元组返回值均未使用时误删有副作用调用的问题，保留 `R.print` 等操作及原返回签名。<br><sub><i>Fixed <code>RemoveUnusedOutputs</code> dropping impure calls when all tuple outputs are unused, preserving side effects such as <code>R.print</code> and the return signature.</i></sub> |
+| [**#20815**](https://github.com/apache/tvm/pull/20815) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 修复 `ReorderTakeAfterMatmul` 对一维权重的错误重排，避免沿归约轴取值被移到矩阵乘法之后而导致崩溃或静默算错。<br><sub><i>Prevented an invalid <code>ReorderTakeAfterMatmul</code> rewrite for vector weights that caused crashes or silently incorrect results.</i></sub> |
 | [**#20255**](https://github.com/apache/tvm/pull/20255) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | Relax 的 `reshape` 把字面 `0` 读作"沿用输入维度"（ONNX 语义），PyTorch 却表示真实的零维，导致空张量上的 `reshape` / `view` / `flatten` / `unflatten` 报错或**静默给出错误形状**。与 torch 逐例对照验证 2132 组静态 + 938 组动态形状，并顺带修掉 `RemoveRedundantReshape` 里的同源缺陷。<br><sub><i>Relax read a literal <code>0</code> as "copy this dim" where PyTorch means a real zero-sized dim, so empty-tensor reshapes raised or silently returned the wrong shape. Verified against torch on 2,132 static + 938 dynamic shapes; also fixed the same bug in <code>RemoveRedundantReshape</code>.</i></sub> |
 | [**#20254**](https://github.com/apache/tvm/pull/20254) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `torch.sort` / `argsort` 发出 int32 索引，而其他所有索引类算子都是 int64 —— 一张图里出现两种索引 dtype。<br><sub><i><code>torch.sort</code> / <code>argsort</code> emitted int32 indices while every other index op was int64 — one graph, two index dtypes.</i></sub> |
 | [**#20245**](https://github.com/apache/tvm/pull/20245) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `flatten` 不校验维度，越界的负 `start_dim` 不在调用处报错，而是在下游生成错误的 `reshape`。<br><sub><i><code>flatten</code> didn't validate dims, so a bad negative <code>start_dim</code> produced a broken <code>reshape</code> downstream instead of failing at the call site.</i></sub> |
@@ -45,6 +48,12 @@
 |:--|:--|:--|
 | [**#4140**](https://github.com/kornia/kornia/pull/4140) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 零尺寸的 `resize` / `rescale` 抛 `ZeroDivisionError`，而 warp 类算子对同样参数返回空图像。现在与之对齐，并让空结果留在自动微分图上。经 512 组形状 / 精度 / 插值模式验证对合法输入零影响。<br><sub><i>Zero-size <code>resize</code> / <code>rescale</code> threw <code>ZeroDivisionError</code> where the warping ops return an empty image. Now aligned, with the result kept on the autograd graph. Verified inert across 512 combinations.</i></sub> |
 | [**#4143**](https://github.com/kornia/kornia/pull/4143) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | `__all__` 列出了未绑定的名字，`from kornia.core import *` 直接崩溃。恢复绑定，并加了一条全仓库的导出名解析检查。<br><sub><i><code>__all__</code> listed unbound names, so <code>import *</code> crashed. Restored them and added a repo-wide check that every exported name resolves.</i></sub> |
+
+### [chinese-independent-developer](https://github.com/1c7/chinese-independent-developer) &nbsp; 独立开发者资源 <sub><i>· independent developer resources</i></sub>
+
+| PR | 状态 | 贡献内容 · Contribution |
+|:--|:--|:--|
+| [**#1456**](https://github.com/1c7/chinese-independent-developer/pull/1456) | ![merged](https://img.shields.io/badge/merged-8957E5?style=flat-square&logo=github&logoColor=white) | 将求原图加入中国独立开发者项目列表，补充网站入口及原图、视频和实况照片功能介绍。<br><sub><i>Added shizhen to the Chinese independent developer project list, with its website and image, video and Live Photo features.</i></sub> |
 
 ---
 
